@@ -9,7 +9,7 @@
           <Key>
             <PropertyRef Name="PluginId" />
           </Key>
-          <Property Name="PluginId" Type="int" Nullable="false" />
+          <Property Name="PluginId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StringId" Type="varchar(max)" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Author" Type="nvarchar(max)" Nullable="false" />
@@ -23,7 +23,7 @@
           <Key>
             <PropertyRef Name="VersionId" />
           </Key>
-          <Property Name="VersionId" Type="int" Nullable="false" />
+          <Property Name="VersionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Version" Type="nchar" MaxLength="10" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="PluginId" Type="int" Nullable="false" />
@@ -35,7 +35,7 @@
             <PropertyRef Name="TagId" />
           </Key>
           <Property Name="Content" Type="nchar" MaxLength="10" Nullable="false" />
-          <Property Name="TagId" Type="int" Nullable="false" />
+          <Property Name="TagId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PluginId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Vote">
@@ -43,10 +43,10 @@
             <PropertyRef Name="VoteId" />
           </Key>
           <Property Name="Stars" Type="int" Nullable="false" />
-          <Property Name="VoteId" Type="int" Nullable="false" />
+          <Property Name="VoteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PluginId" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__PluginVer__Plugi__70DDC3D8">
+        <Association Name="FK__PluginVer__Plugi__07C12930">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="PluginVersion" Type="Self.PluginVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -58,7 +58,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tag__PluginId__73BA3083">
+        <Association Name="FK__Tag__PluginId__0A9D95DB">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="Tag" Type="Self.Tag" Multiplicity="*" />
           <ReferentialConstraint>
@@ -70,7 +70,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Vote__PluginId__76969D2E">
+        <Association Name="FK__Vote__PluginId__0D7A0286">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="Vote" Type="Self.Vote" Multiplicity="*" />
           <ReferentialConstraint>
@@ -87,15 +87,15 @@
           <EntitySet Name="PluginVersion" EntityType="Self.PluginVersion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vote" EntityType="Self.Vote" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__PluginVer__Plugi__70DDC3D8" Association="Self.FK__PluginVer__Plugi__70DDC3D8">
+          <AssociationSet Name="FK__PluginVer__Plugi__07C12930" Association="Self.FK__PluginVer__Plugi__07C12930">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="PluginVersion" EntitySet="PluginVersion" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tag__PluginId__73BA3083" Association="Self.FK__Tag__PluginId__73BA3083">
+          <AssociationSet Name="FK__Tag__PluginId__0A9D95DB" Association="Self.FK__Tag__PluginId__0A9D95DB">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="Tag" EntitySet="Tag" />
           </AssociationSet>
-          <AssociationSet Name="FK__Vote__PluginId__76969D2E" Association="Self.FK__Vote__PluginId__76969D2E">
+          <AssociationSet Name="FK__Vote__PluginId__0D7A0286" Association="Self.FK__Vote__PluginId__0D7A0286">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="Vote" EntitySet="Vote" />
           </AssociationSet>
@@ -109,15 +109,15 @@
           <EntitySet Name="PluginVersions" EntityType="CyberDragonDBModel.PluginVersion" />
           <EntitySet Name="Tags" EntityType="CyberDragonDBModel.Tag" />
           <EntitySet Name="Votes" EntityType="CyberDragonDBModel.Vote" />
-          <AssociationSet Name="FK__PluginVer__Plugi__70DDC3D8" Association="CyberDragonDBModel.FK__PluginVer__Plugi__70DDC3D8">
+          <AssociationSet Name="FK__PluginVer__Plugi__07C12930" Association="CyberDragonDBModel.FK__PluginVer__Plugi__07C12930">
             <End Role="Plugin" EntitySet="Plugins" />
             <End Role="PluginVersion" EntitySet="PluginVersions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tag__PluginId__73BA3083" Association="CyberDragonDBModel.FK__Tag__PluginId__73BA3083">
+          <AssociationSet Name="FK__Tag__PluginId__0A9D95DB" Association="CyberDragonDBModel.FK__Tag__PluginId__0A9D95DB">
             <End Role="Plugin" EntitySet="Plugins" />
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
-          <AssociationSet Name="FK__Vote__PluginId__76969D2E" Association="CyberDragonDBModel.FK__Vote__PluginId__76969D2E">
+          <AssociationSet Name="FK__Vote__PluginId__0D7A0286" Association="CyberDragonDBModel.FK__Vote__PluginId__0D7A0286">
             <End Role="Plugin" EntitySet="Plugins" />
             <End Role="Vote" EntitySet="Votes" />
           </AssociationSet>
@@ -126,7 +126,7 @@
           <Key>
             <PropertyRef Name="PluginId" />
           </Key>
-          <Property Name="PluginId" Type="Int32" Nullable="false" />
+          <Property Name="PluginId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="StringId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Author" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -135,41 +135,41 @@
           <Property Name="IconSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsAuthenticated" Type="Boolean" Nullable="false" />
           <Property Name="Downloads" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="PluginVersions" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__70DDC3D8" FromRole="Plugin" ToRole="PluginVersion" />
-          <NavigationProperty Name="Tags" Relationship="CyberDragonDBModel.FK__Tag__PluginId__73BA3083" FromRole="Plugin" ToRole="Tag" />
-          <NavigationProperty Name="Votes" Relationship="CyberDragonDBModel.FK__Vote__PluginId__76969D2E" FromRole="Plugin" ToRole="Vote" />
+          <NavigationProperty Name="PluginVersions" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__07C12930" FromRole="Plugin" ToRole="PluginVersion" />
+          <NavigationProperty Name="Tags" Relationship="CyberDragonDBModel.FK__Tag__PluginId__0A9D95DB" FromRole="Plugin" ToRole="Tag" />
+          <NavigationProperty Name="Votes" Relationship="CyberDragonDBModel.FK__Vote__PluginId__0D7A0286" FromRole="Plugin" ToRole="Vote" />
         </EntityType>
         <EntityType Name="PluginVersion">
           <Key>
             <PropertyRef Name="VersionId" />
           </Key>
-          <Property Name="VersionId" Type="Int32" Nullable="false" />
+          <Property Name="VersionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Version" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PluginId" Type="Int32" Nullable="false" />
           <Property Name="DatePublished" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="FilePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__70DDC3D8" FromRole="PluginVersion" ToRole="Plugin" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__07C12930" FromRole="PluginVersion" ToRole="Plugin" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
             <PropertyRef Name="TagId" />
           </Key>
           <Property Name="Content" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="TagId" Type="Int32" Nullable="false" />
+          <Property Name="TagId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PluginId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Tag__PluginId__73BA3083" FromRole="Tag" ToRole="Plugin" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Tag__PluginId__0A9D95DB" FromRole="Tag" ToRole="Plugin" />
         </EntityType>
         <EntityType Name="Vote">
           <Key>
             <PropertyRef Name="VoteId" />
           </Key>
           <Property Name="Stars" Type="Int32" Nullable="false" />
-          <Property Name="VoteId" Type="Int32" Nullable="false" />
+          <Property Name="VoteId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PluginId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Vote__PluginId__76969D2E" FromRole="Vote" ToRole="Plugin" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Vote__PluginId__0D7A0286" FromRole="Vote" ToRole="Plugin" />
         </EntityType>
-        <Association Name="FK__PluginVer__Plugi__70DDC3D8">
+        <Association Name="FK__PluginVer__Plugi__07C12930">
           <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
           <End Type="CyberDragonDBModel.PluginVersion" Role="PluginVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -181,7 +181,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tag__PluginId__73BA3083">
+        <Association Name="FK__Tag__PluginId__0A9D95DB">
           <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
           <End Type="CyberDragonDBModel.Tag" Role="Tag" Multiplicity="*" />
           <ReferentialConstraint>
@@ -193,7 +193,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Vote__PluginId__76969D2E">
+        <Association Name="FK__Vote__PluginId__0D7A0286">
           <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
           <End Type="CyberDragonDBModel.Vote" Role="Vote" Multiplicity="*" />
           <ReferentialConstraint>
@@ -205,7 +205,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>

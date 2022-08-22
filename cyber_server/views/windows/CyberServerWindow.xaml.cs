@@ -225,7 +225,8 @@ namespace cyber_server.views.windows
                     }
                     break;
                 case "PART_CreateNewVersionBtn":
-                    await _taskManager.ExecuteTask(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY,
+                    {
+                        await _taskManager.ExecuteTask(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY,
                         mainFunc: async () =>
                         {
                             var newIndex = GetIndexOfNewVersion();
@@ -247,73 +248,78 @@ namespace cyber_server.views.windows
                                 }
                             }
                         },
-                        executeTime: 0,
-                        bypassIfSemaphoreNotAvaild: true);
-                    break;
+                       executeTime: 0,
+                       bypassIfSemaphoreNotAvaild: true);
+                        break;
+                    }
                 case "PART_AddPluginToDb":
-                    await _taskManager.ExecuteTask(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY,
-                       mainFunc: async () =>
-                       {
-                           if (IsMeetConditionToAddPlugToDb())
-                           {
-                               var isPluginKeyExist = false;
-                               var pluginKey = PART_PluginKeyTb.Text;
-                               await CyberDbManager.Current.RequestDbContextAsync((context) =>
-                               {
-                                   isPluginKeyExist = context
-                                    .Plugins
-                                    .Any<Plugin>(p =>
-                                        p.StringId.Equals(pluginKey, StringComparison.CurrentCultureIgnoreCase));
-                               });
-                               if (isPluginKeyExist)
-                               {
-                                   MessageBox.Show("Key này đã tồn tại\nHãy chọn key khác!");
-                                   return;
-                               }
+                    {
+                        await _taskManager.ExecuteTask(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY,
+                        mainFunc: async () =>
+                        {
+                            if (IsMeetConditionToAddPlugToDb())
+                            {
+                                var isPluginKeyExist = false;
+                                var pluginKey = PART_PluginKeyTb.Text;
+                                await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                                {
+                                    isPluginKeyExist = context
+                                     .Plugins
+                                     .Any<Plugin>(p =>
+                                         p.StringId.Equals(pluginKey, StringComparison.CurrentCultureIgnoreCase));
+                                });
+                                if (isPluginKeyExist)
+                                {
+                                    MessageBox.Show("Key này đã tồn tại\nHãy chọn key khác!");
+                                    return;
+                                }
 
-                               var plugin = new Plugin();
-                               plugin.StringId = pluginKey;
-                               plugin.Name = PART_PluginNameTb.Text;
-                               plugin.Author = PART_PluginAuthorTb.Text;
-                               plugin.Description = PART_PluginDesTb.Text;
-                               plugin.ProjectURL = PART_PluginURLTb.Text;
-                               plugin.IconSource = PART_PluginIconSourceTb.Text;
-                               plugin.IsAuthenticated = PART_PluginIsAuthenticatedCb.IsChecked ?? false;
-                               plugin.Downloads = 0;
-                               var isCopFileSuccess = true;
+                                var plugin = new Plugin();
+                                plugin.StringId = pluginKey;
+                                plugin.Name = PART_PluginNameTb.Text;
+                                plugin.Author = PART_PluginAuthorTb.Text;
+                                plugin.Description = PART_PluginDesTb.Text;
+                                plugin.ProjectURL = PART_PluginURLTb.Text;
+                                plugin.IconSource = PART_PluginIconSourceTb.Text;
+                                plugin.IsAuthenticated = PART_PluginIsAuthenticatedCb.IsChecked ?? false;
+                                plugin.Downloads = 0;
+                                var isCopFileSuccess = true;
 
-                               foreach (var version in VersionSource)
-                               {
-                                   var pv = version.BuildPluginVersionFromViewModel(plugin.StringId);
-                                   isCopFileSuccess = CyberPluginManager
-                                        .Current
-                                        .CopyPluginToServerLocation(version.GetVersionSourceFilePath()
-                                            , pv.FilePath);
-                                   if (!isCopFileSuccess)
-                                   {
-                                       CyberPluginManager.Current.DeletePluginDirectory(plugin.Name);
-                                       break;
-                                   }
-                               }
+                                foreach (var version in VersionSource)
+                                {
+                                    var pv = version.BuildPluginVersionFromViewModel(plugin.StringId);
+                                    isCopFileSuccess = CyberPluginManager
+                                         .Current
+                                         .CopyPluginToServerLocation(version.GetVersionSourceFilePath()
+                                             , pv.FilePath);
+                                    if (!isCopFileSuccess)
+                                    {
+                                        CyberPluginManager.Current.DeletePluginDirectory(plugin.Name);
+                                        break;
+                                    }
+                                }
 
-                               if (isCopFileSuccess)
-                               {
-                                   await CyberDbManager.Current.RequestDbContextAsync((context) =>
-                                   {
-                                       context.Plugins.Add(plugin);
-                                       context.SaveChanges();
-                                   });
-                               }
-                           }
-                           else
-                           {
-                               MessageBox.Show("Điền các trường còn thiếu!");
-                           }
+                                if (isCopFileSuccess)
+                                {
+                                    await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                                    {
+                                        context.Plugins.Add(plugin);
+                                        context.SaveChanges();
+                                    });
+                                }
 
-                       },
+                                MessageBox.Show("Thêm mới plugin thành công!");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Điền các trường còn thiếu!");
+                            }
+
+                        },
                        executeTime: 1000,
                        bypassIfSemaphoreNotAvaild: true);
-                    break;
+                        break;
+                    }
                 case "PART_OpenPluginFileChooser":
                     var ofd = new OpenFileDialog();
                     if (ofd.ShowDialog() == true)
@@ -380,5 +386,9 @@ namespace cyber_server.views.windows
             return index;
         }
 
+        private void TestRollBack(object sender, RoutedEventArgs e)
+        {
+            CyberDbManager.Current.RollBack();
+        }
     }
 }

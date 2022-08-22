@@ -87,9 +87,6 @@
     </Compile>
     <Compile Include="definition\CyberServerDefinition.cs" />
     <Compile Include="implements\db_manager\CyberDbManager.cs" />
-    <Compile Include="implements\db_manager\sql_result_handler\MessageQueryResult.cs" />
-    <Compile Include="implements\db_manager\sql_result_handler\SQLQueryResult.cs" />
-    <Compile Include="implements\db_manager\sql_result_handler\SQLResultHandler.cs" />
     <Compile Include="implements\plugin_manager\CyberPluginManager.cs" />
     <Compile Include="Plugin.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
@@ -164,7 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CyberDragonDB.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CyberDragonDBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -177,8 +174,8 @@
       <LastGenOutput>CyberDragonDBModel.cs</LastGenOutput>
     </Content>
     <Content Include="CyberDragonDB_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>CyberDragonDB.mdf</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

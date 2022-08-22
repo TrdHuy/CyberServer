@@ -69,7 +69,7 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition />
-			<RowDefinition Height="30" />
+			<RowDefinition Height="20" />
 		</Grid.RowDefinitions>
 		<TabControl>
 			<TabItem Header="Quản lý plugin">
@@ -395,6 +395,10 @@
 									Margin="5" />
 							<Button x:Name="PART_ClearAddPluginTab"
 									Content="Clear"
+									Width="70"
+									Margin="5" />
+							<Button Content="Clear"
+									Click="TestRollBack"
 									Width="70"
 									Margin="5" />
 						</WrapPanel>
