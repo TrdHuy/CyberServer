@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="23defc3d164f4e278526db09fe291cc4" Name="Diagram1" ZoomLevel="83">
+        <EntityTypeShape EntityType="CyberDragonDBModel.Plugin" Width="1.5" PointX="0.75" PointY="3.25" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.PluginVersion" Width="1.5" PointX="2.875" PointY="3.25" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.Tag" Width="1.5" PointX="2" PointY="0.875" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.Vote" Width="1.5" PointX="4.875" PointY="4" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__PluginVer__Plugi__70DDC3D8" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__Tag__PluginId__73BA3083" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__Vote__PluginId__76969D2E" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

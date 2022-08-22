@@ -13,5 +13,16 @@ namespace cyber_server
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            ServerModuleManager.Init();
+            base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            ServerModuleManager.Destroy();
+            base.OnExit(e);
+        }
     }
 }

@@ -79,18 +79,54 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    <Compile Include="base\IServerModule.cs" />
+    <Compile Include="CyberDragonDBModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="definition\CyberServerDefinition.cs" />
+    <Compile Include="implements\db_manager\CyberDbManager.cs" />
+    <Compile Include="implements\db_manager\sql_result_handler\MessageQueryResult.cs" />
+    <Compile Include="implements\db_manager\sql_result_handler\SQLQueryResult.cs" />
+    <Compile Include="implements\db_manager\sql_result_handler\SQLResultHandler.cs" />
+    <Compile Include="implements\plugin_manager\CyberPluginManager.cs" />
+    <Compile Include="Plugin.cs">
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PluginVersion.cs">
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ServerModuleManager.cs" />
+    <Compile Include="Tag.cs">
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="views\windows\CyberServerWindow.xaml.cs">
+      <DependentUpon>CyberServerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view_models\BaseViewModel.cs" />
+    <Compile Include="view_models\plugin_version_item\PluginVersionItemViewModel.cs" />
+    <Compile Include="Vote.cs">
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="CyberDragonDBModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CyberDragonDBModel.Context.tt</DependentUpon>
     </Compile>
+    <Compile Include="CyberDragonDBModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
+    </Compile>
+    <Page Include="views\windows\CyberServerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -110,6 +146,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EntityDeploy Include="CyberDragonDBModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CyberDragonDBModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="CyberDragonDBModel.edmx.diagram">
+      <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -122,6 +165,16 @@
   <ItemGroup>
     <Content Include="CyberDragonDB.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CyberDragonDBModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
+      <LastGenOutput>CyberDragonDBModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="CyberDragonDBModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
+      <LastGenOutput>CyberDragonDBModel.cs</LastGenOutput>
     </Content>
     <Content Include="CyberDragonDB_log.ldf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -143,8 +196,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

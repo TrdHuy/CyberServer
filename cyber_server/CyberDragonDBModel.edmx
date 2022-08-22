@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CyberDragonDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Plugin">
+          <Key>
+            <PropertyRef Name="PluginId" />
+          </Key>
+          <Property Name="PluginId" Type="int" Nullable="false" />
+          <Property Name="StringId" Type="varchar(max)" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Author" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="ProjectURL" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IconSource" Type="nvarchar(max)" />
+          <Property Name="IsAuthenticated" Type="bit" Nullable="false" />
+          <Property Name="Downloads" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PluginVersion">
+          <Key>
+            <PropertyRef Name="VersionId" />
+          </Key>
+          <Property Name="VersionId" Type="int" Nullable="false" />
+          <Property Name="Version" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="PluginId" Type="int" Nullable="false" />
+          <Property Name="DatePublished" Type="datetime" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="Content" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="TagId" Type="int" Nullable="false" />
+          <Property Name="PluginId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Vote">
+          <Key>
+            <PropertyRef Name="VoteId" />
+          </Key>
+          <Property Name="Stars" Type="int" Nullable="false" />
+          <Property Name="VoteId" Type="int" Nullable="false" />
+          <Property Name="PluginId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__PluginVer__Plugi__70DDC3D8">
+          <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
+          <End Role="PluginVersion" Type="Self.PluginVersion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="PluginVersion">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Tag__PluginId__73BA3083">
+          <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
+          <End Role="Tag" Type="Self.Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="Tag">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Vote__PluginId__76969D2E">
+          <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
+          <End Role="Vote" Type="Self.Vote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="Vote">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CyberDragonDBModelStoreContainer">
+          <EntitySet Name="Plugin" EntityType="Self.Plugin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PluginVersion" EntityType="Self.PluginVersion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vote" EntityType="Self.Vote" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__PluginVer__Plugi__70DDC3D8" Association="Self.FK__PluginVer__Plugi__70DDC3D8">
+            <End Role="Plugin" EntitySet="Plugin" />
+            <End Role="PluginVersion" EntitySet="PluginVersion" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Tag__PluginId__73BA3083" Association="Self.FK__Tag__PluginId__73BA3083">
+            <End Role="Plugin" EntitySet="Plugin" />
+            <End Role="Tag" EntitySet="Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Vote__PluginId__76969D2E" Association="Self.FK__Vote__PluginId__76969D2E">
+            <End Role="Plugin" EntitySet="Plugin" />
+            <End Role="Vote" EntitySet="Vote" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CyberDragonDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="CyberDragonDbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Plugins" EntityType="CyberDragonDBModel.Plugin" />
+          <EntitySet Name="PluginVersions" EntityType="CyberDragonDBModel.PluginVersion" />
+          <EntitySet Name="Tags" EntityType="CyberDragonDBModel.Tag" />
+          <EntitySet Name="Votes" EntityType="CyberDragonDBModel.Vote" />
+          <AssociationSet Name="FK__PluginVer__Plugi__70DDC3D8" Association="CyberDragonDBModel.FK__PluginVer__Plugi__70DDC3D8">
+            <End Role="Plugin" EntitySet="Plugins" />
+            <End Role="PluginVersion" EntitySet="PluginVersions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Tag__PluginId__73BA3083" Association="CyberDragonDBModel.FK__Tag__PluginId__73BA3083">
+            <End Role="Plugin" EntitySet="Plugins" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Vote__PluginId__76969D2E" Association="CyberDragonDBModel.FK__Vote__PluginId__76969D2E">
+            <End Role="Plugin" EntitySet="Plugins" />
+            <End Role="Vote" EntitySet="Votes" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Plugin">
+          <Key>
+            <PropertyRef Name="PluginId" />
+          </Key>
+          <Property Name="PluginId" Type="Int32" Nullable="false" />
+          <Property Name="StringId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Author" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProjectURL" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IconSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsAuthenticated" Type="Boolean" Nullable="false" />
+          <Property Name="Downloads" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PluginVersions" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__70DDC3D8" FromRole="Plugin" ToRole="PluginVersion" />
+          <NavigationProperty Name="Tags" Relationship="CyberDragonDBModel.FK__Tag__PluginId__73BA3083" FromRole="Plugin" ToRole="Tag" />
+          <NavigationProperty Name="Votes" Relationship="CyberDragonDBModel.FK__Vote__PluginId__76969D2E" FromRole="Plugin" ToRole="Vote" />
+        </EntityType>
+        <EntityType Name="PluginVersion">
+          <Key>
+            <PropertyRef Name="VersionId" />
+          </Key>
+          <Property Name="VersionId" Type="Int32" Nullable="false" />
+          <Property Name="Version" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PluginId" Type="Int32" Nullable="false" />
+          <Property Name="DatePublished" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__70DDC3D8" FromRole="PluginVersion" ToRole="Plugin" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="TagId" Type="Int32" Nullable="false" />
+          <Property Name="PluginId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Tag__PluginId__73BA3083" FromRole="Tag" ToRole="Plugin" />
+        </EntityType>
+        <EntityType Name="Vote">
+          <Key>
+            <PropertyRef Name="VoteId" />
+          </Key>
+          <Property Name="Stars" Type="Int32" Nullable="false" />
+          <Property Name="VoteId" Type="Int32" Nullable="false" />
+          <Property Name="PluginId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Vote__PluginId__76969D2E" FromRole="Vote" ToRole="Plugin" />
+        </EntityType>
+        <Association Name="FK__PluginVer__Plugi__70DDC3D8">
+          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
+          <End Type="CyberDragonDBModel.PluginVersion" Role="PluginVersion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="PluginVersion">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Tag__PluginId__73BA3083">
+          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
+          <End Type="CyberDragonDBModel.Tag" Role="Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="Tag">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Vote__PluginId__76969D2E">
+          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
+          <End Type="CyberDragonDBModel.Vote" Role="Vote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="Vote">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CyberDragonDBModelStoreContainer" CdmEntityContainer="CyberDragonDbContext">
+          <EntitySetMapping Name="Plugins">
+            <EntityTypeMapping TypeName="CyberDragonDBModel.Plugin">
+              <MappingFragment StoreEntitySet="Plugin">
+                <ScalarProperty Name="Downloads" ColumnName="Downloads" />
+                <ScalarProperty Name="IsAuthenticated" ColumnName="IsAuthenticated" />
+                <ScalarProperty Name="IconSource" ColumnName="IconSource" />
+                <ScalarProperty Name="ProjectURL" ColumnName="ProjectURL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StringId" ColumnName="StringId" />
+                <ScalarProperty Name="PluginId" ColumnName="PluginId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PluginVersions">
+            <EntityTypeMapping TypeName="CyberDragonDBModel.PluginVersion">
+              <MappingFragment StoreEntitySet="PluginVersion">
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="DatePublished" ColumnName="DatePublished" />
+                <ScalarProperty Name="PluginId" ColumnName="PluginId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="VersionId" ColumnName="VersionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tags">
+            <EntityTypeMapping TypeName="CyberDragonDBModel.Tag">
+              <MappingFragment StoreEntitySet="Tag">
+                <ScalarProperty Name="PluginId" ColumnName="PluginId" />
+                <ScalarProperty Name="TagId" ColumnName="TagId" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Votes">
+            <EntityTypeMapping TypeName="CyberDragonDBModel.Vote">
+              <MappingFragment StoreEntitySet="Vote">
+                <ScalarProperty Name="PluginId" ColumnName="PluginId" />
+                <ScalarProperty Name="VoteId" ColumnName="VoteId" />
+                <ScalarProperty Name="Stars" ColumnName="Stars" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
