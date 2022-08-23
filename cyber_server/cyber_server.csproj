@@ -102,6 +102,7 @@
       <DependentUpon>CyberServerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="view_models\BaseViewModel.cs" />
+    <Compile Include="view_models\plugin_version_item\PluginItemViewModel.cs" />
     <Compile Include="view_models\plugin_version_item\PluginVersionItemViewModel.cs" />
     <Compile Include="Vote.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>

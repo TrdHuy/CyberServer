@@ -21,6 +21,12 @@ namespace cyber_server.implements.db_manager
         private CyberDbManager()
         {
             _appDbContext = new CyberDragonDbContext();
+
+            // Preload db when first boot app
+            foreach(var plugin in _appDbContext.Plugins)
+            {
+                break;
+            }
             _semaphore = new SemaphoreSlim(1, 1);
         }
 

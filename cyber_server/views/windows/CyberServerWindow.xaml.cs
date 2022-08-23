@@ -25,6 +25,7 @@ namespace cyber_server.views.windows
     {
         public const string ADD_VERSION_TASK_TYPE_KEY = "ADD_VERSION_TASK_TYPE_KEY";
         public const string ADD_PLUGIN_TASK_TYPE_KEY = "ADD_PLUGIN_TASK_TYPE_KEY";
+        public const string RELOAD_PLUGIN_TASK_TYPE_KEY = "RELOAD_PLUGIN_TASK_TYPE_KEY";
 
         private TextBlock _currentTaskNameTb;
         private Path _waitingIconPath;
@@ -204,14 +205,19 @@ namespace cyber_server.views.windows
         public ObservableCollection<PluginVersionItemViewModel> VersionSource { get; set; }
             = new ObservableCollection<PluginVersionItemViewModel>();
 
+        public ObservableCollection<PluginItemViewModel> PluginSource { get; set; }
+            = new ObservableCollection<PluginItemViewModel>();
+
         public CyberServerWindow()
         {
             InitializeComponent();
             _taskManager = new CurrentTaskManager(PART_CurrentTaskNameTb, PART_WaitingIconPath);
             _taskManager.GenerateNewTaskSemaphore(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY, "Adding new version", 1, 1);
             _taskManager.GenerateNewTaskSemaphore(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY, "Adding new plugin", 1, 1);
+            _taskManager.GenerateNewTaskSemaphore(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY, "Reloading", 1, 1);
         }
 
+        #region AddPluginTab
         private async void HandleAddPluginTabButtonEvent(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
@@ -273,7 +279,7 @@ namespace cyber_server.views.windows
                                     MessageBox.Show("Key này đã tồn tại\nHãy chọn key khác!");
                                     return;
                                 }
-
+                                await Task.Delay(1000);
                                 var plugin = new Plugin();
                                 plugin.StringId = pluginKey;
                                 plugin.Name = PART_PluginNameTb.Text;
@@ -292,6 +298,8 @@ namespace cyber_server.views.windows
                                          .Current
                                          .CopyPluginToServerLocation(version.GetVersionSourceFilePath()
                                              , pv.FilePath);
+                                    plugin.PluginVersions.Add(pv);
+
                                     if (!isCopFileSuccess)
                                     {
                                         CyberPluginManager.Current.DeletePluginDirectory(plugin.Name);
@@ -316,8 +324,8 @@ namespace cyber_server.views.windows
                             }
 
                         },
-                       executeTime: 1000,
-                       bypassIfSemaphoreNotAvaild: true);
+                        executeTime: 1000,
+                        bypassIfSemaphoreNotAvaild: true);
                         break;
                     }
                 case "PART_OpenPluginFileChooser":
@@ -385,10 +393,36 @@ namespace cyber_server.views.windows
             }
             return index;
         }
+        #endregion
 
-        private void TestRollBack(object sender, RoutedEventArgs e)
+        #region ManagePluginTab
+        private async void HandleManagerPluginTabButtonEvent(object sender, RoutedEventArgs e)
         {
-            CyberDbManager.Current.RollBack();
+            var btn = sender as Button;
+            switch (btn.Name)
+            {
+                case "PART_ReloadPluginFromDb":
+                    {
+                        await _taskManager.ExecuteTask(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY,
+                           mainFunc: async () =>
+                           {
+                               await Task.Delay(1000);
+                               PluginSource.Clear();
+                               await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                               {
+                                   foreach(var plugin in context.Plugins)
+                                   {
+                                       var vm = new PluginItemViewModel(plugin);
+                                       PluginSource.Add(vm);
+                                   }
+                               });
+                           },
+                           executeTime: 0,
+                           bypassIfSemaphoreNotAvaild: true);
+                        break;
+                    }
+            }
         }
+        #endregion
     }
 }

@@ -78,26 +78,44 @@
 						<RowDefinition Height="300" />
 						<RowDefinition />
 					</Grid.RowDefinitions>
-					<ListView x:Name="PART_PluginLV">
+					<ListView x:Name="PART_PluginLV"
+							  
+							  ItemsSource="{Binding ElementName=PART_MainWindow, Path=PluginSource}">
+						<ListView.ItemContainerStyle>
+							<Style TargetType="ListViewItem">
+								<Setter Property="Height"
+										Value="100" />
+								<Setter Property="BorderThickness"
+										Value="0,0,0,1" />
+								<Setter Property="BorderBrush"
+										Value="Black" />
+							</Style>
+						</ListView.ItemContainerStyle>
 						<ListView.View>
 							<GridView>
 								<GridViewColumn DisplayMemberBinding="{Binding Name}">
-									<GridViewColumnHeader Content="Tên" />
+									<GridViewColumnHeader Content="Tên" 
+														  HorizontalContentAlignment="Left"/>
 								</GridViewColumn>
 								<GridViewColumn DisplayMemberBinding="{Binding Author}">
-									<GridViewColumnHeader Content="Tác giả" />
+									<GridViewColumnHeader Content="Tác giả"
+														  HorizontalContentAlignment="Left" />
 								</GridViewColumn>
 								<GridViewColumn DisplayMemberBinding="{Binding Description}">
-									<GridViewColumnHeader Content="Mô tả" />
+									<GridViewColumnHeader Content="Mô tả"
+														  HorizontalContentAlignment="Left" />
 								</GridViewColumn>
 								<GridViewColumn DisplayMemberBinding="{Binding Downloads}">
-									<GridViewColumnHeader Content="Lượt download" />
+									<GridViewColumnHeader Content="Lượt download"
+														  HorizontalContentAlignment="Left" />
 								</GridViewColumn>
 								<GridViewColumn DisplayMemberBinding="{Binding Rates}">
-									<GridViewColumnHeader Content="Đánh giá" />
+									<GridViewColumnHeader Content="Đánh giá"
+														  HorizontalContentAlignment="Left" />
 								</GridViewColumn>
 								<GridViewColumn>
-									<GridViewColumnHeader Content="Lịch sử phiên bản" />
+									<GridViewColumnHeader Content="Lịch sử phiên bản"
+														  HorizontalContentAlignment="Left" />
 									<GridViewColumn.CellTemplate>
 										<DataTemplate>
 											<ListView ItemsSource="{Binding VersionSource}">
@@ -121,16 +139,30 @@
 							</GridView>
 						</ListView.View>
 					</ListView>
+
+					<WrapPanel Grid.Row="1">
+						<Button x:Name="PART_ReloadPluginFromDb"
+								Click="HandleManagerPluginTabButtonEvent"
+								Content="Reload"
+								Width="70"
+								Margin="5" />
+					</WrapPanel>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Thêm plugin">
 				<ScrollViewer>
 					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="19*" />
+							<ColumnDefinition Width="25*" />
+							<ColumnDefinition Width="215*" />
+						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="auto" />
 							<RowDefinition />
 						</Grid.RowDefinitions>
-						<Grid Background="#FF9E9D9D">
+						<Grid Background="#FF9E9D9D"
+							  Grid.ColumnSpan="3">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="10" />
 								<ColumnDefinition Width="90" />
@@ -387,7 +419,9 @@
 									  VerticalAlignment="Center" />
 						</Grid>
 
-						<WrapPanel Grid.Row="1">
+						<WrapPanel Grid.Row="1"
+								   Grid.ColumnSpan="3"
+								   Margin="0,0,0,108">
 							<Button x:Name="PART_AddPluginToDb"
 									Click="HandleAddPluginTabButtonEvent"
 									Content="Add"
@@ -395,10 +429,6 @@
 									Margin="5" />
 							<Button x:Name="PART_ClearAddPluginTab"
 									Content="Clear"
-									Width="70"
-									Margin="5" />
-							<Button Content="Clear"
-									Click="TestRollBack"
 									Width="70"
 									Margin="5" />
 						</WrapPanel>

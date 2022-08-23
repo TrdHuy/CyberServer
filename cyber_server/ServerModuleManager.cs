@@ -49,6 +49,9 @@ namespace cyber_server
         public static void Init()
         {
             _Modules.Clear();
+            _Modules.Add(CPM_Instance);
+            _Modules.Add(DBM_Instance);
+
             foreach (var module in _Modules)
             {
                 module.OnModuleInit();
