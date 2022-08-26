@@ -5,8 +5,9 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:pvivm="clr-namespace:cyber_server.view_models.plugin_version_item"
+		xmlns:tabs="clr-namespace:cyber_server.views.usercontrols.tabs"
 		mc:Ignorable="d"
-		Title="MainWindow"
+		Title="Cyber server"
 		Height="480"
 		Width="800">
 
@@ -436,6 +437,9 @@
 
 				</ScrollViewer>
 
+			</TabItem>
+			<TabItem Header="Quản lý server">
+				<tabs:ServerControllerTab />
 			</TabItem>
 		</TabControl>
 

@@ -1,5 +1,7 @@
 ﻿using cyber_server.@base;
 using cyber_server.implements.db_manager;
+using cyber_server.implements.http_server;
+using cyber_server.implements.log_manager;
 using cyber_server.implements.plugin_manager;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,34 @@ namespace cyber_server
 
         private static IServerModule _DBM_Instance;
         private static IServerModule _CPM_Instance;
+        private static IServerModule _CHS_Instance;
+        private static IServerModule _SLM_Instance;
+
+        public static ServerLogManager SLM_Instance
+        {
+            get
+            {
+                if (_SLM_Instance == null)
+                {
+                    _SLM_Instance = Activator.CreateInstance(typeof(ServerLogManager), true) as ServerLogManager;
+                }
+                return (ServerLogManager)_SLM_Instance;
+            }
+
+        }
+
+        public static CyberHttpServer CHS_Instance
+        {
+            get
+            {
+                if (_CHS_Instance == null)
+                {
+                    _CHS_Instance = Activator.CreateInstance(typeof(CyberHttpServer), true) as CyberHttpServer;
+                }
+                return (CyberHttpServer)_CHS_Instance;
+            }
+
+        }
 
         public static CyberDbManager DBM_Instance
         {
@@ -51,6 +81,7 @@ namespace cyber_server
             _Modules.Clear();
             _Modules.Add(CPM_Instance);
             _Modules.Add(DBM_Instance);
+            _Modules.Add(CHS_Instance);
 
             foreach (var module in _Modules)
             {

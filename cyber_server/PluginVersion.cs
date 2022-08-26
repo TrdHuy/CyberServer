@@ -9,6 +9,7 @@
 
 namespace cyber_server
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -21,6 +22,7 @@ namespace cyber_server
         public System.DateTime DatePublished { get; set; }
         public string FilePath { get; set; }
     
+        [JsonIgnore]
         public virtual Plugin Plugin { get; set; }
     }
 }
