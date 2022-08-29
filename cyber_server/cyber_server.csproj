@@ -62,6 +62,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
@@ -82,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="base\ICyberHttpRequestHandler.cs" />
     <Compile Include="base\IServerModule.cs" />
     <Compile Include="CyberDragonDBModel.cs">
       <AutoGen>True</AutoGen>
@@ -91,6 +93,8 @@
     <Compile Include="definition\CyberServerDefinition.cs" />
     <Compile Include="implements\db_manager\CyberDbManager.cs" />
     <Compile Include="implements\http_server\CyberHttpServer.cs" />
+    <Compile Include="implements\http_server\handlers\RequestPluginInfoHttpHandler.cs" />
+    <Compile Include="implements\http_server\handlers\RequestPluginResourceHttpHandler.cs" />
     <Compile Include="implements\log_manager\ServerLogManager.cs" />
     <Compile Include="implements\plugin_manager\CyberPluginManager.cs" />
     <Compile Include="Plugin.cs">
@@ -103,16 +107,23 @@
     <Compile Include="Tag.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="views\usercontrols\others\TaskHandlingPanel.xaml.cs">
+      <DependentUpon>TaskHandlingPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\usercontrols\tabs\ServerControllerTab.xaml.cs">
       <DependentUpon>ServerControllerTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\windows\CyberServerWindow.xaml.cs">
       <DependentUpon>CyberServerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\windows\others\ModifyPluginWindow.xaml.cs">
+      <DependentUpon>ModifyPluginWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view_models\BaseViewModel.cs" />
     <Compile Include="view_models\plugin_version_item\PluginItemViewModel.cs" />
     <Compile Include="view_models\plugin_version_item\PluginVersionItemViewModel.cs" />
     <Compile Include="view_models\tabs\ServerControllerTabViewModel.cs" />
+    <Compile Include="view_models\windows\ModifyPluginWindowViewModel.cs" />
     <Compile Include="Vote.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
@@ -130,11 +141,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
     </Compile>
+    <Page Include="views\usercontrols\others\TaskHandlingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="views\usercontrols\tabs\ServerControllerTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\windows\CyberServerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\windows\others\ModifyPluginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,5 +232,6 @@
       <Name>cyber_core_data</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

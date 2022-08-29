@@ -10,5 +10,7 @@ namespace cyber_server.definition
     {
         public static readonly string PLUGIN_BASE_FOLDER_PATH = AppDomain.CurrentDomain.BaseDirectory
             + "plugins";
+
+        public static readonly string SERVER_REMOTE_ADDRESS = "http://107.127.131.89:8080";
     }
 }

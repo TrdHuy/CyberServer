@@ -24,18 +24,34 @@ namespace cyber_server.implements.plugin_manager
 
         public void OnModuleInit()
         {
-            if (!Directory.Exists(CyberServerDefinition.PLUGIN_BASE_FOLDER_PATH))
+            if (!Directory.Exists(pluginFolderLocation))
             {
-                Directory.CreateDirectory(CyberServerDefinition.PLUGIN_BASE_FOLDER_PATH);
+                Directory.CreateDirectory(pluginFolderLocation);
             }
         }
 
-        public void DeletePluginDirectory(string pluginName)
+        public void DeletePluginDirectory(string pluginFolderName)
         {
-            if (Directory.Exists(pluginFolderLocation + "\\" + pluginName))
+            if (Directory.Exists(pluginFolderLocation + "\\" + pluginFolderName))
             {
-                Directory.Delete(pluginFolderLocation + "\\" + pluginName);
+                Directory.Delete(pluginFolderLocation + "\\" + pluginFolderName);
             }
+        }
+
+        public bool RenamePluginFolder(string oldPluginKey, string newPluginKey)
+        {
+            if (Directory.Exists(pluginFolderLocation + "\\" + oldPluginKey))
+            {
+                //if (!Directory.Exists(pluginFolderLocation + "\\" + newPluginKey))
+                //{
+                //    Directory.CreateDirectory(pluginFolderLocation + "\\" + newPluginKey);
+                //}
+                Directory.Move(pluginFolderLocation + "\\" + oldPluginKey,
+                    pluginFolderLocation + "\\" + newPluginKey);
+
+                return true;
+            }
+            return false;
         }
 
         public bool CopyPluginToServerLocation(string sourceFile, string destination)
@@ -52,6 +68,22 @@ namespace cyber_server.implements.plugin_manager
             }
             return false;
         }
+
+        public bool CopyPluginIconToServerLocation(string sourceFile, string pluginKey)
+        {
+            if (File.Exists(sourceFile))
+            {
+                var fileName = Path.GetFileName(sourceFile);
+                if (!Directory.Exists(pluginFolderLocation + "\\" + pluginKey + "\\resources"))
+                {
+                    Directory.CreateDirectory(pluginFolderLocation + "\\" + pluginKey + "\\resources");
+                }
+                File.Copy(sourceFile, pluginFolderLocation + "\\" + pluginKey + "\\resources" + "\\" + fileName, true);
+                return true;
+            }
+            return false;
+        }
+
 
         public bool MovePluginToServerLocation(string sourceFile)
         {

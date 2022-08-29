@@ -15,6 +15,7 @@ namespace cyber_server.view_models.plugin_version_item
         private string _description;
         private string _filePath;
         private DateTime _datePublised;
+        public PluginVersion RawModel => _vo;
 
         [Bindable(true)]
         public string Version
@@ -107,6 +108,15 @@ namespace cyber_server.view_models.plugin_version_item
             _vo.FilePath = pluginKey + "\\" + _version;
             _vo.DatePublished = _datePublised;
             return _vo;
+        }
+
+        public bool IsThisVersionAddedNewly()
+        {
+            if (_vo != null)
+            {
+                return _vo.VersionId == -1;
+            }
+            return true;
         }
 
         public string GetVersionSourceFilePath()

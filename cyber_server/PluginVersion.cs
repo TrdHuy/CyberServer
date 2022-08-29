@@ -15,7 +15,7 @@ namespace cyber_server
     
     public partial class PluginVersion
     {
-        public int VersionId { get; set; }
+        public int VersionId { get; set; } = -1;
         public string Version { get; set; }
         public string Description { get; set; }
         public int PluginId { get; set; }

@@ -1,6 +1,9 @@
 ﻿using cyber_server.implements.db_manager;
 using cyber_server.implements.plugin_manager;
 using cyber_server.view_models.plugin_version_item;
+using cyber_server.view_models.windows;
+using cyber_server.views.usercontrols.others;
+using cyber_server.views.windows.others;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -21,187 +24,11 @@ using System.Windows.Shapes;
 
 namespace cyber_server.views.windows
 {
-    public class CurrentTaskManager
-    {
-        public const string ADD_VERSION_TASK_TYPE_KEY = "ADD_VERSION_TASK_TYPE_KEY";
-        public const string ADD_PLUGIN_TASK_TYPE_KEY = "ADD_PLUGIN_TASK_TYPE_KEY";
-        public const string RELOAD_PLUGIN_TASK_TYPE_KEY = "RELOAD_PLUGIN_TASK_TYPE_KEY";
-
-        private TextBlock _currentTaskNameTb;
-        private Path _waitingIconPath;
-        private class TaskInfo
-        {
-            public SemaphoreSlim semaphoreSlim { get; set; }
-            public string Name { get; set; }
-        }
-
-        private Dictionary<string, TaskInfo> _taskSemaphoreMap = new Dictionary<string, TaskInfo>();
-        private int _currentTaskCount = 0;
-        private List<TaskInfo> _handlingTaskQueue = new List<TaskInfo>();
-        private int CurrentTaskCount
-        {
-            get => _currentTaskCount;
-            set
-            {
-                _currentTaskCount = value;
-                if (_currentTaskCount == 1)
-                {
-                    _waitingIconPath.Visibility = Visibility.Visible;
-                    _currentTaskNameTb.Text = "'" + _handlingTaskQueue[0].Name + "'";
-                }
-                else if (_currentTaskCount > 1)
-                {
-                    _waitingIconPath.Visibility = Visibility.Visible;
-                    _currentTaskNameTb.Text = "Handling " + _currentTaskCount + " tasks";
-                }
-                else
-                {
-                    _waitingIconPath.Visibility = Visibility.Hidden;
-                    _currentTaskNameTb.Text = "";
-                }
-
-            }
-        }
-
-        public CurrentTaskManager(TextBlock tb, Path wIP)
-        {
-            _currentTaskNameTb = tb;
-            _waitingIconPath = wIP;
-            wIP.Visibility = Visibility.Hidden;
-        }
-
-        public void GenerateNewTaskSemaphore(string taskTypeKey, string taskName, int maxCore, int initCore)
-        {
-            if (!_taskSemaphoreMap.ContainsKey(taskTypeKey))
-            {
-                var smp = new SemaphoreSlim(initCore, maxCore);
-                var task = new TaskInfo()
-                {
-                    Name = taskName,
-                    semaphoreSlim = smp
-                };
-                _taskSemaphoreMap.Add(taskTypeKey, task);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="taskTypeKey"></param>
-        /// <param name="mainFunc"></param>
-        /// <param name="delay">Thời gian delay sau khi hoàn thành task</param>
-        /// <param name="executeTime">Thời gian dự kiến hoàn thành của task, nếu thời gian thực hiện ít hơn dự kiến, nó sẽ delay khoảng thời gian còn dư lại</param>
-        /// <param name="bypassIfSemaphoreNotAvaild">Bỏ qua task ko thực hiện khi semaphore ko có sẵn</param>
-        /// <returns></returns>
-        public async Task ExecuteTask(string taskTypeKey
-            , Action mainFunc
-            , int delay = 0
-            , int executeTime = 0
-            , bool bypassIfSemaphoreNotAvaild = false)
-        {
-            if (_taskSemaphoreMap.ContainsKey(taskTypeKey))
-            {
-                var smp = _taskSemaphoreMap[taskTypeKey].semaphoreSlim;
-                if (bypassIfSemaphoreNotAvaild)
-                {
-                    if (smp.CurrentCount == 0)
-                    {
-                        return;
-                    }
-                }
-
-                Stopwatch watch = Stopwatch.StartNew();
-                await smp.WaitAsync();
-                try
-                {
-                    _handlingTaskQueue.Insert(0, _taskSemaphoreMap[taskTypeKey]);
-                    CurrentTaskCount++;
-                    mainFunc?.Invoke();
-                }
-                catch
-                {
-
-                }
-                finally
-                {
-                    watch.Stop();
-                    var executedTime = watch.ElapsedMilliseconds;
-                    var timeLeft = (int)(executeTime - executedTime);
-                    if (timeLeft > 0)
-                    {
-                        await Task.Delay(timeLeft);
-                    }
-                    await Task.Delay(delay);
-
-                    _handlingTaskQueue.Remove(_taskSemaphoreMap[taskTypeKey]);
-                    CurrentTaskCount--;
-                    smp.Release();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="taskTypeKey"></param>
-        /// <param name="mainFunc"></param>
-        /// <param name="delay">Thời gian delay sau khi hoàn thành task</param>
-        /// <param name="executeTime">Thời gian dự kiến hoàn thành của task, nếu thời gian thực hiện ít hơn dự kiến, nó sẽ delay khoảng thời gian còn dư lại</param>
-        /// <param name="bypassIfSemaphoreNotAvaild">Bỏ qua task ko thực hiện khi semaphore ko có sẵn</param>
-        /// <returns></returns>
-        public async Task ExecuteTask(string taskTypeKey
-            , Func<Task> mainFunc
-            , int delay = 0
-            , int executeTime = 0
-            , bool bypassIfSemaphoreNotAvaild = false)
-        {
-            if (_taskSemaphoreMap.ContainsKey(taskTypeKey))
-            {
-                var smp = _taskSemaphoreMap[taskTypeKey].semaphoreSlim;
-                if (bypassIfSemaphoreNotAvaild)
-                {
-                    if (smp.CurrentCount == 0)
-                    {
-                        return;
-                    }
-                }
-
-                Stopwatch watch = Stopwatch.StartNew();
-                await smp.WaitAsync();
-                try
-                {
-                    _handlingTaskQueue.Insert(0, _taskSemaphoreMap[taskTypeKey]);
-                    CurrentTaskCount++;
-                    await mainFunc?.Invoke();
-                }
-                catch
-                {
-
-                }
-                finally
-                {
-                    watch.Stop();
-                    var executedTime = watch.ElapsedMilliseconds;
-                    var timeLeft = (int)(executeTime - executedTime);
-                    if (timeLeft > 0)
-                    {
-                        await Task.Delay(timeLeft);
-                    }
-                    await Task.Delay(delay);
-
-                    _handlingTaskQueue.Remove(_taskSemaphoreMap[taskTypeKey]);
-                    CurrentTaskCount--;
-                    smp.Release();
-                }
-            }
-        }
-    }
     /// <summary>
     /// Interaction logic for CyberServerWindow.xaml
     /// </summary>
     public partial class CyberServerWindow : Window
     {
-        private CurrentTaskManager _taskManager;
         public ObservableCollection<PluginVersionItemViewModel> VersionSource { get; set; }
             = new ObservableCollection<PluginVersionItemViewModel>();
 
@@ -211,10 +38,10 @@ namespace cyber_server.views.windows
         public CyberServerWindow()
         {
             InitializeComponent();
-            _taskManager = new CurrentTaskManager(PART_CurrentTaskNameTb, PART_WaitingIconPath);
-            _taskManager.GenerateNewTaskSemaphore(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY, "Adding new version", 1, 1);
-            _taskManager.GenerateNewTaskSemaphore(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY, "Adding new plugin", 1, 1);
-            _taskManager.GenerateNewTaskSemaphore(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY, "Reloading", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY, "Adding new version", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY, "Adding new plugin", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY, "Reloading", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_PLUGIN_TASK_TYPE_KEY, "Deleting plugin", 1, 1);
         }
 
         #region AddPluginTab
@@ -232,35 +59,35 @@ namespace cyber_server.views.windows
                     break;
                 case "PART_CreateNewVersionBtn":
                     {
-                        await _taskManager.ExecuteTask(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY,
-                        mainFunc: async () =>
-                        {
-                            var newIndex = GetIndexOfNewVersion();
-                            if (newIndex != -1)
+                        await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY,
+                            mainFunc: async () =>
                             {
-                                await Task.Delay(1000);
-                                var pluginVer = new PluginVersionItemViewModel()
+                                var newIndex = GetIndexOfNewVersion();
+                                if (newIndex != -1)
                                 {
-                                    Version = PART_PluginVersionTb.Text,
-                                    FilePath = PART_PathToPluginTextbox.Text,
-                                    DatePublished = PART_DatePublisedDP.Text,
-                                    Description = PART_VersionDesTb.Text,
-                                };
+                                    await Task.Delay(1000);
+                                    var pluginVer = new PluginVersionItemViewModel()
+                                    {
+                                        Version = PART_PluginVersionTb.Text,
+                                        FilePath = PART_PathToPluginTextbox.Text,
+                                        DatePublished = PART_DatePublisedDP.Text,
+                                        Description = PART_VersionDesTb.Text,
+                                    };
 
-                                VersionSource.Insert(newIndex, pluginVer);
-                                if (VersionSource.Count > 0)
-                                {
-                                    PART_ListVersionCbx.SelectedIndex = 0;
+                                    VersionSource.Insert(newIndex, pluginVer);
+                                    if (VersionSource.Count > 0)
+                                    {
+                                        PART_ListVersionCbx.SelectedIndex = 0;
+                                    }
                                 }
-                            }
-                        },
-                       executeTime: 0,
-                       bypassIfSemaphoreNotAvaild: true);
+                            },
+                            executeTime: 0,
+                            bypassIfSemaphoreNotAvaild: true);
                         break;
                     }
                 case "PART_AddPluginToDb":
                     {
-                        await _taskManager.ExecuteTask(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY,
+                        await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY,
                         mainFunc: async () =>
                         {
                             if (IsMeetConditionToAddPlugToDb())
@@ -302,7 +129,7 @@ namespace cyber_server.views.windows
 
                                     if (!isCopFileSuccess)
                                     {
-                                        CyberPluginManager.Current.DeletePluginDirectory(plugin.Name);
+                                        CyberPluginManager.Current.DeletePluginDirectory(plugin.StringId);
                                         break;
                                     }
                                 }
@@ -403,22 +230,68 @@ namespace cyber_server.views.windows
             {
                 case "PART_ReloadPluginFromDb":
                     {
-                        await _taskManager.ExecuteTask(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY,
+                        await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY,
                            mainFunc: async () =>
                            {
-                               await Task.Delay(1000);
                                PluginSource.Clear();
                                await CyberDbManager.Current.RequestDbContextAsync((context) =>
                                {
-                                   foreach(var plugin in context.Plugins)
+                                   foreach (var plugin in context.Plugins)
                                    {
                                        var vm = new PluginItemViewModel(plugin);
                                        PluginSource.Add(vm);
                                    }
                                });
                            },
-                           executeTime: 0,
+                           executeTime: 1000,
                            bypassIfSemaphoreNotAvaild: true);
+                        break;
+                    }
+                case "DeletePluginItemButton":
+                    {
+                        var itemViewModel = btn.DataContext as PluginItemViewModel;
+                        if (itemViewModel != null)
+                        {
+                            var confirm = MessageBox.Show("Bạn có chắc xóa dữ liệu này!", "Xác nhận", MessageBoxButton.YesNo);
+                            if (confirm == MessageBoxResult.Yes)
+                            {
+                                await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.DELETE_PLUGIN_TASK_TYPE_KEY,
+                                   mainFunc: async () =>
+                                   {
+                                       var sucess = await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                                       {
+                                           context.PluginVersions.RemoveRange(itemViewModel.RawModel.PluginVersions);
+                                           context.Tags.RemoveRange(itemViewModel.RawModel.Tags);
+                                           context.Votes.RemoveRange(itemViewModel.RawModel.Votes);
+                                           context.Plugins.Remove(itemViewModel.RawModel);
+                                           context.SaveChanges();
+                                       });
+
+                                       if (sucess)
+                                       {
+                                           CyberPluginManager.Current.DeletePluginDirectory(itemViewModel.RawModel.StringId);
+                                           PluginSource.Remove(itemViewModel);
+                                       }
+                                   },
+                                   executeTime: 0,
+                                   bypassIfSemaphoreNotAvaild: true);
+
+                            }
+                        }
+                        break;
+                    }
+                case "ModifyPluginItemButton":
+                    {
+                        var itemViewModel = btn.DataContext as PluginItemViewModel;
+                        var modifyPluginWindow = new ModifyPluginWindow();
+                        modifyPluginWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        modifyPluginWindow.Owner = this;
+                        var modifyPluginWindowContext = modifyPluginWindow.DataContext as ModifyPluginWindowViewModel;
+                        if (modifyPluginWindowContext != null)
+                        {
+                            modifyPluginWindowContext.SetRawModel(itemViewModel.RawModel);
+                            modifyPluginWindow.ShowDialog();
+                        }
                         break;
                     }
             }

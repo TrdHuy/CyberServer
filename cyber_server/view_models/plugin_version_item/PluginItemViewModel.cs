@@ -11,6 +11,8 @@ namespace cyber_server.view_models.plugin_version_item
     {
         private Plugin _baseModel;
         private double _rates;
+
+        public Plugin RawModel => _baseModel;
         public string Name
         {
             get => _baseModel.Name;
@@ -47,6 +49,11 @@ namespace cyber_server.view_models.plugin_version_item
         public double Rates
         {
             get => _rates;
+            set
+            {
+                _rates = value;
+                InvalidateOwn();
+            }
         }
 
         public ObservableCollection<PluginVersionItemViewModel> VersionSource { get; set; }
@@ -54,11 +61,23 @@ namespace cyber_server.view_models.plugin_version_item
         public PluginItemViewModel(Plugin baseModel)
         {
             _baseModel = baseModel;
-            if (baseModel.Votes.Count != 0)
+            InitOtherPropertiesOfPluginItem();
+        }
+
+        private async void InitOtherPropertiesOfPluginItem()
+        {
+            await DoInitOtherPropertiesTask();
+        }
+
+        private async Task DoInitOtherPropertiesTask()
+        {
+            await Task.Delay(100);
+            if (_baseModel.Votes.Count != 0)
             {
-                _rates = baseModel.Votes.Average(v => v.Stars);
+                Rates = _baseModel.Votes.Average(v => v.Stars);
             }
-            foreach(var pluginVerison in baseModel.PluginVersions)
+            foreach (var pluginVerison in 
+                _baseModel.PluginVersions.OrderByDescending(v => Version.Parse(v.Version)))
             {
                 VersionSource.Add(new PluginVersionItemViewModel(pluginVerison));
             }

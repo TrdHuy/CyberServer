@@ -23,7 +23,7 @@ namespace cyber_server.implements.db_manager
             _appDbContext = new CyberDragonDbContext();
 
             // Preload db when first boot app
-            foreach(var plugin in _appDbContext.Plugins)
+            foreach (var plugin in _appDbContext.Plugins)
             {
                 break;
             }
@@ -39,21 +39,24 @@ namespace cyber_server.implements.db_manager
         {
         }
 
-        public async Task RequestDbContextAsync(Action<CyberDragonDbContext> request)
+        public async Task<bool> RequestDbContextAsync(Action<CyberDragonDbContext> request)
         {
+            var isSucess = false;
             await _semaphore.WaitAsync();
             try
             {
                 request.Invoke(_appDbContext);
+                isSucess = true;
             }
             catch (Exception ex)
             {
-
+                isSucess = false;
             }
             finally
             {
                 _semaphore.Release();
             }
+            return isSucess;
         }
 
         public void RollBack()

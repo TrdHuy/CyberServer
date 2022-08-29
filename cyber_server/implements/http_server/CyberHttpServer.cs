@@ -1,5 +1,6 @@
 ﻿using cyber_server.@base;
 using cyber_server.implements.db_manager;
+using cyber_server.implements.http_server.handlers;
 using cyber_server.implements.log_manager;
 using Newtonsoft.Json;
 using System;
@@ -15,13 +16,14 @@ namespace cyber_server.implements.http_server
 {
     internal class CyberHttpServer : IServerModule
     {
-        private const string END_POINT = "http://107.127.131.89:8080/";
-        private const string REQUEST_INFO_API_PATH = "requestinfo";
-        private const string REQUEST_INFO_HEADER_KEY = "h2sw-request-info";
-        private const string REQUEST_PLUGIN_INFO_HEADER_ID = "GET_ALL_PLUGIN_DATA";
-        private const string REQUEST_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID = "GET_ALL_PLUGIN_DATA__MAXIMUM_AMOUNT";
-        private const string REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID = "GET_ALL_PLUGIN_DATA__START_INDEX";
-        private const string RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID = "GET_ALL_PLUGIN_DATA__IS_END_OF_DBSET";
+        public const string END_POINT = "http://107.127.131.89:8080/";
+        public const string REQUEST_PLUGIN_RESOURCE_PATH = "/pluginresource";
+        public const string REQUEST_INFO_API_PATH = "/requestinfo";
+        public const string REQUEST_INFO_HEADER_KEY = "h2sw-request-info";
+        public const string REQUEST_PLUGIN_INFO_HEADER_ID = "GET_ALL_PLUGIN_DATA";
+        public const string REQUEST_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID = "GET_ALL_PLUGIN_DATA__MAXIMUM_AMOUNT";
+        public const string REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID = "GET_ALL_PLUGIN_DATA__START_INDEX";
+        public const string RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID = "GET_ALL_PLUGIN_DATA__IS_END_OF_DBSET";
 
         private HttpListener listener;
 
@@ -103,130 +105,80 @@ namespace cyber_server.implements.http_server
 
             var outputstream = response.OutputStream;
 
-            var requestPaths = request.Url.AbsolutePath.Split('/');
-
-            switch (request.Url.AbsolutePath)
+            if (request.Url.AbsolutePath.Contains(REQUEST_PLUGIN_RESOURCE_PATH))
             {
-                case "/requestinfo":
-                    {
-                        if (request.Headers.AllKeys.Contains(REQUEST_INFO_HEADER_KEY))
+                byte[] buffer = await new RequestPluginResourceHttpHandler(request.Url.AbsolutePath)
+                    .Handle(request, response);
+                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+            }
+            else
+            {
+                switch (request.Url.AbsolutePath)
+                {
+                    case REQUEST_INFO_API_PATH:
                         {
-                            switch (request.Headers[REQUEST_INFO_HEADER_KEY])
-                            {
-                                case REQUEST_PLUGIN_INFO_HEADER_ID:
-                                    response.Headers.Add("Content-Type", "application/json");
-                                    string jsonstring = "";
-                                    var maximumElement = -1;
-                                    var currentStartIndex = 0;
-                                    var isEndOfDbset = 0;
-
-                                    if (!string.IsNullOrEmpty(request.Headers[REQUEST_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID])
-                                        && !string.IsNullOrEmpty(request.Headers[REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID]))
-                                    {
-                                        maximumElement = Convert.ToInt32(request.Headers[REQUEST_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID]);
-                                        currentStartIndex = Convert.ToInt32(request.Headers[REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID]);
-                                    }
-
-                                    await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
-                                    {
-                                        var setting = new JsonSerializerSettings
-                                        {
-                                            ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                                        };
-
-                                        if (maximumElement == -1)
-                                        {
-                                            jsonstring = JsonConvert.SerializeObject(dbContext.Plugins, Formatting.Indented, setting);
-                                            isEndOfDbset = 1;
-                                        }
-                                        else
-                                        {
-                                            var query = dbContext.Plugins
-                                                    .OrderBy(p => p.PluginId)
-                                                    .Skip(currentStartIndex)
-                                                    .Take(maximumElement);
-                                            if (query.Count() < maximumElement)
-                                            {
-                                                isEndOfDbset = 1;
-                                            }
-                                            jsonstring = JsonConvert.SerializeObject(query, Formatting.Indented, setting);
-                                        }
-
-                                    });
-                                    byte[] buf = System.Text.Encoding.UTF8.GetBytes(jsonstring);
-                                    response.ContentLength64 = buf.Length;
-                                    response.Headers.Add(RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID, isEndOfDbset + "");
-                                    await outputstream.WriteAsync(buf, 0, buf.Length);
-                                    break;
-                            }
+                            byte[] buffer = await new RequestPluginInfoHttpHandler().Handle(request, response);
+                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
                             break;
                         }
-                        // Gửi thông tin về cho Client
-                        context.Response.Headers.Add("content-type", "text/html");
-                        context.Response.StatusCode = (int)HttpStatusCode.OK;
-
-                        string responseString = this.GenerateHTML(request);
-                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-                        response.ContentLength64 = buffer.Length;
-                        await outputstream.WriteAsync(buffer, 0, buffer.Length);
-                    }
-                    break;
-                case "/":
-                    {
-                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes("Hello world!");
-                        response.ContentLength64 = buffer.Length;
-                        await outputstream.WriteAsync(buffer, 0, buffer.Length);
-                    }
-                    break;
-
-                case "/stop":
-                    {
-                        listener.Stop();
-                        Console.WriteLine("stop http");
-                    }
-                    break;
-
-                case "/json":
-                    {
-                        response.Headers.Add("Content-Type", "application/json");
-                        var product = new
+                    case "/":
                         {
-                            Name = "Macbook Pro",
-                            Price = 2000,
-                            Manufacturer = "Apple"
-                        };
-                        string jsonstring = JsonConvert.SerializeObject(product);
-                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonstring);
-                        response.ContentLength64 = buffer.Length;
-                        await outputstream.WriteAsync(buffer, 0, buffer.Length);
-
-                    }
-                    break;
-                case "/anh2.png":
-                    {
-                        response.Headers.Add("Content-Type", "image/png");
-
-                        byte[] buffer;
-                        using (FileStream stream = File.Open("anh2.png", FileMode.Open))
-                        {
-                            buffer = new byte[stream.Length];
-                            await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes("Hello world!");
+                            response.ContentLength64 = buffer.Length;
+                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
                         }
-                        response.ContentLength64 = buffer.Length;
-                        await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                        break;
 
-                    }
-                    break;
+                    case "/stop":
+                        {
+                            listener.Stop();
+                            Console.WriteLine("stop http");
+                        }
+                        break;
 
-                default:
-                    {
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes("NOT FOUND!");
-                        response.ContentLength64 = buffer.Length;
-                        await outputstream.WriteAsync(buffer, 0, buffer.Length);
-                    }
-                    break;
+                    case "/json":
+                        {
+                            response.Headers.Add("Content-Type", "application/json");
+                            var product = new
+                            {
+                                Name = "Macbook Pro",
+                                Price = 2000,
+                                Manufacturer = "Apple"
+                            };
+                            string jsonstring = JsonConvert.SerializeObject(product);
+                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonstring);
+                            response.ContentLength64 = buffer.Length;
+                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
+
+                        }
+                        break;
+                    case "/anh2.png":
+                        {
+                            response.Headers.Add("Content-Type", "image/png");
+
+                            byte[] buffer;
+                            using (FileStream stream = File.Open("anh2.png", FileMode.Open))
+                            {
+                                buffer = new byte[stream.Length];
+                                await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                            }
+                            response.ContentLength64 = buffer.Length;
+                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
+
+                        }
+                        break;
+
+                    default:
+                        {
+                            response.StatusCode = (int)HttpStatusCode.NotFound;
+                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes("NOT FOUND!");
+                            response.ContentLength64 = buffer.Length;
+                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                        }
+                        break;
+                }
             }
+
 
             // switch (request.Url.AbsolutePath)
 

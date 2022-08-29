@@ -36,5 +36,21 @@ namespace cyber_server.view_models
         {
             OnChanged(this, propName);
         }
+
+        public void RefreshViewModel()
+        {
+            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(this);
+
+            foreach (PropertyDescriptor property in properties)
+            {
+                var attr = property.Attributes;
+
+                if (attr[typeof(BindableAttribute)]?.Equals(BindableAttribute.Yes) ?? false)
+                {
+                    Invalidate(property.Name);
+                }
+            }
+        }
+
     }
 }
