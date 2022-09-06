@@ -1,4 +1,5 @@
-﻿using System;
+﻿using cyber_server.implements.log_manager;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace cyber_server.views.usercontrols.others
         public const string RELOAD_PLUGIN_TASK_TYPE_KEY = "RELOAD_PLUGIN_TASK_TYPE_KEY";
         public const string DELETE_PLUGIN_TASK_TYPE_KEY = "DELETE_PLUGIN_TASK_TYPE_KEY";
         public const string MODIFI_PLUGIN_TASK_TYPE_KEY = "MODIFI_PLUGIN_TASK_TYPE_KEY";
+        public const string SYNC_TASK_TYPE_KEY = "SYNC_TASK_TYPE_KEY";
 
         private TextBlock _currentTaskNameTb;
         private Path _waitingIconPath;
@@ -173,9 +175,9 @@ namespace cyber_server.views.usercontrols.others
                     CurrentTaskCount++;
                     await mainFunc?.Invoke();
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    ServerLogManager.Current.E(ex.ToString());
                 }
                 finally
                 {

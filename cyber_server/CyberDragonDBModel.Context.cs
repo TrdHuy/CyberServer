@@ -12,18 +12,7 @@ namespace cyber_server
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    using System.IO;
-
-    public class CyberDragonDbConfiguration : DbConfiguration
-    {
-        public CyberDragonDbConfiguration() : base()
-        {
-            var path = Path.GetDirectoryName(this.GetType().Assembly.Location);
-            SetModelStore(new DefaultDbModelStore(path));
-        }
-    }
-
-    [DbConfigurationType(typeof(CyberDragonDbConfiguration))]
+    
     public partial class CyberDragonDbContext : DbContext
     {
         public CyberDragonDbContext()

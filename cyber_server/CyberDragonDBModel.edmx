@@ -17,6 +17,7 @@
           <Property Name="ProjectURL" Type="nvarchar(max)" Nullable="false" />
           <Property Name="IconSource" Type="nvarchar(max)" />
           <Property Name="IsAuthenticated" Type="bit" Nullable="false" />
+          <Property Name="IsPreReleased" Type="bit" Nullable="false" />
           <Property Name="Downloads" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="PluginVersion">
@@ -28,7 +29,9 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="PluginId" Type="int" Nullable="false" />
           <Property Name="DatePublished" Type="datetime" Nullable="false" />
-          <Property Name="FilePath" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ExecutePath" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FolderPath" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -46,7 +49,7 @@
           <Property Name="VoteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PluginId" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__PluginVer__Plugi__07C12930">
+        <Association Name="FK__PluginVer__Plugi__4F47C5E3">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="PluginVersion" Type="Self.PluginVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -58,7 +61,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tag__PluginId__0A9D95DB">
+        <Association Name="FK__Tag__PluginId__2A164134">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="Tag" Type="Self.Tag" Multiplicity="*" />
           <ReferentialConstraint>
@@ -70,7 +73,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Vote__PluginId__0D7A0286">
+        <Association Name="FK__Vote__PluginId__2B0A656D">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="Vote" Type="Self.Vote" Multiplicity="*" />
           <ReferentialConstraint>
@@ -87,15 +90,15 @@
           <EntitySet Name="PluginVersion" EntityType="Self.PluginVersion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vote" EntityType="Self.Vote" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__PluginVer__Plugi__07C12930" Association="Self.FK__PluginVer__Plugi__07C12930">
+          <AssociationSet Name="FK__PluginVer__Plugi__4F47C5E3" Association="Self.FK__PluginVer__Plugi__4F47C5E3">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="PluginVersion" EntitySet="PluginVersion" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tag__PluginId__0A9D95DB" Association="Self.FK__Tag__PluginId__0A9D95DB">
+          <AssociationSet Name="FK__Tag__PluginId__2A164134" Association="Self.FK__Tag__PluginId__2A164134">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="Tag" EntitySet="Tag" />
           </AssociationSet>
-          <AssociationSet Name="FK__Vote__PluginId__0D7A0286" Association="Self.FK__Vote__PluginId__0D7A0286">
+          <AssociationSet Name="FK__Vote__PluginId__2B0A656D" Association="Self.FK__Vote__PluginId__2B0A656D">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="Vote" EntitySet="Vote" />
           </AssociationSet>
@@ -138,6 +141,7 @@
           <NavigationProperty Name="PluginVersions" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__07C12930" FromRole="Plugin" ToRole="PluginVersion" />
           <NavigationProperty Name="Tags" Relationship="CyberDragonDBModel.FK__Tag__PluginId__0A9D95DB" FromRole="Plugin" ToRole="Tag" />
           <NavigationProperty Name="Votes" Relationship="CyberDragonDBModel.FK__Vote__PluginId__0D7A0286" FromRole="Plugin" ToRole="Vote" />
+          <Property Name="IsPreReleased" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="PluginVersion">
           <Key>
@@ -148,8 +152,10 @@
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PluginId" Type="Int32" Nullable="false" />
           <Property Name="DatePublished" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__07C12930" FromRole="PluginVersion" ToRole="Plugin" />
+          <Property Name="ExecutePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FolderPath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -214,6 +220,7 @@
           <EntitySetMapping Name="Plugins">
             <EntityTypeMapping TypeName="CyberDragonDBModel.Plugin">
               <MappingFragment StoreEntitySet="Plugin">
+                <ScalarProperty Name="IsPreReleased" ColumnName="IsPreReleased" />
                 <ScalarProperty Name="Downloads" ColumnName="Downloads" />
                 <ScalarProperty Name="IsAuthenticated" ColumnName="IsAuthenticated" />
                 <ScalarProperty Name="IconSource" ColumnName="IconSource" />
@@ -229,7 +236,9 @@
           <EntitySetMapping Name="PluginVersions">
             <EntityTypeMapping TypeName="CyberDragonDBModel.PluginVersion">
               <MappingFragment StoreEntitySet="PluginVersion">
-                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="FolderPath" ColumnName="FolderPath" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="ExecutePath" ColumnName="ExecutePath" />
                 <ScalarProperty Name="DatePublished" ColumnName="DatePublished" />
                 <ScalarProperty Name="PluginId" ColumnName="PluginId" />
                 <ScalarProperty Name="Description" ColumnName="Description" />

@@ -1,4 +1,5 @@
 ﻿using cyber_server.@base;
+using cyber_server.implements.log_manager;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -51,6 +52,7 @@ namespace cyber_server.implements.db_manager
             catch (Exception ex)
             {
                 isSucess = false;
+                ServerLogManager.Current.E(ex.ToString());
             }
             finally
             {

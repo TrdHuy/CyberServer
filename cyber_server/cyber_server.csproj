@@ -93,7 +93,8 @@
     <Compile Include="definition\CyberServerDefinition.cs" />
     <Compile Include="implements\db_manager\CyberDbManager.cs" />
     <Compile Include="implements\http_server\CyberHttpServer.cs" />
-    <Compile Include="implements\http_server\handlers\RequestPluginInfoHttpHandler.cs" />
+    <Compile Include="implements\http_server\handlers\RequestDownloadPluginHttpHandler.cs" />
+    <Compile Include="implements\http_server\handlers\RequestInfoHttpHandler.cs" />
     <Compile Include="implements\http_server\handlers\RequestPluginResourceHttpHandler.cs" />
     <Compile Include="implements\log_manager\ServerLogManager.cs" />
     <Compile Include="implements\plugin_manager\CyberPluginManager.cs" />
@@ -118,6 +119,9 @@
     </Compile>
     <Compile Include="views\windows\others\ModifyPluginWindow.xaml.cs">
       <DependentUpon>ModifyPluginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\windows\others\TextWindow.xaml.cs">
+      <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="view_models\BaseViewModel.cs" />
     <Compile Include="view_models\plugin_version_item\PluginItemViewModel.cs" />
@@ -154,6 +158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\windows\others\ModifyPluginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\windows\others\TextWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -227,11 +235,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\cyber_core_data\cyber_core_data.csproj">
-      <Project>{ae392e31-fc3f-486d-bff6-b22f22328511}</Project>
-      <Name>cyber_core_data</Name>
+    <ProjectReference Include="..\cyber_server_base\cyber_server_base.csproj">
+      <Project>{F0AD9BCA-E00C-406F-9295-D9DAD726A8F1}</Project>
+      <Name>cyber_server_base</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

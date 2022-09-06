@@ -91,6 +91,7 @@ namespace cyber_server.views.windows.others
                                                 FilePath = PART_PathToPluginTextbox.Text,
                                                 DatePublished = PART_DatePublisedDP.Text,
                                                 Description = PART_VersionDesTb.Text,
+                                                ExecutePath = PART_ExecutePathTextbox.Text,
                                             };
 
                                             _viewModel.VersionSource.Insert(newIndex, pluginVer);
@@ -110,13 +111,12 @@ namespace cyber_server.views.windows.others
                                                 var isCopFileSuccess = CyberPluginManager
                                                     .Current
                                                     .CopyPluginToServerLocation(pluginVer.GetVersionSourceFilePath()
-                                                        , pv.FilePath);
+                                                        , pv.FolderPath);
                                                 if (isCopFileSuccess)
                                                 {
                                                     plugin.PluginVersions.Add(pv);
                                                     context.SaveChanges();
                                                     MessageBox.Show("Thêm version mới thành công!");
-
                                                 }
                                                 else
                                                 {
@@ -173,6 +173,7 @@ namespace cyber_server.views.windows.others
                                                 plugin.Description = _viewModel.Description;
                                                 plugin.ProjectURL = _viewModel.ProjectURL;
                                                 plugin.IsAuthenticated = _viewModel.IsAuthenticated;
+                                                plugin.IsPreReleased = _viewModel.IsPreReleased;
                                                 var success = true;
 
                                                 //Rename plugin folder
@@ -195,7 +196,7 @@ namespace cyber_server.views.windows.others
                                                             success = CyberPluginManager
                                                                 .Current
                                                                 .CopyPluginToServerLocation(version.GetVersionSourceFilePath()
-                                                                    , pv.FilePath);
+                                                                    , pv.FolderPath);
                                                             plugin.PluginVersions.Add(pv);
                                                             if (success)
                                                             {
@@ -348,7 +349,8 @@ namespace cyber_server.views.windows.others
             if (PART_PluginVersionTb.Text == ""
                 || PART_DatePublisedDP.SelectedDate == null
                 || PART_VersionDesTb.Text == ""
-                || PART_PathToPluginTextbox.Text == "")
+                || PART_PathToPluginTextbox.Text == ""
+                || PART_ExecutePathTextbox.Text == "")
             {
                 MessageBox.Show("Điền các trường còn thiếu!");
                 return -1;

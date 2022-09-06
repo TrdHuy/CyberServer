@@ -18,12 +18,11 @@ namespace cyber_server.implements.http_server
     {
         public const string END_POINT = "http://107.127.131.89:8080/";
         public const string REQUEST_PLUGIN_RESOURCE_PATH = "/pluginresource";
+        public const string DOWNLOAD_PLUGIN_API_PATH = "/downloadplugin";
         public const string REQUEST_INFO_API_PATH = "/requestinfo";
         public const string REQUEST_INFO_HEADER_KEY = "h2sw-request-info";
-        public const string REQUEST_PLUGIN_INFO_HEADER_ID = "GET_ALL_PLUGIN_DATA";
-        public const string REQUEST_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID = "GET_ALL_PLUGIN_DATA__MAXIMUM_AMOUNT";
-        public const string REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID = "GET_ALL_PLUGIN_DATA__START_INDEX";
-        public const string RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID = "GET_ALL_PLUGIN_DATA__IS_END_OF_DBSET";
+        public const string REQUEST_DOWNLOAD_PLUGIN_HEADER_KEY = "h2sw-download-plugin";
+
 
         private HttpListener listener;
 
@@ -63,7 +62,7 @@ namespace cyber_server.implements.http_server
             }
 
             // Bắt đầu lắng nghe kết nối HTTP
-            ServerLogManager.Current.AppendLogLine($"{DateTime.Now.ToLongTimeString()} : Start server successfully, waiting a client connect");
+            ServerLogManager.Current.AppendConsoleLogLine($"{DateTime.Now.ToLongTimeString()} : Start server successfully, waiting a client connect");
             listener.Start();
             do
             {
@@ -77,7 +76,8 @@ namespace cyber_server.implements.http_server
                 }
                 catch (Exception ex)
                 {
-                    ServerLogManager.Current.AppendLogLine(ex.Message);
+                    ServerLogManager.Current.AppendConsoleLogLine(ex.Message);
+                    ServerLogManager.Current.E(ex.ToString());
                 }
 
             }
@@ -87,7 +87,7 @@ namespace cyber_server.implements.http_server
         public void Stop()
         {
             listener.Stop();
-            ServerLogManager.Current.AppendLogLine("Server was stopped!~");
+            ServerLogManager.Current.AppendConsoleLogLine("Server was stopped!~");
         }
 
         // Xử lý trả về nội dung tùy thuộc vào URL truy cập
@@ -101,7 +101,7 @@ namespace cyber_server.implements.http_server
         {
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
-            ServerLogManager.Current.AppendLogLine($"{request.HttpMethod} {request.RawUrl} {request.Url.AbsolutePath} {request.RemoteEndPoint}");
+            ServerLogManager.Current.AppendConsoleLogLine($"{request.HttpMethod} {request.RawUrl} {request.Url.AbsolutePath} {request.RemoteEndPoint}");
 
             var outputstream = response.OutputStream;
 
@@ -117,7 +117,13 @@ namespace cyber_server.implements.http_server
                 {
                     case REQUEST_INFO_API_PATH:
                         {
-                            byte[] buffer = await new RequestPluginInfoHttpHandler().Handle(request, response);
+                            byte[] buffer = await new RequestInfoHttpHandler().Handle(request, response);
+                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                            break;
+                        }
+                    case DOWNLOAD_PLUGIN_API_PATH:
+                        {
+                            byte[] buffer = await new RequestDownloadPluginHttpHandler().Handle(request, response);
                             await outputstream.WriteAsync(buffer, 0, buffer.Length);
                             break;
                         }

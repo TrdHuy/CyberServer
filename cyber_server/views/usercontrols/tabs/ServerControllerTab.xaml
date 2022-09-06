@@ -34,6 +34,13 @@
 			<Button Click="testRequest"
 					Content="Test request"
 					Margin="5" />
+
+			<ComboBox x:Name="PART_TestRequestOptionBox"
+					  Margin="5"
+					  Width="60">
+				<ComboBoxItem Content="Get all plugin data request" />
+				<ComboBoxItem Content="Download plugin request"/>
+			</ComboBox>
 		</WrapPanel>
 
 

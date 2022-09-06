@@ -12,7 +12,7 @@ namespace cyber_server
     using System;
     using System.Collections.Generic;
     
-    public partial class Plugin 
+    public partial class Plugin
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Plugin()
@@ -31,6 +31,7 @@ namespace cyber_server
         public string IconSource { get; set; }
         public bool IsAuthenticated { get; set; }
         public int Downloads { get; set; }
+        public bool IsPreReleased { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PluginVersion> PluginVersions { get; set; }

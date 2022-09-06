@@ -1,4 +1,6 @@
-﻿using cyber_server.implements.db_manager;
+﻿using cyber_server.definition;
+using cyber_server.implements.db_manager;
+using cyber_server.implements.log_manager;
 using cyber_server.implements.plugin_manager;
 using cyber_server.view_models.plugin_version_item;
 using cyber_server.view_models.windows;
@@ -9,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -42,21 +45,30 @@ namespace cyber_server.views.windows
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY, "Adding new plugin", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY, "Reloading", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_PLUGIN_TASK_TYPE_KEY, "Deleting plugin", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.SYNC_TASK_TYPE_KEY, "Syncing", 1, 1);
         }
 
         #region AddPluginTab
         private async void HandleAddPluginTabButtonEvent(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
+            ServerLogManager.Current.D(btn.Name);
             switch (btn.Name)
             {
-                case "SUB_DeleteVersionItem":
-                    var picontext = btn.DataContext as PluginVersionItemViewModel;
-                    if (picontext != null)
+                case "PART_AccessBaseFolderTab":
                     {
-                        VersionSource.Remove(picontext);
+                        Process.Start(CyberServerDefinition.PLUGIN_BASE_FOLDER_PATH);
+                        break;
                     }
-                    break;
+                case "SUB_DeleteVersionItem":
+                    {
+                        var picontext = btn.DataContext as PluginVersionItemViewModel;
+                        if (picontext != null)
+                        {
+                            VersionSource.Remove(picontext);
+                        }
+                        break;
+                    }
                 case "PART_CreateNewVersionBtn":
                     {
                         await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY,
@@ -72,6 +84,7 @@ namespace cyber_server.views.windows
                                         FilePath = PART_PathToPluginTextbox.Text,
                                         DatePublished = PART_DatePublisedDP.Text,
                                         Description = PART_VersionDesTb.Text,
+                                        ExecutePath = PART_ExecutePathTextbox.Text,
                                     };
 
                                     VersionSource.Insert(newIndex, pluginVer);
@@ -114,17 +127,19 @@ namespace cyber_server.views.windows
                                 plugin.Description = PART_PluginDesTb.Text;
                                 plugin.ProjectURL = PART_PluginURLTb.Text;
                                 plugin.IconSource = PART_PluginIconSourceTb.Text;
+                                plugin.IsPreReleased = PART_PluginIsPrereleasedCb.IsChecked ?? false;
                                 plugin.IsAuthenticated = PART_PluginIsAuthenticatedCb.IsChecked ?? false;
                                 plugin.Downloads = 0;
                                 var isCopFileSuccess = true;
 
+                                // Build version source
                                 foreach (var version in VersionSource)
                                 {
                                     var pv = version.BuildPluginVersionFromViewModel(plugin.StringId);
                                     isCopFileSuccess = CyberPluginManager
                                          .Current
                                          .CopyPluginToServerLocation(version.GetVersionSourceFilePath()
-                                             , pv.FilePath);
+                                             , pv.FolderPath);
                                     plugin.PluginVersions.Add(pv);
 
                                     if (!isCopFileSuccess)
@@ -136,6 +151,32 @@ namespace cyber_server.views.windows
 
                                 if (isCopFileSuccess)
                                 {
+                                    //Build icon source
+                                    try
+                                    {
+                                        if (PART_PluginIconSourceTb.Text != "")
+                                        {
+                                            var isLocalFile = new Uri(PART_PluginIconSourceTb.Text).IsFile;
+                                            if (isLocalFile)
+                                            {
+                                                CyberPluginManager
+                                                    .Current
+                                                    .CopyPluginIconToServerLocation(PART_PluginIconSourceTb.Text, plugin.StringId);
+                                                plugin.IconSource = CyberServerDefinition.SERVER_REMOTE_ADDRESS
+                                                    + "/pluginresource/"
+                                                    + plugin.StringId + "/" + System.IO.Path.GetFileName(PART_PluginIconSourceTb.Text);
+                                            }
+                                            else
+                                            {
+                                                plugin.IconSource = PART_PluginIconSourceTb.Text;
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        plugin.IconSource = "";
+                                    }
+
                                     await CyberDbManager.Current.RequestDbContextAsync((context) =>
                                     {
                                         context.Plugins.Add(plugin);
@@ -156,10 +197,42 @@ namespace cyber_server.views.windows
                         break;
                     }
                 case "PART_OpenPluginFileChooser":
-                    var ofd = new OpenFileDialog();
-                    if (ofd.ShowDialog() == true)
-                        PART_PathToPluginTextbox.Text = ofd.FileName;
-                    break;
+                    {
+                        var ofd = new OpenFileDialog();
+                        ofd.Filter = "Zip files (*.zip)|*.zip";
+                        if (ofd.ShowDialog() == true)
+                            PART_PathToPluginTextbox.Text = ofd.FileName;
+                        break;
+                    }
+                case "PART_OpenIconFileChooser":
+                    {
+                        var ofd = new OpenFileDialog();
+                        ofd.Filter = "Image files (*.png)|*.png";
+                        if (ofd.ShowDialog() == true)
+                        {
+                            try
+                            {
+                                Bitmap img = new Bitmap(ofd.FileName);
+
+                                var imageHeight = img.Height;
+                                var imageWidth = img.Width;
+                                if (imageHeight > 200 || imageWidth > 200)
+                                {
+                                    MessageBox.Show("Please select icon with size < 100 pixels");
+                                }
+                                else
+                                {
+                                    PART_PluginIconSourceTb.Text = ofd.FileName;
+                                }
+
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Not support this format!~");
+                            }
+                        }
+                        break;
+                    }
             }
         }
 
@@ -213,7 +286,8 @@ namespace cyber_server.views.windows
             if (PART_PluginVersionTb.Text == ""
                 || PART_DatePublisedDP.SelectedDate == null
                 || PART_VersionDesTb.Text == ""
-                || PART_PathToPluginTextbox.Text == "")
+                || PART_PathToPluginTextbox.Text == ""
+                || PART_ExecutePathTextbox.Text == "")
             {
                 MessageBox.Show("Điền các trường còn thiếu!");
                 return -1;
@@ -291,6 +365,44 @@ namespace cyber_server.views.windows
                         {
                             modifyPluginWindowContext.SetRawModel(itemViewModel.RawModel);
                             modifyPluginWindow.ShowDialog();
+                        }
+                        break;
+                    }
+                case "PART_SyncPluginFolderWithDbButton":
+                    {
+                        string message = "Đã xóa:\n";
+                        var isShouldNotify = false;
+                        await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.SYNC_TASK_TYPE_KEY,
+                            mainFunc: async () =>
+                            {
+                                var pluginKeys = CyberPluginManager.Current.GetAllPluginKeyInPluginStorageFolder();
+
+                                var sucess = await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                                {
+                                    var deleteKeys = "";
+                                    var totalDelete = 0;
+                                    foreach (var key in pluginKeys)
+                                    {
+                                        if (context.Plugins.Where(p => p.StringId == key)
+                                            .FirstOrDefault() == null)
+                                        {
+                                            CyberPluginManager.Current.DeletePluginDirectory(key, true);
+                                            deleteKeys = deleteKeys + key + "\n";
+                                            totalDelete++;
+                                            isShouldNotify = true;
+                                        }
+                                    }
+
+                                    message = "Đã xóa:" + totalDelete + "\n" + deleteKeys;
+                                });
+
+                            },
+                            executeTime: 2000,
+                            bypassIfSemaphoreNotAvaild: true);
+
+                        if (isShouldNotify)
+                        {
+                            MessageBox.Show(message);
                         }
                         break;
                     }

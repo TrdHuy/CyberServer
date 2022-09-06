@@ -10,7 +10,7 @@
 		xmlns:ouc="clr-namespace:cyber_server.views.usercontrols.others"
 		mc:Ignorable="d"
 		Title="Cyber server"
-		Height="480"
+		Height="680"
 		Width="800">
 
 	<Window.Resources>
@@ -78,7 +78,7 @@
 			<TabItem Header="Quản lý plugin">
 				<Grid>
 					<Grid.RowDefinitions>
-						<RowDefinition Height="300" />
+						<RowDefinition Height="500" />
 						<RowDefinition />
 					</Grid.RowDefinitions>
 					<ListView x:Name="PART_PluginLV"
@@ -284,6 +284,12 @@
 								Content="Reload"
 								Width="70"
 								Margin="5" />
+						<Button x:Name="PART_SyncPluginFolderWithDbButton"
+								Click="HandleManagerPluginTabButtonEvent"
+								Content="Đồng bộ db và plugin folder"
+								Width="170"
+								ToolTip="Xoá các thư mục plugin mà không có trong database"
+								Margin="5" />
 					</WrapPanel>
 				</Grid>
 			</TabItem>
@@ -308,6 +314,8 @@
 								<ColumnDefinition Width="10" />
 							</Grid.ColumnDefinitions>
 							<Grid.RowDefinitions>
+								<RowDefinition Height="34" />
+								<RowDefinition Height="34" />
 								<RowDefinition Height="34" />
 								<RowDefinition Height="34" />
 								<RowDefinition Height="34" />
@@ -366,7 +374,7 @@
 							<!--Version field-->
 							<Rectangle Grid.Row="4"
 									   Fill="#FFC5C5C5"
-									   Grid.RowSpan="4"
+									   Grid.RowSpan="5"
 									   Grid.ColumnSpan="5" />
 							<TextBlock Grid.Row="4"
 									   VerticalAlignment="Center"
@@ -407,25 +415,30 @@
 																	Click="HandleAddPluginTabButtonEvent"
 																	HorizontalAlignment="Right" />
 															<TextBlock IsHitTestVisible="False">
-													<Run Text="VERSION: "
-																FontWeight="Bold" />
-													<Run Text="{Binding Version}"
-																Foreground="Green" />
-													<LineBreak />
-													<Run Text="DESCRIPTION: "
-																FontWeight="Bold" />
-													<Run Text="{Binding Description}"
-																Foreground="Black" />
-													<LineBreak />
-													<Run Text="DATE PUBLISHED: "
-																FontWeight="Bold" />
-													<Run Text="{Binding DatePublished}"
-																Foreground="Red" />
-													<LineBreak />
-													<Run Text="PATH: "
-																FontWeight="Bold" />
-													<Run Text="{Binding FilePath}"
-																Foreground="Aqua" />
+																<Run Text="VERSION: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding Version}"
+																	 Foreground="Green" />
+																<LineBreak />
+																<Run Text="DESCRIPTION: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding Description}"
+																	 Foreground="Black" />
+																<LineBreak />
+																<Run Text="DATE PUBLISHED: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding DatePublished}"
+																	 Foreground="Red" />
+																<LineBreak />
+																<Run Text="PATH: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding FilePath}"
+																	 Foreground="Aqua" />
+																<LineBreak />
+																<Run Text="EXECUTE PATH: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding ExecutePath}"
+																	 Foreground="Black" />
 															</TextBlock>
 														</Grid>
 
@@ -471,12 +484,12 @@
 										Margin="0,5">
 								<TextBox x:Name="PART_PluginVersionTb"
 										 Width="100"
-										 Tag="Version"
+										 Tag="Version *"
 										 Margin="0" />
 
 								<TextBox x:Name="PART_PathToPluginTextbox"
 										 Width="100"
-										 Tag="File path"
+										 Tag="File path *"
 										 Margin="10,0,0,0"
 										 IsReadOnly="True" />
 
@@ -489,9 +502,9 @@
 
 								<TextBlock VerticalAlignment="Center"
 										   Margin="10,0,0,0">
-							<Run Text="Date publised:" />
-							<Run Text="*"
-									Foreground="Red" />
+									<Run Text="Date publised:" />
+									<Run Text="*"
+										 Foreground="Red" />
 								</TextBlock>
 
 								<DatePicker x:Name="PART_DatePublisedDP"
@@ -503,6 +516,29 @@
 							</StackPanel>
 							<StackPanel Grid.Row="6"
 										Grid.Column="2"
+										Margin="0,5"
+										Orientation="Horizontal">
+								<TextBox x:Name="PART_ExecutePathTextbox"
+										 Width="250"
+										 Tag="Path to main dll *"
+										 Margin="0" />
+								<TextBlock Margin="10,-5,0,-5"
+										   FontSize="10"
+										   VerticalAlignment="Center">
+									<Run Text="Template:"
+										 TextDecorations="Underline"
+										 FontWeight="Bold" />
+									<Run>
+									 /plugins/[plugin_key]/[plugin_version]/[path_to_main_dll]
+									</Run>
+									<LineBreak />
+									<Run>
+										Eg: /plugins/progtroll/1.0.0/progtroll.dll
+									</Run>
+								</TextBlock>
+							</StackPanel>
+							<StackPanel Grid.Row="7"
+										Grid.Column="2"
 										Grid.RowSpan="2"
 										Margin="0,5"
 										Orientation="Horizontal">
@@ -513,7 +549,8 @@
 										 AcceptsReturn="True"
 										 VerticalScrollBarVisibility="Auto"
 										 Margin="0"
-										 Tag="Version description" />
+										 Tag="Version description *">
+								</TextBox>
 								<Button x:Name="PART_CreateNewVersionBtn"
 										Content="Add version"
 										Click="HandleAddPluginTabButtonEvent"
@@ -528,7 +565,7 @@
 
 
 							<!--Project URL field-->
-							<TextBlock Grid.Row="8"
+							<TextBlock Grid.Row="9"
 									   VerticalAlignment="Center"
 									   Grid.Column="1">
 								<Run Text="Project URL:" />
@@ -536,25 +573,60 @@
 									 Foreground="Red" />
 							</TextBlock>
 							<TextBox x:Name="PART_PluginURLTb"
-									 Grid.Row="8"
-									 Grid.Column="2" />
-
-							<TextBlock Text="Icon source:"
-									   Grid.Row="9"
-									   VerticalAlignment="Center"
-									   Grid.Column="1" />
-							<TextBox x:Name="PART_PluginIconSourceTb"
 									 Grid.Row="9"
 									 Grid.Column="2" />
 
-							<TextBlock Text="Authenticated:"
+							<TextBlock Text="Icon source:"
 									   Grid.Row="10"
 									   VerticalAlignment="Center"
 									   Grid.Column="1" />
+							<StackPanel Grid.Row="10"
+										Orientation="Horizontal"
+										Grid.Column="2">
+								<TextBox x:Name="PART_PluginIconSourceTb"
+										 Width="250"
+										 Text="{Binding IconSource}" />
+								<Button x:Name="PART_OpenIconFileChooser"
+										Content="..."
+										Click="HandleAddPluginTabButtonEvent"
+										Width="15"
+										Margin="10,0,0,0"
+										Height="20" />
+								<TextBlock Margin="10,0,0,0"
+										   FontSize="10"
+										   VerticalAlignment="Center">
+									<Run Text="Template:"
+										 TextDecorations="Underline"
+										 FontWeight="Bold" />
+									<Run>
+									 [Cyber_server_address] /pluginresource/ [plugin_key] / [file_name]
+									</Run>
+									<LineBreak />
+									<Run>
+										Eg: http://107.127.131.89/pluginresource/swpublisher/icon128.png
+									</Run>
+								</TextBlock>
+							</StackPanel>
+
+
+							<TextBlock Text="Authenticated:"
+									   Grid.Row="11"
+									   VerticalAlignment="Center"
+									   Grid.Column="1" />
 							<CheckBox x:Name="PART_PluginIsAuthenticatedCb"
-									  Grid.Row="10"
+									  Grid.Row="11"
 									  Grid.Column="2"
 									  VerticalAlignment="Center" />
+
+							<TextBlock Text="Pre release:"
+									   Grid.Row="12"
+									   VerticalAlignment="Center"
+									   Grid.Column="1" />
+							<CheckBox x:Name="PART_PluginIsPrereleasedCb"
+									  Grid.Row="12"
+									  Grid.Column="2"
+									  VerticalAlignment="Center" />
+
 						</Grid>
 
 						<WrapPanel Grid.Row="1"
@@ -562,12 +634,16 @@
 								   Margin="0,0,0,108">
 							<Button x:Name="PART_AddPluginToDb"
 									Click="HandleAddPluginTabButtonEvent"
-									Content="Add"
+									Content="Lưu"
 									Width="70"
 									Margin="5" />
 							<Button x:Name="PART_ClearAddPluginTab"
-									Content="Clear"
+									Content="Làm mới"
 									Width="70"
+									Margin="5" />
+							<Button x:Name="PART_AccessBaseFolderTab"
+									Click="HandleAddPluginTabButtonEvent"
+									Content="Truy cập thư mục"
 									Margin="5" />
 						</WrapPanel>
 					</Grid>

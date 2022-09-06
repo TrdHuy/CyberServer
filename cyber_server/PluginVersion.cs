@@ -20,7 +20,9 @@ namespace cyber_server
         public string Description { get; set; }
         public int PluginId { get; set; }
         public System.DateTime DatePublished { get; set; }
-        public string FilePath { get; set; }
+        public string ExecutePath { get; set; }
+        public string FileName { get; set; }
+        public string FolderPath { get; set; }
     
         [JsonIgnore]
         public virtual Plugin Plugin { get; set; }

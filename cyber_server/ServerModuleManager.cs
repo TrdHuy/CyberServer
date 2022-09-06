@@ -82,6 +82,7 @@ namespace cyber_server
             _Modules.Add(CPM_Instance);
             _Modules.Add(DBM_Instance);
             _Modules.Add(CHS_Instance);
+            _Modules.Add(SLM_Instance);
 
             foreach (var module in _Modules)
             {

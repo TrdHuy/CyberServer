@@ -20,6 +20,7 @@ namespace cyber_server.view_models.windows
         private string _des;
         private string _iconSource;
         private bool _isAuthenticated;
+        private bool _isPreReleased;
         private int _selectedVersionIndex;
         public Plugin RawModel => _rawModel;
 
@@ -66,6 +67,18 @@ namespace cyber_server.view_models.windows
                 InvalidateOwn();
             }
         }
+
+        [Bindable(true)]
+        public bool IsPreReleased
+        {
+            get => _isPreReleased;
+            set
+            {
+                _isPreReleased = value;
+                InvalidateOwn();
+            }
+        }
+
 
         [Bindable(true)]
         public string IconSource

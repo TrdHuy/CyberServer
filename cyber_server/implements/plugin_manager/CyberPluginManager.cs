@@ -1,5 +1,6 @@
 ﻿using cyber_server.@base;
 using cyber_server.definition;
+using cyber_server.implements.log_manager;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,11 +31,11 @@ namespace cyber_server.implements.plugin_manager
             }
         }
 
-        public void DeletePluginDirectory(string pluginFolderName)
+        public void DeletePluginDirectory(string pluginKey, bool rescursive = false)
         {
-            if (Directory.Exists(pluginFolderLocation + "\\" + pluginFolderName))
+            if (Directory.Exists(pluginFolderLocation + "\\" + pluginKey))
             {
-                Directory.Delete(pluginFolderLocation + "\\" + pluginFolderName);
+                Directory.Delete(pluginFolderLocation + "\\" + pluginKey, rescursive);
             }
         }
 
@@ -42,15 +43,12 @@ namespace cyber_server.implements.plugin_manager
         {
             if (Directory.Exists(pluginFolderLocation + "\\" + oldPluginKey))
             {
-                //if (!Directory.Exists(pluginFolderLocation + "\\" + newPluginKey))
-                //{
-                //    Directory.CreateDirectory(pluginFolderLocation + "\\" + newPluginKey);
-                //}
                 Directory.Move(pluginFolderLocation + "\\" + oldPluginKey,
                     pluginFolderLocation + "\\" + newPluginKey);
 
                 return true;
             }
+            ServerLogManager.Current.D("source file not found!");
             return false;
         }
 
@@ -66,6 +64,7 @@ namespace cyber_server.implements.plugin_manager
                 File.Copy(sourceFile, pluginFolderLocation + "\\" + destination + "\\" + fileName, true);
                 return true;
             }
+            ServerLogManager.Current.D("source file not found!");
             return false;
         }
 
@@ -81,9 +80,9 @@ namespace cyber_server.implements.plugin_manager
                 File.Copy(sourceFile, pluginFolderLocation + "\\" + pluginKey + "\\resources" + "\\" + fileName, true);
                 return true;
             }
+            ServerLogManager.Current.D("source file not found!");
             return false;
         }
-
 
         public bool MovePluginToServerLocation(string sourceFile)
         {
@@ -92,6 +91,7 @@ namespace cyber_server.implements.plugin_manager
                 File.Move(sourceFile, pluginFolderLocation);
                 return true;
             }
+            ServerLogManager.Current.D("source file not found!");
             return false;
         }
 
@@ -103,6 +103,7 @@ namespace cyber_server.implements.plugin_manager
                 File.Copy(sourceFile, pluginFolderLocation + "\\" + destination, true);
                 return true;
             }
+            ServerLogManager.Current.D("source file not found!");
             return false;
         }
 
@@ -114,7 +115,30 @@ namespace cyber_server.implements.plugin_manager
                 File.Move(sourceFile, pluginFolderLocation);
                 return true;
             }
+            ServerLogManager.Current.D("source file not found!");
             return false;
+        }
+
+        public string GetSetupZipFilePathByPluginVersion(string pluginKey, string pluginVersion, string pluginZipFileName)
+        {
+            return pluginFolderLocation + "\\" + pluginKey + "\\" + pluginVersion + "\\" + pluginZipFileName;
+        }
+
+        public string[] GetAllPluginDirectory()
+        {
+            return Directory.GetDirectories(pluginFolderLocation);
+        }
+
+        public string[] GetAllPluginKeyInPluginStorageFolder()
+        {
+            var folders = Directory.GetDirectories(pluginFolderLocation);
+            var keys = new string[folders.Length];
+            int i = 0;
+            foreach (var folder in folders)
+            {
+                keys[i++] = new DirectoryInfo(folder).Name;
+            }
+            return keys;
         }
     }
 }

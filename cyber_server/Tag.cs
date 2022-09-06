@@ -18,7 +18,7 @@ namespace cyber_server
         public string Content { get; set; }
         public int TagId { get; set; }
         public int PluginId { get; set; }
-
+    
         [JsonIgnore]
         public virtual Plugin Plugin { get; set; }
     }

@@ -9,7 +9,7 @@
 		xmlns:ouc="clr-namespace:cyber_server.views.usercontrols.others"
 		mc:Ignorable="d"
 		Title="Sửa thông tin plugin"
-		Height="500"
+		Height="580"
 		Width="800">
 	<Window.Resources>
 		<Style TargetType="{x:Type TextBox}"
@@ -101,6 +101,8 @@
 				<RowDefinition Height="34" />
 				<RowDefinition Height="34" />
 				<RowDefinition Height="34" />
+				<RowDefinition Height="34" />
+				<RowDefinition Height="34" />
 			</Grid.RowDefinitions>
 
 			<TextBlock Grid.Row="0"
@@ -152,7 +154,7 @@
 			<!--Version field-->
 			<Rectangle Grid.Row="4"
 					   Fill="#FFC5C5C5"
-					   Grid.RowSpan="4"
+					   Grid.RowSpan="5"
 					   Grid.ColumnSpan="5" />
 			<TextBlock Grid.Row="4"
 					   VerticalAlignment="Center"
@@ -276,9 +278,9 @@
 
 				<TextBlock VerticalAlignment="Center"
 						   Margin="10,0,0,0">
-							<Run Text="Date publised:" />
-							<Run Text="*"
-								 Foreground="Red" />
+									<Run Text="Date publised:" />
+									<Run Text="*"
+										 Foreground="Red" />
 				</TextBlock>
 
 				<DatePicker x:Name="PART_DatePublisedDP"
@@ -289,6 +291,30 @@
 							Grid.Column="2" />
 			</StackPanel>
 			<StackPanel Grid.Row="6"
+						Grid.Column="2"
+						Margin="0,5"
+						Orientation="Horizontal">
+				<TextBox x:Name="PART_ExecutePathTextbox"
+						 Width="250"
+						 Tag="Path to main dll"
+						 Margin="0"
+						 IsReadOnly="True" />
+				<TextBlock Margin="10,-5,0,-5"
+						   FontSize="10"
+						   VerticalAlignment="Center">
+									<Run Text="Template:"
+										 TextDecorations="Underline"
+										 FontWeight="Bold" />
+									<Run>
+									 /plugins/[plugin_key]/[plugin_version]/[path_to_main_dll]
+									</Run>
+									<LineBreak />
+									<Run>
+										Eg: /plugins/progtroll/1.0.0/progtroll.dll
+									</Run>
+				</TextBlock>
+			</StackPanel>
+			<StackPanel Grid.Row="7"
 						Grid.Column="2"
 						Grid.RowSpan="2"
 						Margin="0,5"
@@ -315,7 +341,7 @@
 
 
 			<!--Project URL field-->
-			<TextBlock Grid.Row="8"
+			<TextBlock Grid.Row="9"
 					   VerticalAlignment="Center"
 					   Grid.Column="1">
 								<Run Text="Project URL:" />
@@ -324,15 +350,14 @@
 			</TextBlock>
 			<TextBox x:Name="PART_PluginURLTb"
 					 Text="{Binding ProjectURL}"
-					 Grid.Row="8"
+					 Grid.Row="9"
 					 Grid.Column="2" />
 
 			<TextBlock Text="Icon source:"
-					   Grid.Row="9"
+					   Grid.Row="10"
 					   VerticalAlignment="Center"
 					   Grid.Column="1" />
-
-			<StackPanel Grid.Row="9"
+			<StackPanel Grid.Row="10"
 						Orientation="Horizontal"
 						Grid.Column="2">
 				<TextBox x:Name="PART_PluginIconSourceTb"
@@ -347,26 +372,35 @@
 				<TextBlock Margin="10,0,0,0"
 						   FontSize="10"
 						   VerticalAlignment="Center">
-					<Run Text="Template:" 
-						 TextDecorations="Underline"
-						 FontWeight="Bold"/>
-					<Run>
-					 [Cyber_server_address] /pluginresource/ [plugin_key] / [file_name]
-					</Run>
-					<LineBreak />
-					<Run>
-						Eg: http://107.127.131.89/pluginresource/swpublisher/icon128.png
-					</Run>
+									<Run Text="Template:"
+										 TextDecorations="Underline"
+										 FontWeight="Bold" />
+									<Run>
+									 [Cyber_server_address] /pluginresource/ [plugin_key] / [file_name]
+									</Run>
+									<LineBreak />
+									<Run>
+										Eg: http://107.127.131.89/pluginresource/swpublisher/icon128.png
+									</Run>
 				</TextBlock>
 			</StackPanel>
 
 
 			<TextBlock Text="Authenticated:"
-					   Grid.Row="10"
+					   Grid.Row="11"
 					   VerticalAlignment="Center"
 					   Grid.Column="1" />
 			<CheckBox x:Name="PART_PluginIsAuthenticatedCb"
-					  Grid.Row="10"
+					  Grid.Row="11"
+					  Grid.Column="2"
+					  VerticalAlignment="Center" />
+
+			<TextBlock Text="Pre release:"
+					   Grid.Row="12"
+					   VerticalAlignment="Center"
+					   Grid.Column="1" />
+			<CheckBox x:Name="PART_PluginIsPrereleasedCb"
+					  Grid.Row="12"
 					  Grid.Column="2"
 					  VerticalAlignment="Center" />
 		</Grid>
