@@ -117,6 +117,9 @@
     <Compile Include="views\windows\CyberServerWindow.xaml.cs">
       <DependentUpon>CyberServerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\windows\others\EditBoxWindow.xaml.cs">
+      <DependentUpon>EditBoxWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\windows\others\ModifyPluginWindow.xaml.cs">
       <DependentUpon>ModifyPluginWindow.xaml</DependentUpon>
     </Compile>
@@ -154,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\windows\CyberServerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\windows\others\EditBoxWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

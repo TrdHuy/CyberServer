@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -55,6 +56,59 @@ namespace cyber_server.views.windows
             ServerLogManager.Current.D(btn.Name);
             switch (btn.Name)
             {
+                case "PART_QuickFillExecutePathButton":
+                    {
+                        if (IsMeetConditionToCreateExecutePath())
+                        {
+                            var eBW = new EditBoxWindow(
+                            uneditableText: "plugins\\" + PART_PluginKeyTb.Text + "\\" + PART_PluginVersionTb.Text + "\\"
+                            , editableText: "[plugin dll name]"
+                            , checkConditionSatisfyToCloseWindow: (editedText) =>
+                            {
+                                System.IO.FileInfo fi = null;
+                                try
+                                {
+                                    fi = new System.IO.FileInfo(editedText);
+                                }
+                                catch (ArgumentException) { }
+                                catch (System.IO.PathTooLongException) { }
+                                catch (NotSupportedException) { }
+                                if (ReferenceEquals(fi, null))
+                                {
+                                    MessageBox.Show("File name is not vaild!");
+                                    return false;
+                                }
+                                else
+                                {
+                                    var splits = editedText.Split('.');
+
+                                    if (splits.Length == 2)
+                                    {
+                                        if (splits[1] == "dll")
+                                        {
+                                            return true;
+                                        }
+                                        MessageBox.Show("File extension must be dll");
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("File name is not vaild!");
+                                    }
+                                }
+                                return false;
+                            });
+                            eBW.Owner = this;
+                            var pathToExecute = eBW.Show();
+                            if (!eBW.IsCanceled)
+                            {
+                                PART_ExecutePathTextbox.Text = pathToExecute;
+                            }
+                        }
+
+
+
+                        break;
+                    }
                 case "PART_AccessBaseFolderTab":
                     {
                         Process.Start(CyberServerDefinition.PLUGIN_BASE_FOLDER_PATH);
@@ -192,7 +246,7 @@ namespace cyber_server.views.windows
                             }
 
                         },
-                        executeTime: 1000,
+                        executeTime: 3000,
                         bypassIfSemaphoreNotAvaild: true);
                         break;
                     }
@@ -238,12 +292,47 @@ namespace cyber_server.views.windows
 
         private bool IsMeetConditionToAddPlugToDb()
         {
+
             if (PART_PluginNameTb.Text == ""
                 || PART_PluginAuthorTb.Text == ""
                 || PART_PluginURLTb.Text == ""
                 || PART_PluginKeyTb.Text == ""
                 || VersionSource.Count == 0) return false;
+            if (!string.IsNullOrEmpty(PART_PluginKeyTb.Text))
+            {
+                var regexItem = new Regex(@"^[a-zA-Z0-9_]*$");
+                if (!regexItem.IsMatch(PART_PluginKeyTb.Text))
+                {
+                    MessageBox.Show("Plugin key không được chứ ký tự đặc biệt");
+                    return false;
+                }
+            }
+            return true;
+        }
 
+        private bool IsMeetConditionToCreateExecutePath()
+        {
+
+            if (PART_PluginKeyTb.Text == "")
+            {
+                MessageBox.Show("Điền plugin key trước!");
+                return false;
+            }
+            if (PART_PluginVersionTb.Text == "")
+            {
+                MessageBox.Show("Điền plugin version trước!");
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(PART_PluginKeyTb.Text))
+            {
+                var regexItem = new Regex(@"^[a-zA-Z0-9_]*$");
+                if (!regexItem.IsMatch(PART_PluginKeyTb.Text))
+                {
+                    MessageBox.Show("Plugin key không được chứ ký tự đặc biệt");
+                    return false;
+                }
+            }
             return true;
         }
 
@@ -343,7 +432,7 @@ namespace cyber_server.views.windows
 
                                        if (sucess)
                                        {
-                                           CyberPluginManager.Current.DeletePluginDirectory(itemViewModel.RawModel.StringId);
+                                           CyberPluginManager.Current.DeletePluginDirectory(itemViewModel.RawModel.StringId, true);
                                            PluginSource.Remove(itemViewModel);
                                        }
                                    },

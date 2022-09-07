@@ -522,6 +522,10 @@
 										 Width="250"
 										 Tag="Path to main dll *"
 										 Margin="0" />
+								<Button x:Name="PART_QuickFillExecutePathButton"
+										Margin="5,0,0,0"
+										Click="HandleAddPluginTabButtonEvent"
+										Content="QF" />
 								<TextBlock Margin="10,-5,0,-5"
 										   FontSize="10"
 										   VerticalAlignment="Center">
@@ -529,11 +533,11 @@
 										 TextDecorations="Underline"
 										 FontWeight="Bold" />
 									<Run>
-									 /plugins/[plugin_key]/[plugin_version]/[path_to_main_dll]
+									 plugins\[plugin_key]\[plugin_version]\[main_dll_name]
 									</Run>
 									<LineBreak />
 									<Run>
-										Eg: /plugins/progtroll/1.0.0/progtroll.dll
+										Eg: plugins\progtroll\1.0.0\progtroll.dll
 									</Run>
 								</TextBlock>
 							</StackPanel>

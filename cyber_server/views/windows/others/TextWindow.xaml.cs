@@ -19,10 +19,24 @@ namespace cyber_server.views.windows.others
     /// </summary>
     public partial class TextWindow : Window
     {
-        public TextWindow(string initText)
+        public TextWindow(string initText,
+            bool isReadOnly = true)
         {
             InitializeComponent();
             PART_MainTextBox.Text = initText;
+            PART_MainTextBox.IsReadOnly = isReadOnly;
+        }
+
+        public new string Show()
+        {
+            base.ShowDialog();
+            return PART_MainTextBox.Text;
+        }
+
+        public new string ShowDialog()
+        {
+            base.ShowDialog();
+            return PART_MainTextBox.Text;
         }
     }
 }

@@ -137,6 +137,15 @@ namespace cyber_server.implements.http_server.handlers
                                             await stream.ReadAsync(buffer, 0, (int)stream.Length);
                                         }
                                         response.ContentLength64 = buffer.Length;
+
+                                        await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
+                                        {
+                                            var plugin = dbContext.Plugins
+                                                .Where(p => p.StringId == requestPluginKey)
+                                                .FirstOrDefault();
+                                            plugin.Downloads++;
+                                            dbContext.SaveChanges();
+                                        });
                                         return buffer;
                                     }
                                     else

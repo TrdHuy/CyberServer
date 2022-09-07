@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,34 +45,86 @@ namespace cyber_server.views.windows.others
             {
                 switch (btn.Name)
                 {
-                    case "SUB_DeleteVersionItem":
-                        await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.DELETE_VERSION_TASK_TYPE_KEY,
-                                mainFunc: async () =>
+                    case "PART_QuickFillExecutePathButton":
+                        {
+                            if (IsMeetConditionToCreateExecutePath())
+                            {
+                                var eBW = new EditBoxWindow(
+                                uneditableText: "plugins\\" + PART_PluginKeyTb.Text + "\\" + PART_PluginVersionTb.Text + "\\"
+                                , editableText: "[plugin dll name]"
+                                , checkConditionSatisfyToCloseWindow: (editedText) =>
                                 {
-                                    var confirm = MessageBox.Show("Bạn có muốn xóa version này?", "", MessageBoxButton.YesNo);
-                                    if (confirm == MessageBoxResult.Yes)
+                                    System.IO.FileInfo fi = null;
+                                    try
                                     {
-                                        var picontext = btn.DataContext as PluginVersionItemViewModel;
-                                        if (picontext != null && picontext.RawModel != null)
+                                        fi = new System.IO.FileInfo(editedText);
+                                    }
+                                    catch (ArgumentException) { }
+                                    catch (System.IO.PathTooLongException) { }
+                                    catch (NotSupportedException) { }
+                                    if (ReferenceEquals(fi, null))
+                                    {
+                                        MessageBox.Show("File name is not vaild!");
+                                        return false;
+                                    }
+                                    else
+                                    {
+                                        var splits = editedText.Split('.');
+
+                                        if (splits.Length == 2)
                                         {
-                                            var pluginId = _viewModel.RawModel.PluginId;
-                                            await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                                            if (splits[1] == "dll")
                                             {
-                                                var plugin = context
-                                                    .Plugins
-                                                    .Where<Plugin>(p => p.PluginId == pluginId)
-                                                    .FirstOrDefault();
-                                                context.PluginVersions.Remove(picontext.RawModel);
-                                                plugin.PluginVersions.Remove(picontext.RawModel);
-                                                context.SaveChanges();
-                                                _viewModel.VersionSource.Remove(picontext);
-                                            });
+                                                return true;
+                                            }
+                                            MessageBox.Show("File extension must be dll");
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("File name is not vaild!");
                                         }
                                     }
-                                },
-                                executeTime: 1000,
-                                bypassIfSemaphoreNotAvaild: true);
-                        break;
+                                    return false;
+                                });
+                                eBW.Owner = this;
+                                var pathToExecute = eBW.Show();
+                                if (!eBW.IsCanceled)
+                                {
+                                    PART_ExecutePathTextbox.Text = pathToExecute;
+                                }
+                            }
+                            break;
+                        }
+                    case "SUB_DeleteVersionItem":
+                        {
+                            await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.DELETE_VERSION_TASK_TYPE_KEY,
+                                                            mainFunc: async () =>
+                                                            {
+                                                                var confirm = MessageBox.Show("Bạn có muốn xóa version này?", "", MessageBoxButton.YesNo);
+                                                                if (confirm == MessageBoxResult.Yes)
+                                                                {
+                                                                    var picontext = btn.DataContext as PluginVersionItemViewModel;
+                                                                    if (picontext != null && picontext.RawModel != null)
+                                                                    {
+                                                                        var pluginId = _viewModel.RawModel.PluginId;
+                                                                        await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                                                                        {
+                                                                            var plugin = context
+                                                                                .Plugins
+                                                                                .Where<Plugin>(p => p.PluginId == pluginId)
+                                                                                .FirstOrDefault();
+                                                                            context.PluginVersions.Remove(picontext.RawModel);
+                                                                            plugin.PluginVersions.Remove(picontext.RawModel);
+                                                                            context.SaveChanges();
+                                                                            _viewModel.VersionSource.Remove(picontext);
+                                                                        });
+                                                                    }
+                                                                }
+                                                            },
+                                                            executeTime: 1000,
+                                                            bypassIfSemaphoreNotAvaild: true);
+                            break;
+                        }
                     case "PART_CreateNewVersionBtn":
                         {
                             await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY,
@@ -261,6 +314,7 @@ namespace cyber_server.views.windows.others
                     case "PART_OpenPluginFileChooser":
                         {
                             var ofd = new OpenFileDialog();
+                            ofd.Filter = "Zip files (*.zip)|*.zip";
                             if (ofd.ShowDialog() == true)
                                 PART_PathToPluginTextbox.Text = ofd.FileName;
                             break;
@@ -294,21 +348,56 @@ namespace cyber_server.views.windows.others
                             }
                             break;
                         }
-
                 }
             }
         }
 
         private bool IsMeetConditionToAddPlugToDb()
         {
+
             if (PART_PluginNameTb.Text == ""
                 || PART_PluginAuthorTb.Text == ""
                 || PART_PluginURLTb.Text == ""
                 || PART_PluginKeyTb.Text == ""
                 || _viewModel.VersionSource.Count == 0) return false;
-
+            if (!string.IsNullOrEmpty(PART_PluginKeyTb.Text))
+            {
+                var regexItem = new Regex(@"^[a-zA-Z0-9_]*$");
+                if (!regexItem.IsMatch(PART_PluginKeyTb.Text))
+                {
+                    MessageBox.Show("Plugin key không được chứ ký tự đặc biệt");
+                    return false;
+                }
+            }
             return true;
         }
+
+        private bool IsMeetConditionToCreateExecutePath()
+        {
+
+            if (PART_PluginKeyTb.Text == "")
+            {
+                MessageBox.Show("Điền plugin key trước!");
+                return false;
+            }
+            if (PART_PluginVersionTb.Text == "")
+            {
+                MessageBox.Show("Điền plugin version trước!");
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(PART_PluginKeyTb.Text))
+            {
+                var regexItem = new Regex(@"^[a-zA-Z0-9_]*$");
+                if (!regexItem.IsMatch(PART_PluginKeyTb.Text))
+                {
+                    MessageBox.Show("Plugin key không được chứ ký tự đặc biệt");
+                    return false;
+                }
+            }
+            return true;
+        }
+
 
         private int GetIndexOfNewVersion()
         {

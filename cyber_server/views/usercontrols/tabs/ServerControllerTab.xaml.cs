@@ -70,7 +70,7 @@ namespace cyber_server.views.usercontrols.tabs
                         {
                             client.DefaultRequestHeaders.Add("h2sw-request-info", "GET_ALL_PLUGIN_DATA");
                             client.DefaultRequestHeaders.Add("GET_ALL_PLUGIN_DATA__MAXIMUM_AMOUNT", "10");
-                            client.DefaultRequestHeaders.Add("GET_ALL_PLUGIN_DATA__START_INDEX", "10");
+                            client.DefaultRequestHeaders.Add("GET_ALL_PLUGIN_DATA__START_INDEX", "0");
                             var response = await client.GetAsync("http://107.127.131.89:8080/requestinfo");
 
                             var responseContent = await response.Content.ReadAsStringAsync();
@@ -84,7 +84,7 @@ namespace cyber_server.views.usercontrols.tabs
                         using (HttpClient client = new HttpClient())
                         {
                             var pluginKey = "progtroll";
-                            var pluginVersion = "1.0.0.0";
+                            var pluginVersion = "1.0.0";
                             client.DefaultRequestHeaders.Add("h2sw-download-plugin", "CHECK_DOWNLOADABLE_PLUGIN");
                             client.DefaultRequestHeaders.Add("CHECK_DOWNLOADABLE_PLUGIN__PLUGIN_KEY", pluginKey);
                             client.DefaultRequestHeaders.Add("CHECK_DOWNLOADABLE_PLUGIN__PLUGIN_VERSION", pluginVersion);
