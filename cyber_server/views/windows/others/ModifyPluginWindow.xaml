@@ -196,25 +196,35 @@
 													Click="HandleButtonEvent"
 													HorizontalAlignment="Right" />
 											<TextBlock IsHitTestVisible="False">
-													<Run Text="VERSION: "
-														 FontWeight="Bold" />
-													<Run Text="{Binding Version}"
-														 Foreground="Green" />
-													<LineBreak />
-													<Run Text="DESCRIPTION: "
-														 FontWeight="Bold" />
-													<Run Text="{Binding Description}"
-														 Foreground="Black" />
-													<LineBreak />
-													<Run Text="DATE PUBLISHED: "
-														 FontWeight="Bold" />
-													<Run Text="{Binding DatePublished}"
-														 Foreground="Red" />
-													<LineBreak />
-													<Run Text="PATH: "
-														 FontWeight="Bold" />
-													<Run Text="{Binding FilePath}"
-														 Foreground="Aqua" />
+												<Run Text="VERSION: "
+													 FontWeight="Bold" />
+												<Run Text="{Binding Version}"
+													 Foreground="Green" />
+												<LineBreak />
+												<Run Text="DESCRIPTION: "
+													 FontWeight="Bold" />
+												<Run Text="{Binding Description}"
+													 Foreground="Black" />
+												<LineBreak />
+												<Run Text="DATE PUBLISHED: "
+													 FontWeight="Bold" />
+												<Run Text="{Binding DatePublished}"
+													 Foreground="Red" />
+												<LineBreak />
+												<Run Text="PATH: "
+													 FontWeight="Bold" />
+												<Run Text="{Binding FilePath}"
+													 Foreground="Aqua" />
+												<LineBreak />
+												<Run Text="EXECUTE PATH: "
+													 FontWeight="Bold" />
+												<Run Text="{Binding ExecutePath}"
+													 Foreground="Black" />
+												<LineBreak />
+												<Run Text="MAIN CLASS: "
+													 FontWeight="Bold" />
+												<Run Text="{Binding MainClassName}"
+													 Foreground="Black" />
 											</TextBlock>
 										</Grid>
 
@@ -262,6 +272,11 @@
 						 Width="100"
 						 Tag="Version"
 						 Margin="0" />
+
+				<TextBox x:Name="PART_PathMainClassNameTextbox"
+						 Width="180"
+						 Tag="Main class name *"
+						 Margin="10,0,0,0" />
 
 				<TextBox x:Name="PART_PathToPluginTextbox"
 						 Width="100"

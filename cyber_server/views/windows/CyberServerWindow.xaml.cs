@@ -139,6 +139,7 @@ namespace cyber_server.views.windows
                                         DatePublished = PART_DatePublisedDP.Text,
                                         Description = PART_VersionDesTb.Text,
                                         ExecutePath = PART_ExecutePathTextbox.Text,
+                                        MainClassName = PART_PathMainClassNameTextbox.Text,
                                     };
 
                                     VersionSource.Insert(newIndex, pluginVer);
@@ -375,6 +376,7 @@ namespace cyber_server.views.windows
             if (PART_PluginVersionTb.Text == ""
                 || PART_DatePublisedDP.SelectedDate == null
                 || PART_VersionDesTb.Text == ""
+                || PART_PathMainClassNameTextbox.Text == ""
                 || PART_PathToPluginTextbox.Text == ""
                 || PART_ExecutePathTextbox.Text == "")
             {

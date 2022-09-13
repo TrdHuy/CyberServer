@@ -30,6 +30,7 @@
           <Property Name="PluginId" Type="int" Nullable="false" />
           <Property Name="DatePublished" Type="datetime" Nullable="false" />
           <Property Name="ExecutePath" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="MainClassName" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FolderPath" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
@@ -49,7 +50,7 @@
           <Property Name="VoteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PluginId" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__PluginVer__Plugi__4F47C5E3">
+        <Association Name="FK__PluginVer__Plugi__625A9A57">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="PluginVersion" Type="Self.PluginVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -90,7 +91,7 @@
           <EntitySet Name="PluginVersion" EntityType="Self.PluginVersion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vote" EntityType="Self.Vote" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__PluginVer__Plugi__4F47C5E3" Association="Self.FK__PluginVer__Plugi__4F47C5E3">
+          <AssociationSet Name="FK__PluginVer__Plugi__625A9A57" Association="Self.FK__PluginVer__Plugi__625A9A57">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="PluginVersion" EntitySet="PluginVersion" />
           </AssociationSet>
@@ -156,6 +157,7 @@
           <Property Name="ExecutePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FileName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FolderPath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MainClassName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -236,6 +238,7 @@
           <EntitySetMapping Name="PluginVersions">
             <EntityTypeMapping TypeName="CyberDragonDBModel.PluginVersion">
               <MappingFragment StoreEntitySet="PluginVersion">
+                <ScalarProperty Name="MainClassName" ColumnName="MainClassName" />
                 <ScalarProperty Name="FolderPath" ColumnName="FolderPath" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="ExecutePath" ColumnName="ExecutePath" />

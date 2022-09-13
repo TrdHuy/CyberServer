@@ -20,6 +20,7 @@ namespace cyber_server.implements.http_server.handlers
         private const string RESPONSE_IS_PLUGIN_DOWNLOADABLE_HEADER_ID = "CHECK_DOWNLOADABLE_PLUGIN__IS_DOWNLOADABLE";
         private const string RESPONSE_PLUGIN_FILE_NAME_HEADER_ID = "CHECK_DOWNLOADABLE_PLUGIN__PLUGIN_FILE_NAME";
         private const string RESPONSE_PLUGIN_EXECUTE_PATH_HEADER_ID = "CHECK_DOWNLOADABLE_PLUGIN__PLUGIN_EXECUTE_PATH";
+        private const string RESPONSE_PLUGIN_MAIN_CLASS_NAME_HEADER_ID = "CHECK_DOWNLOADABLE_PLUGIN__PLUGIN_MAIN_CLASS_NAME";
 
         private const string REQUEST_DOWNLOAD_PLUGIN_HEADER_ID = "DOWNLOAD_PLUGIN";
         private const string REQUEST_DOWNLOAD_PLUGIN_KEY_HEADER_ID = "DOWNLOAD_PLUGIN__PLUGIN_KEY";
@@ -69,6 +70,7 @@ namespace cyber_server.implements.http_server.handlers
                                         response.Headers.Add(RESPONSE_IS_PLUGIN_DOWNLOADABLE_HEADER_ID, "1");
                                         response.Headers.Add(RESPONSE_PLUGIN_FILE_NAME_HEADER_ID, query.FileName);
                                         response.Headers.Add(RESPONSE_PLUGIN_EXECUTE_PATH_HEADER_ID, query.ExecutePath);
+                                        response.Headers.Add(RESPONSE_PLUGIN_MAIN_CLASS_NAME_HEADER_ID, query.MainClassName);
                                     }
                                     else
                                     {
@@ -124,9 +126,6 @@ namespace cyber_server.implements.http_server.handlers
                                             requestPluginVersion.ToString(),
                                             query.FileName);
                                     response.StatusCode = (int)HttpStatusCode.OK;
-                                    response.Headers.Add(RESPONSE_IS_PLUGIN_DOWNLOADABLE_HEADER_ID, "1");
-                                    response.Headers.Add(RESPONSE_PLUGIN_FILE_NAME_HEADER_ID, query.FileName);
-                                    response.Headers.Add(RESPONSE_PLUGIN_EXECUTE_PATH_HEADER_ID, query.ExecutePath);
 
                                     if (File.Exists(zipFilePath))
                                     {

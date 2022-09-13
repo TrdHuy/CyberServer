@@ -14,6 +14,7 @@ namespace cyber_server.view_models.plugin_version_item
         private string _version;
         private string _description;
         private string _filePath;
+        private string _mainClassName;
         private string _executePath;
         private DateTime _datePublised;
         public PluginVersion RawModel => _vo;
@@ -106,6 +107,24 @@ namespace cyber_server.view_models.plugin_version_item
             }
         }
 
+        [Bindable(true)]
+        public string MainClassName
+        {
+            get
+            {
+                if (_vo != null)
+                {
+                    return _vo.MainClassName;
+                }
+                return _mainClassName;
+            }
+            set
+            {
+                _mainClassName = value;
+                InvalidateOwn();
+            }
+        }
+
         public PluginVersionItemViewModel(PluginVersion vo)
         {
             _vo = vo;
@@ -127,6 +146,7 @@ namespace cyber_server.view_models.plugin_version_item
             _vo.FolderPath = pluginKey + "\\" + _version;
             _vo.DatePublished = _datePublised;
             _vo.ExecutePath = _executePath;
+            _vo.MainClassName = _mainClassName;
             _vo.FileName = Path.GetFileName(_filePath);
             return _vo;
         }

@@ -439,6 +439,11 @@
 																	 FontWeight="Bold" />
 																<Run Text="{Binding ExecutePath}"
 																	 Foreground="Black" />
+																<LineBreak />
+																<Run Text="MAIN CLASS: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding MainClassName}"
+																	 Foreground="Black" />
 															</TextBlock>
 														</Grid>
 
@@ -487,6 +492,11 @@
 										 Tag="Version *"
 										 Margin="0" />
 
+								<TextBox x:Name="PART_PathMainClassNameTextbox"
+										 Width="180"
+										 Tag="Main class name *"
+										 Margin="10,0,0,0" />
+								
 								<TextBox x:Name="PART_PathToPluginTextbox"
 										 Width="100"
 										 Tag="File path *"

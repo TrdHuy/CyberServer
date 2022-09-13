@@ -23,6 +23,7 @@ namespace cyber_server
         public string ExecutePath { get; set; }
         public string FileName { get; set; }
         public string FolderPath { get; set; }
+        public string MainClassName { get; set; }
     
         [JsonIgnore]
         public virtual Plugin Plugin { get; set; }
