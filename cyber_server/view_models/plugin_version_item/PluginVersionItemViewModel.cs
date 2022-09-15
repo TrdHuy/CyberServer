@@ -1,4 +1,5 @@
-﻿using System;
+﻿using cyber_server.implements.plugin_manager;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -143,7 +144,7 @@ namespace cyber_server.view_models.plugin_version_item
             _vo = new PluginVersion();
             _vo.Version = _version;
             _vo.Description = _description;
-            _vo.FolderPath = pluginKey + "\\" + _version;
+            _vo.FolderPath = CyberPluginManager.Current.BuildPluginVersionFolderPath(pluginKey, _version);
             _vo.DatePublished = _datePublised;
             _vo.ExecutePath = _executePath;
             _vo.MainClassName = _mainClassName;

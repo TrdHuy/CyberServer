@@ -472,19 +472,41 @@ namespace cyber_server.views.windows
                                 {
                                     var deleteKeys = "";
                                     var totalDelete = 0;
+                                    var deleteVersions = "";
+                                    var totalDeleteVersion = 0;
+
                                     foreach (var key in pluginKeys)
                                     {
-                                        if (context.Plugins.Where(p => p.StringId == key)
-                                            .FirstOrDefault() == null)
+                                        var plugin = context.Plugins.Where(p => p.StringId == key)
+                                            .FirstOrDefault();
+                                        if (plugin == null)
                                         {
                                             CyberPluginManager.Current.DeletePluginDirectory(key, true);
                                             deleteKeys = deleteKeys + key + "\n";
                                             totalDelete++;
                                             isShouldNotify = true;
                                         }
+                                        else
+                                        {
+                                            var pluginVersions = CyberPluginManager.Current.GetAllPluginVersionInStorageFolder(key);
+                                            foreach (var version in pluginVersions)
+                                            {
+                                                if (plugin.PluginVersions.Where(v => v.Version == version)
+                                                    .FirstOrDefault() == null)
+                                                {
+                                                    CyberPluginManager.Current.DeletePluginVersionDirectory(key, version, true);
+                                                    deleteVersions = deleteVersions + key + " version=" + version + "\n";
+                                                    totalDeleteVersion++;
+                                                    isShouldNotify = true;
+                                                }
+                                            }
+                                        }
                                     }
 
-                                    message = "Đã xóa:" + totalDelete + "\n" + deleteKeys;
+                                    message = "Đã xóa plugin:" + totalDelete + "\n" 
+                                        + deleteKeys + "\n" 
+                                        + "Đã xóa plugin version:" + totalDeleteVersion + "\n" 
+                                        + deleteVersions;
                                 });
 
                             },

@@ -39,6 +39,15 @@ namespace cyber_server.implements.plugin_manager
             }
         }
 
+        public void DeletePluginVersionDirectory(string pluginKey, string version, bool rescursive = false)
+        {
+            var folder = pluginFolderLocation + "\\" + pluginKey + "\\versions\\" + version;
+            if (Directory.Exists(folder))
+            {
+                Directory.Delete(folder, rescursive);
+            }
+        }
+
         public bool RenamePluginFolder(string oldPluginKey, string newPluginKey)
         {
             if (Directory.Exists(pluginFolderLocation + "\\" + oldPluginKey))
@@ -124,9 +133,39 @@ namespace cyber_server.implements.plugin_manager
             return pluginFolderLocation + "\\" + pluginKey + "\\" + pluginVersion + "\\" + pluginZipFileName;
         }
 
+        public string GetPluginVersionForderPath(string pluginKey)
+        {
+            return pluginFolderLocation + "\\" + pluginKey + "\\" + "versions";
+        }
+
+        public string BuildPluginVersionFolderPath(string pluginKey, string version)
+        {
+            try
+            {
+                var v = Version.Parse(version);
+            }
+            catch
+            {
+                throw new InvalidOperationException("version is invaild");
+            }
+            return pluginKey + "\\" + "versions" + "\\" + version;
+        }
+
         public string[] GetAllPluginDirectory()
         {
             return Directory.GetDirectories(pluginFolderLocation);
+        }
+
+        public string[] GetAllPluginVersionInStorageFolder(string pluginKey)
+        {
+            var folders = Directory.GetDirectories(pluginFolderLocation + "\\" + pluginKey + "\\" + "versions");
+            var version = new string[folders.Length];
+            int i = 0;
+            foreach (var folder in folders)
+            {
+                version[i++] = new DirectoryInfo(folder).Name;
+            }
+            return version;
         }
 
         public string[] GetAllPluginKeyInPluginStorageFolder()
