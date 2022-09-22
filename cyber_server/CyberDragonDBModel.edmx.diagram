@@ -4,14 +4,17 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="23defc3d164f4e278526db09fe291cc4" Name="Diagram1" ZoomLevel="79">
-        <EntityTypeShape EntityType="CyberDragonDBModel.Plugin" Width="1.5" PointX="0.75" PointY="3.25" />
-        <EntityTypeShape EntityType="CyberDragonDBModel.PluginVersion" Width="1.5" PointX="3" PointY="1.25" />
-        <EntityTypeShape EntityType="CyberDragonDBModel.Tag" Width="1.5" PointX="3" PointY="4.25" />
-        <EntityTypeShape EntityType="CyberDragonDBModel.Vote" Width="1.5" PointX="3" PointY="6.875" />
-        <AssociationConnector Association="CyberDragonDBModel.FK__PluginVer__Plugi__07C12930" />
-        <AssociationConnector Association="CyberDragonDBModel.FK__Tag__PluginId__0A9D95DB" />
-        <AssociationConnector Association="CyberDragonDBModel.FK__Vote__PluginId__0D7A0286" />
+      <Diagram DiagramId="0a7783ce3d204c24bfa1ebade479d120" Name="Diagram1">
+        <EntityTypeShape EntityType="CyberDragonDBModel.Plugin" Width="1.5" PointX="0.75" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.PluginVersion" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.Tag" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.Tool" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.ToolVersion" Width="1.5" PointX="8" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.Vote" Width="1.5" PointX="3" PointY="7.5" IsExpanded="true" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__PluginVer__Plugi__625A9A57" ManuallyRouted="false" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__Tag__PluginId__2A164134" ManuallyRouted="false" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__Vote__PluginId__2B0A656D" ManuallyRouted="false" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__ToolVersi__ToolI__0697FACD" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

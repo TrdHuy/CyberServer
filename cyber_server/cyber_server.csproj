@@ -85,10 +85,20 @@
     </ApplicationDefinition>
     <Compile Include="base\ICyberHttpRequestHandler.cs" />
     <Compile Include="base\IServerModule.cs" />
+    <Compile Include="CyberDragonDBModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CyberDragonDBModel.Context.tt</DependentUpon>
+    </Compile>
     <Compile Include="CyberDragonDBModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CyberDragonDBModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="definition\CyberServerDefinition.cs" />
     <Compile Include="implements\db_manager\CyberDbManager.cs" />
@@ -106,6 +116,12 @@
     </Compile>
     <Compile Include="ServerModuleManager.cs" />
     <Compile Include="Tag.cs">
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tool.cs">
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ToolVersion.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="views\usercontrols\others\TaskHandlingPanel.xaml.cs">
@@ -131,22 +147,12 @@
     <Compile Include="view_models\plugin_version_item\PluginVersionItemViewModel.cs" />
     <Compile Include="view_models\tabs\ServerControllerTabViewModel.cs" />
     <Compile Include="view_models\windows\ModifyPluginWindowViewModel.cs" />
-    <Compile Include="Vote.cs">
-      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CyberDragonDBModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CyberDragonDBModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CyberDragonDBModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
+    <Compile Include="Vote.cs">
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
     <Page Include="views\usercontrols\others\TaskHandlingPanel.xaml">
       <SubType>Designer</SubType>
