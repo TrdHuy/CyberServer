@@ -13,10 +13,10 @@ namespace cyber_server
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class CyberDragonDBContext : DbContext
+    public partial class CyberDragonDbContext : DbContext
     {
-        public CyberDragonDBContext()
-            : base("name=CyberDragonDBContext")
+        public CyberDragonDbContext()
+            : base("name=CyberDragonDbContext")
         {
         }
     
@@ -28,8 +28,6 @@ namespace cyber_server
         public virtual DbSet<Plugin> Plugins { get; set; }
         public virtual DbSet<PluginVersion> PluginVersions { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<Tool> Tools { get; set; }
-        public virtual DbSet<ToolVersion> ToolVersions { get; set; }
         public virtual DbSet<Vote> Votes { get; set; }
     }
 }
