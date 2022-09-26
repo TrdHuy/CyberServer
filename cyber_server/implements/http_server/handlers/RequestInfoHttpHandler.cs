@@ -17,6 +17,11 @@ namespace cyber_server.implements.http_server.handlers
         public const string REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID = "GET_ALL_PLUGIN_DATA__START_INDEX";
         public const string RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID = "GET_ALL_PLUGIN_DATA__IS_END_OF_DBSET";
 
+        public const string REQUEST_SOFTWARE_INFO_HEADER_ID = "GET_ALL_SOFTWARE_DATA";
+        public const string REQUEST_SOFTWARE_INFO_MAXIMUM_AMOUNT_HEADER_ID = "GET_ALL_SOFTWARE_DATA__MAXIMUM_AMOUNT";
+        public const string REQUEST_SOFTWARE_INFO_START_INDEX_HEADER_ID = "GET_ALL_SOFTWARE_DATA__START_INDEX";
+        public const string RESPONSE_SOFTWARE_INFO_END_OF_DBSET_HEADER_ID = "GET_ALL_SOFTWARE_DATA__IS_END_OF_DBSET";
+
         public RequestInfoHttpHandler()
         {
         }
@@ -74,6 +79,10 @@ namespace cyber_server.implements.http_server.handlers
                             response.ContentLength64 = buf.Length;
                             response.Headers.Add(RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID, isEndOfDbset + "");
                             return buf;
+                        }
+                    case REQUEST_SOFTWARE_INFO_HEADER_ID:
+                        {
+                            break;
                         }
                 }
             }

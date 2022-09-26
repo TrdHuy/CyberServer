@@ -2,7 +2,9 @@
 using cyber_server.implements.db_manager;
 using cyber_server.implements.log_manager;
 using cyber_server.implements.plugin_manager;
+using cyber_server.implements.task_handler;
 using cyber_server.view_models.plugin_version_item;
+using cyber_server.view_models.tool_item;
 using cyber_server.view_models.windows;
 using cyber_server.views.usercontrols.others;
 using cyber_server.views.windows.others;
@@ -39,14 +41,21 @@ namespace cyber_server.views.windows
         public ObservableCollection<PluginItemViewModel> PluginSource { get; set; }
             = new ObservableCollection<PluginItemViewModel>();
 
+        public ObservableCollection<ToolItemViewModel> ToolSource { get; set; }
+            = new ObservableCollection<ToolItemViewModel>();
+
         public CyberServerWindow()
         {
             InitializeComponent();
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY, "Adding new version", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY, "Adding new plugin", 1, 1);
-            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY, "Reloading", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_TOOL_TASK_TYPE_KEY, "Adding new tool", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_TOOL_TASK_TYPE_KEY, "Reloading tools", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY, "Reloading plugins", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_PLUGIN_TASK_TYPE_KEY, "Deleting plugin", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_TOOL_TASK_TYPE_KEY, "Deleting tool", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.SYNC_TASK_TYPE_KEY, "Syncing", 1, 1);
+            TaskHandlerManager.Current.RegisterHandler(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY, PART_TaskHandlingPanel);
         }
 
         #region AddPluginTab
@@ -191,7 +200,7 @@ namespace cyber_server.views.windows
                                 foreach (var version in VersionSource)
                                 {
                                     var pv = version.BuildPluginVersionFromViewModel(plugin.StringId);
-                                    isCopFileSuccess = CyberPluginManager
+                                    isCopFileSuccess = CyberPluginAndToolManager
                                          .Current
                                          .CopyPluginToServerLocation(version.GetVersionSourceFilePath()
                                              , pv.FolderPath);
@@ -199,7 +208,7 @@ namespace cyber_server.views.windows
 
                                     if (!isCopFileSuccess)
                                     {
-                                        CyberPluginManager.Current.DeletePluginDirectory(plugin.StringId);
+                                        CyberPluginAndToolManager.Current.DeletePluginDirectory(plugin.StringId);
                                         break;
                                     }
                                 }
@@ -214,7 +223,7 @@ namespace cyber_server.views.windows
                                             var isLocalFile = new Uri(PART_PluginIconSourceTb.Text).IsFile;
                                             if (isLocalFile)
                                             {
-                                                CyberPluginManager
+                                                CyberPluginAndToolManager
                                                     .Current
                                                     .CopyPluginIconToServerLocation(PART_PluginIconSourceTb.Text, plugin.StringId);
                                                 plugin.IconSource = CyberServerDefinition.SERVER_REMOTE_ADDRESS
@@ -387,7 +396,7 @@ namespace cyber_server.views.windows
         }
         #endregion
 
-        #region ManagePluginTab
+        #region ManageTool&PluginTab
         private async void HandleManagerPluginTabButtonEvent(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
@@ -412,6 +421,55 @@ namespace cyber_server.views.windows
                            bypassIfSemaphoreNotAvaild: true);
                         break;
                     }
+                case "PART_ReloadToolFromDb":
+                    {
+                        await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.RELOAD_TOOL_TASK_TYPE_KEY,
+                           mainFunc: async () =>
+                           {
+                               ToolSource.Clear();
+                               await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                               {
+                                   foreach (var tool in context.Tools)
+                                   {
+                                       var vm = new ToolItemViewModel(tool);
+                                       ToolSource.Add(vm);
+                                   }
+                               });
+                           },
+                           executeTime: 1000,
+                           bypassIfSemaphoreNotAvaild: true);
+                        break;
+                    }
+                case "DeleteToolItemButton":
+                    {
+                        var itemViewModel = btn.DataContext as ToolItemViewModel;
+                        if (itemViewModel != null)
+                        {
+                            var confirm = MessageBox.Show("Bạn có chắc xóa dữ liệu này!", "Xác nhận", MessageBoxButton.YesNo);
+                            if (confirm == MessageBoxResult.Yes)
+                            {
+                                await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.DELETE_TOOL_TASK_TYPE_KEY,
+                                   mainFunc: async () =>
+                                   {
+                                       var sucess = await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                                       {
+                                           context.ToolVersions.RemoveRange(itemViewModel.RawModel.ToolVersions);
+                                           context.Tools.Remove(itemViewModel.RawModel);
+                                           context.SaveChanges();
+                                       });
+
+                                       if (sucess)
+                                       {
+                                           CyberPluginAndToolManager.Current.DeleteToolDirectory(itemViewModel.RawModel.StringId, true);
+                                           ToolSource.Remove(itemViewModel);
+                                       }
+                                   },
+                                   executeTime: 0,
+                                   bypassIfSemaphoreNotAvaild: true);
+                            }
+                        }
+                        break;
+                    }
                 case "DeletePluginItemButton":
                     {
                         var itemViewModel = btn.DataContext as PluginItemViewModel;
@@ -434,7 +492,7 @@ namespace cyber_server.views.windows
 
                                        if (sucess)
                                        {
-                                           CyberPluginManager.Current.DeletePluginDirectory(itemViewModel.RawModel.StringId, true);
+                                           CyberPluginAndToolManager.Current.DeletePluginDirectory(itemViewModel.RawModel.StringId, true);
                                            PluginSource.Remove(itemViewModel);
                                        }
                                    },
@@ -442,6 +500,20 @@ namespace cyber_server.views.windows
                                    bypassIfSemaphoreNotAvaild: true);
 
                             }
+                        }
+                        break;
+                    }
+                case "ModifyToolItemButton":
+                    {
+                        var itemViewModel = btn.DataContext as ToolItemViewModel;
+                        var modifyToolWindow = new ModifyToolWindow();
+                        modifyToolWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        modifyToolWindow.Owner = this;
+                        var modifyToolWindowContext = modifyToolWindow.DataContext as ModifyToolWindowViewModel;
+                        if (modifyToolWindowContext != null)
+                        {
+                            modifyToolWindowContext.SetRawModel(itemViewModel.RawModel);
+                            modifyToolWindow.ShowDialog();
                         }
                         break;
                     }
@@ -466,7 +538,7 @@ namespace cyber_server.views.windows
                         await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.SYNC_TASK_TYPE_KEY,
                             mainFunc: async () =>
                             {
-                                var pluginKeys = CyberPluginManager.Current.GetAllPluginKeyInPluginStorageFolder();
+                                var pluginKeys = CyberPluginAndToolManager.Current.GetAllPluginKeyInPluginStorageFolder();
 
                                 var sucess = await CyberDbManager.Current.RequestDbContextAsync((context) =>
                                 {
@@ -481,20 +553,20 @@ namespace cyber_server.views.windows
                                             .FirstOrDefault();
                                         if (plugin == null)
                                         {
-                                            CyberPluginManager.Current.DeletePluginDirectory(key, true);
+                                            CyberPluginAndToolManager.Current.DeletePluginDirectory(key, true);
                                             deleteKeys = deleteKeys + key + "\n";
                                             totalDelete++;
                                             isShouldNotify = true;
                                         }
                                         else
                                         {
-                                            var pluginVersions = CyberPluginManager.Current.GetAllPluginVersionInStorageFolder(key);
+                                            var pluginVersions = CyberPluginAndToolManager.Current.GetAllPluginVersionInStorageFolder(key);
                                             foreach (var version in pluginVersions)
                                             {
                                                 if (plugin.PluginVersions.Where(v => v.Version == version)
                                                     .FirstOrDefault() == null)
                                                 {
-                                                    CyberPluginManager.Current.DeletePluginVersionDirectory(key, version, true);
+                                                    CyberPluginAndToolManager.Current.DeletePluginVersionDirectory(key, version, true);
                                                     deleteVersions = deleteVersions + key + " version=" + version + "\n";
                                                     totalDeleteVersion++;
                                                     isShouldNotify = true;
@@ -503,9 +575,9 @@ namespace cyber_server.views.windows
                                         }
                                     }
 
-                                    message = "Đã xóa plugin:" + totalDelete + "\n" 
-                                        + deleteKeys + "\n" 
-                                        + "Đã xóa plugin version:" + totalDeleteVersion + "\n" 
+                                    message = "Đã xóa plugin:" + totalDelete + "\n"
+                                        + deleteKeys + "\n"
+                                        + "Đã xóa plugin version:" + totalDeleteVersion + "\n"
                                         + deleteVersions;
                                 });
 

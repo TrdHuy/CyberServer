@@ -121,7 +121,7 @@ namespace cyber_server.implements.http_server.handlers
 
                                 if (query != null)
                                 {
-                                    var zipFilePath = CyberPluginManager.Current.GetSetupZipFilePathByPluginVersion(
+                                    var zipFilePath = CyberPluginAndToolManager.Current.GetSetupZipFilePathByPluginVersion(
                                             requestPluginKey,
                                             requestPluginVersion.ToString(),
                                             query.FileName);

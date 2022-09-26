@@ -18,6 +18,7 @@ namespace cyber_server.implements.http_server
     {
         public const string END_POINT = "http://107.127.131.89:8080/";
         public const string REQUEST_PLUGIN_RESOURCE_PATH = "/pluginresource";
+        public const string REQUEST_TOOL_RESOURCE_PATH = "/toolresource";
         public const string DOWNLOAD_PLUGIN_API_PATH = "/downloadplugin";
         public const string REQUEST_INFO_API_PATH = "/requestinfo";
         public const string REQUEST_INFO_HEADER_KEY = "h2sw-request-info";
@@ -107,7 +108,13 @@ namespace cyber_server.implements.http_server
 
             if (request.Url.AbsolutePath.Contains(REQUEST_PLUGIN_RESOURCE_PATH))
             {
-                byte[] buffer = await new RequestPluginResourceHttpHandler(request.Url.AbsolutePath)
+                byte[] buffer = await new RequestResourceHttpHandler(request.Url.AbsolutePath, resMode: ResourceMode.Plugin)
+                    .Handle(request, response);
+                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+            }
+            else if (request.Url.AbsolutePath.Contains(REQUEST_TOOL_RESOURCE_PATH))
+            {
+                byte[] buffer = await new RequestResourceHttpHandler(request.Url.AbsolutePath, resMode: ResourceMode.Tool)
                     .Handle(request, response);
                 await outputstream.WriteAsync(buffer, 0, buffer.Length);
             }

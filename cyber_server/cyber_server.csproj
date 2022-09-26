@@ -105,9 +105,10 @@
     <Compile Include="implements\http_server\CyberHttpServer.cs" />
     <Compile Include="implements\http_server\handlers\RequestDownloadPluginHttpHandler.cs" />
     <Compile Include="implements\http_server\handlers\RequestInfoHttpHandler.cs" />
-    <Compile Include="implements\http_server\handlers\RequestPluginResourceHttpHandler.cs" />
+    <Compile Include="implements\http_server\handlers\RequestResourceHttpHandler.cs" />
     <Compile Include="implements\log_manager\ServerLogManager.cs" />
-    <Compile Include="implements\plugin_manager\CyberPluginManager.cs" />
+    <Compile Include="implements\plugin_manager\CyberPluginAndToolManager.cs" />
+    <Compile Include="implements\task_handler\TaskHandlerManager.cs" />
     <Compile Include="Plugin.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
@@ -127,6 +128,9 @@
     <Compile Include="views\usercontrols\others\TaskHandlingPanel.xaml.cs">
       <DependentUpon>TaskHandlingPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\usercontrols\tabs\AddToolTab.xaml.cs">
+      <DependentUpon>AddToolTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\usercontrols\tabs\ServerControllerTab.xaml.cs">
       <DependentUpon>ServerControllerTab.xaml</DependentUpon>
     </Compile>
@@ -139,6 +143,9 @@
     <Compile Include="views\windows\others\ModifyPluginWindow.xaml.cs">
       <DependentUpon>ModifyPluginWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\windows\others\ModifyToolWindow.xaml.cs">
+      <DependentUpon>ModifyToolWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\windows\others\TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>
@@ -146,15 +153,22 @@
     <Compile Include="view_models\plugin_version_item\PluginItemViewModel.cs" />
     <Compile Include="view_models\plugin_version_item\PluginVersionItemViewModel.cs" />
     <Compile Include="view_models\tabs\ServerControllerTabViewModel.cs" />
+    <Compile Include="view_models\tool_item\ToolItemViewModel.cs" />
+    <Compile Include="view_models\tool_item\ToolVersionItemViewModel.cs" />
     <Compile Include="view_models\windows\ModifyPluginWindowViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="view_models\windows\ModifyToolWindowViewModel.cs" />
     <Compile Include="Vote.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
     <Page Include="views\usercontrols\others\TaskHandlingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\usercontrols\tabs\AddToolTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -171,6 +185,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\windows\others\ModifyPluginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\windows\others\ModifyToolWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

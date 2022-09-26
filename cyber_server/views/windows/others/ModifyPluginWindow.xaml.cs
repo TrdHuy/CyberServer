@@ -1,6 +1,7 @@
 ﻿using cyber_server.definition;
 using cyber_server.implements.db_manager;
 using cyber_server.implements.plugin_manager;
+using cyber_server.implements.task_handler;
 using cyber_server.view_models.plugin_version_item;
 using cyber_server.view_models.windows;
 using cyber_server.views.usercontrols.others;
@@ -32,6 +33,7 @@ namespace cyber_server.views.windows.others
         public ModifyPluginWindow()
         {
             InitializeComponent();
+            TaskHandlerManager.Current.RegisterHandler(TaskHandlerManager.PLUGIN_MODIFY_WINDOW_HANDLER_KEY, PART_TaskHandlingPanel); 
             _viewModel = DataContext as ModifyPluginWindowViewModel;
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.MODIFI_PLUGIN_TASK_TYPE_KEY, "Saving data", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY, "Adding new version", 1, 1);
@@ -162,7 +164,7 @@ namespace cyber_server.views.windows.others
                                                     .FirstOrDefault();
                                                 var pv = pluginVer.BuildPluginVersionFromViewModel(plugin.StringId);
 
-                                                var isCopFileSuccess = CyberPluginManager
+                                                var isCopFileSuccess = CyberPluginAndToolManager
                                                     .Current
                                                     .CopyPluginToServerLocation(pluginVer.GetVersionSourceFilePath()
                                                         , pv.FolderPath);
@@ -174,7 +176,7 @@ namespace cyber_server.views.windows.others
                                                 }
                                                 else
                                                 {
-                                                    CyberPluginManager.Current.DeletePluginDirectory(plugin.StringId);
+                                                    CyberPluginAndToolManager.Current.DeletePluginDirectory(plugin.StringId);
                                                     CyberDbManager.Current.RollBack();
                                                 }
 
@@ -233,7 +235,7 @@ namespace cyber_server.views.windows.others
                                                 //Rename plugin folder
                                                 if (_viewModel.PluginKey != _viewModel.RawModel.StringId)
                                                 {
-                                                    success = CyberPluginManager.Current.RenamePluginFolder(plugin.StringId
+                                                    success = CyberPluginAndToolManager.Current.RenamePluginFolder(plugin.StringId
                                                         , _viewModel.PluginKey);
                                                 }
 
@@ -247,14 +249,14 @@ namespace cyber_server.views.windows.others
                                                         if (version.IsThisVersionAddedNewly())
                                                         {
                                                             var pv = version.BuildPluginVersionFromViewModel(plugin.StringId);
-                                                            success = CyberPluginManager
+                                                            success = CyberPluginAndToolManager
                                                                 .Current
                                                                 .CopyPluginToServerLocation(version.GetVersionSourceFilePath()
                                                                     , pv.FolderPath);
                                                             plugin.PluginVersions.Add(pv);
                                                             if (success)
                                                             {
-                                                                CyberPluginManager.Current.DeletePluginDirectory(plugin.StringId);
+                                                                CyberPluginAndToolManager.Current.DeletePluginDirectory(plugin.StringId);
                                                                 break;
                                                             }
                                                         }
@@ -268,7 +270,7 @@ namespace cyber_server.views.windows.others
                                                             var isLocalFile = new Uri(_viewModel.IconSource).IsFile;
                                                             if (isLocalFile)
                                                             {
-                                                                CyberPluginManager
+                                                                CyberPluginAndToolManager
                                                                     .Current
                                                                     .CopyPluginIconToServerLocation(_viewModel.IconSource, plugin.StringId);
                                                                 plugin.IconSource = CyberServerDefinition.SERVER_REMOTE_ADDRESS
@@ -399,7 +401,6 @@ namespace cyber_server.views.windows.others
             return true;
         }
 
-
         private int GetIndexOfNewVersion()
         {
             Version newVersion = new Version();
@@ -447,6 +448,12 @@ namespace cyber_server.views.windows.others
                 return -1;
             }
             return index;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            TaskHandlerManager.Current.UnregisterHandler(TaskHandlerManager.PLUGIN_MODIFY_WINDOW_HANDLER_KEY);
+            base.OnClosed(e);
         }
     }
 }

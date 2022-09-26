@@ -59,15 +59,15 @@ namespace cyber_server
             }
         }
 
-        public static CyberPluginManager CPM_Instance
+        public static CyberPluginAndToolManager CPM_Instance
         {
             get
             {
                 if (_CPM_Instance == null)
                 {
-                    _CPM_Instance = Activator.CreateInstance(typeof(CyberPluginManager), true) as CyberPluginManager;
+                    _CPM_Instance = Activator.CreateInstance(typeof(CyberPluginAndToolManager), true) as CyberPluginAndToolManager;
                 }
-                return (CyberPluginManager)_CPM_Instance;
+                return (CyberPluginAndToolManager)_CPM_Instance;
             }
         }
 

@@ -21,6 +21,7 @@ namespace cyber_server
         public System.DateTime DatePublished { get; set; }
         public string FolderPath { get; set; }
         public string FileName { get; set; }
+        public string ExecutePath { get; set; }
     
         public virtual Tool Tool { get; set; }
     }

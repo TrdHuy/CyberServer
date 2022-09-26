@@ -75,214 +75,418 @@
 			<RowDefinition Height="20" />
 		</Grid.RowDefinitions>
 		<TabControl>
-			<TabItem Header="Quản lý plugin">
+			<TabItem Header="Quản lý tool &amp; plugin">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="500" />
 						<RowDefinition />
 					</Grid.RowDefinitions>
-					<ListView x:Name="PART_PluginLV"
-							  AlternationCount="2"
-							  ItemsSource="{Binding ElementName=PART_MainWindow, Path=PluginSource}">
-						<ListView.ItemContainerStyle>
-							<Style TargetType="ListViewItem">
-								<Setter Property="Height"
-										Value="70" />
-								<Setter Property="BorderThickness"
-										Value="0,0,0,1" />
-								<Setter Property="BorderBrush"
-										Value="Black" />
-								<Setter Property="HorizontalContentAlignment"
-										Value="Stretch"></Setter>
-								<Setter Property="VerticalContentAlignment"
-										Value="Stretch"></Setter>
-								<Setter Property="Template">
-									<Setter.Value>
-										<ControlTemplate TargetType="ListViewItem">
-											<Border x:Name="mainBorder"
-													BorderThickness="0,0,0,1"
-													BorderBrush="Black">
-												<Grid x:Name="mainGrid">
-													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="*" />
-														<ColumnDefinition Width="10" />
-														<ColumnDefinition Width="Auto" />
-														<ColumnDefinition Width="100" />
-													</Grid.ColumnDefinitions>
-													<GridViewRowPresenter />
-													<WrapPanel Grid.Column="2"
-															   Width="160">
-														<Button x:Name="DeletePluginItemButton"
-																Content="Xóa"
-																Width="40"
-																Background="Transparent"
-																BorderThickness="0"
-																Click="HandleManagerPluginTabButtonEvent"
-																Height="30" />
-														<Button x:Name="ModifyPluginItemButton"
-																Content="Sửa"
-																Width="40"
-																Background="Transparent"
-																BorderThickness="0"
-																Click="HandleManagerPluginTabButtonEvent"
-																Height="30" />
-														<Button x:Name="ViewDetailPluginItemButton"
-																Content="Xem lịch sử phiên bản"
-																Width="140"
-																Background="Transparent"
-																BorderThickness="0"
-																Click="HandleManagerPluginTabButtonEvent"
-																Height="30" />
-													</WrapPanel>
-												</Grid>
-											</Border>
+		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             			<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="30"/>
+							<RowDefinition />
+							<RowDefinition Height="30" />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+						<TextBlock Text="Thông tin các Plugin"
+								   VerticalAlignment="Center"
+								   FontWeight="Bold"
+								   FontSize="15"/>
+						<ListView x:Name="PART_PluginLV"
+								  AlternationCount="2"
+								  Grid.Row="1"
+								  ItemsSource="{Binding ElementName=PART_MainWindow, Path=PluginSource}">
+							<ListView.ItemContainerStyle>
+								<Style TargetType="ListViewItem">
+									<Setter Property="Height"
+											Value="70" />
+									<Setter Property="BorderThickness"
+											Value="0,0,0,1" />
+									<Setter Property="BorderBrush"
+											Value="Black" />
+									<Setter Property="HorizontalContentAlignment"
+											Value="Stretch"></Setter>
+									<Setter Property="VerticalContentAlignment"
+											Value="Stretch"></Setter>
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="ListViewItem">
+												<Border x:Name="mainBorder"
+														BorderThickness="0,0,0,1"
+														BorderBrush="Black">
+													<Grid x:Name="mainGrid">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*" />
+															<ColumnDefinition Width="10" />
+															<ColumnDefinition Width="Auto" />
+															<ColumnDefinition Width="100" />
+														</Grid.ColumnDefinitions>
+														<GridViewRowPresenter />
+														<WrapPanel Grid.Column="2"
+																   Width="160">
+															<Button x:Name="DeletePluginItemButton"
+																	Content="Xóa"
+																	Width="40"
+																	Background="Transparent"
+																	BorderThickness="0"
+																	Click="HandleManagerPluginTabButtonEvent"
+																	Height="30" />
+															<Button x:Name="ModifyPluginItemButton"
+																	Content="Sửa"
+																	Width="40"
+																	Background="Transparent"
+																	BorderThickness="0"
+																	Click="HandleManagerPluginTabButtonEvent"
+																	Height="30" />
+															<Button x:Name="ViewDetailPluginItemButton"
+																	Content="Xem lịch sử phiên bản"
+																	Width="140"
+																	Background="Transparent"
+																	BorderThickness="0"
+																	Click="HandleManagerPluginTabButtonEvent"
+																	Height="30" />
+														</WrapPanel>
+													</Grid>
+												</Border>
 
-											<ControlTemplate.Triggers>
-												<Trigger Property="ListView.AlternationIndex"
-														 Value="1">
-													<Setter Property="Background"
-															TargetName="mainBorder"
-															Value="#FFCCCCCC" />
-												</Trigger>
-												<Trigger Property="ListView.AlternationIndex"
-														 Value="0">
-													<Setter Property="Background"
-															TargetName="mainBorder"
-															Value="#FF989898" />
-												</Trigger>
-												<Trigger Property="IsMouseOver"
-														 Value="True">
-													<Setter Property="Background"
-															TargetName="mainBorder"
-															Value="#FF769E9B" />
-												</Trigger>
-											</ControlTemplate.Triggers>
-										</ControlTemplate>
-									</Setter.Value>
-								</Setter>
-							</Style>
-						</ListView.ItemContainerStyle>
-						<ListView.View>
-							<GridView>
-								<GridViewColumn Width="100">
-									<GridViewColumnHeader Content="Tên"
-														  HorizontalContentAlignment="Left" />
-									<GridViewColumn.CellTemplate>
-										<DataTemplate>
-											<Border BorderThickness="0,0,1,0"
-													Margin="0,0,-9,0"
-													BorderBrush="Black">
-												<TextBlock Text="{Binding Name}"
-														   TextWrapping="Wrap"
-														   VerticalAlignment="Top" />
-											</Border>
-										</DataTemplate>
-									</GridViewColumn.CellTemplate>
-								</GridViewColumn>
-								<GridViewColumn>
-									<GridViewColumnHeader Content="Tác giả"
-														  HorizontalContentAlignment="Left" />
-									<GridViewColumn.CellTemplate>
-										<DataTemplate>
-											<Border BorderThickness="0,0,1,0"
-													Margin="0,0,-9,0"
-													BorderBrush="Black">
-												<TextBlock Text="{Binding Author}"
-														   TextWrapping="Wrap"
-														   VerticalAlignment="Top" />
-											</Border>
-										</DataTemplate>
-									</GridViewColumn.CellTemplate>
-								</GridViewColumn>
-								<GridViewColumn Width="150">
-									<GridViewColumnHeader Content="Mô tả"
-														  HorizontalContentAlignment="Left" />
-									<GridViewColumn.CellTemplate>
-										<DataTemplate>
-											<Border BorderThickness="0,0,1,0"
-													Margin="0,0,-9,0"
-													BorderBrush="Black">
-												<TextBlock Text="{Binding Description}"
-														   TextWrapping="Wrap"
-														   VerticalAlignment="Top"
-														   HorizontalAlignment="Left" />
-											</Border>
-										</DataTemplate>
-									</GridViewColumn.CellTemplate>
-								</GridViewColumn>
-								<GridViewColumn>
-									<GridViewColumnHeader Content="Lượt download"
-														  HorizontalContentAlignment="Left" />
+												<ControlTemplate.Triggers>
+													<Trigger Property="ListView.AlternationIndex"
+															 Value="1">
+														<Setter Property="Background"
+																TargetName="mainBorder"
+																Value="#FFCCCCCC" />
+													</Trigger>
+													<Trigger Property="ListView.AlternationIndex"
+															 Value="0">
+														<Setter Property="Background"
+																TargetName="mainBorder"
+																Value="#FF989898" />
+													</Trigger>
+													<Trigger Property="IsMouseOver"
+															 Value="True">
+														<Setter Property="Background"
+																TargetName="mainBorder"
+																Value="#FF769E9B" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</ListView.ItemContainerStyle>
+							<ListView.View>
+								<GridView>
+									<GridViewColumn Width="100">
+										<GridViewColumnHeader Content="Tên"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Name}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn>
+										<GridViewColumnHeader Content="Tác giả"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Author}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn Width="150">
+										<GridViewColumnHeader Content="Mô tả"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Description}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top"
+															   HorizontalAlignment="Left" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn>
+										<GridViewColumnHeader Content="Lượt download"
+															  HorizontalContentAlignment="Left" />
 
-									<GridViewColumn.CellTemplate>
-										<DataTemplate>
-											<Border BorderThickness="0,0,1,0"
-													Margin="0,0,-9,0"
-													BorderBrush="Black">
-												<TextBlock Text="{Binding Downloads}"
-														   TextWrapping="Wrap"
-														   VerticalAlignment="Top"
-														   HorizontalAlignment="Left" />
-											</Border>
-										</DataTemplate>
-									</GridViewColumn.CellTemplate>
-								</GridViewColumn>
-								<GridViewColumn>
-									<GridViewColumnHeader Content="Đánh giá"
-														  HorizontalContentAlignment="Left" />
-									<GridViewColumn.CellTemplate>
-										<DataTemplate>
-											<Border BorderThickness="0,0,1,0"
-													Margin="0,0,-9,0"
-													BorderBrush="Black">
-												<TextBlock Text="{Binding Rates}"
-														   TextWrapping="Wrap"
-														   VerticalAlignment="Top"
-														   HorizontalAlignment="Left" />
-											</Border>
-										</DataTemplate>
-									</GridViewColumn.CellTemplate>
-								</GridViewColumn>
-								<GridViewColumn>
-									<GridViewColumnHeader Content="Lịch sử phiên bản"
-														  HorizontalContentAlignment="Left" />
-									<GridViewColumn.CellTemplate>
-										<DataTemplate>
-											<DataTemplate.Resources>
-												<sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">6</sys:Double>
-												<sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">6</sys:Double>
-											</DataTemplate.Resources>
-											<Border BorderThickness="0,0,1,0"
-													Margin="0,0,-9,0"
-													BorderBrush="Black">
-												<ListView ItemsSource="{Binding VersionSource}">
-													<ListView.View>
-														<GridView>
-															<GridViewColumn DisplayMemberBinding="{Binding Version}">
-																<GridViewColumnHeader Content="Phiên bản" />
-															</GridViewColumn>
-															<GridViewColumn DisplayMemberBinding="{Binding Description}">
-																<GridViewColumnHeader Content="Mô tả" />
-															</GridViewColumn>
-															<GridViewColumn DisplayMemberBinding="{Binding FilePath}">
-																<GridViewColumnHeader Content="Đường dẫn" />
-															</GridViewColumn>
-														</GridView>
-													</ListView.View>
-												</ListView>
-											</Border>
-										</DataTemplate>
-									</GridViewColumn.CellTemplate>
-								</GridViewColumn>
-							</GridView>
-						</ListView.View>
-					</ListView>
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Downloads}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top"
+															   HorizontalAlignment="Left" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn>
+										<GridViewColumnHeader Content="Đánh giá"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Rates}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top"
+															   HorizontalAlignment="Left" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn>
+										<GridViewColumnHeader Content="Lịch sử phiên bản"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<DataTemplate.Resources>
+													<sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">6</sys:Double>
+													<sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">6</sys:Double>
+												</DataTemplate.Resources>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<ListView ItemsSource="{Binding VersionSource}">
+														<ListView.View>
+															<GridView>
+																<GridViewColumn DisplayMemberBinding="{Binding Version}">
+																	<GridViewColumnHeader Content="Phiên bản" />
+																</GridViewColumn>
+																<GridViewColumn DisplayMemberBinding="{Binding Description}">
+																	<GridViewColumnHeader Content="Mô tả" />
+																</GridViewColumn>
+																<GridViewColumn DisplayMemberBinding="{Binding FilePath}">
+																	<GridViewColumnHeader Content="Đường dẫn" />
+																</GridViewColumn>
+															</GridView>
+														</ListView.View>
+													</ListView>
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+								</GridView>
+							</ListView.View>
+						</ListView>
+						<TextBlock Text="Thông tin các Tool"
+								   Grid.Row="2"
+								   VerticalAlignment="Center"
+								   FontWeight="Bold"
+								   FontSize="15" />
+						<ListView x:Name="PART_ToolLV"
+								  AlternationCount="2"
+								  Grid.Row="3"
+								  ItemsSource="{Binding ElementName=PART_MainWindow, Path=ToolSource}">
+							<ListView.ItemContainerStyle>
+								<Style TargetType="ListViewItem">
+									<Setter Property="Height"
+											Value="70" />
+									<Setter Property="BorderThickness"
+											Value="0,0,0,1" />
+									<Setter Property="BorderBrush"
+											Value="Black" />
+									<Setter Property="HorizontalContentAlignment"
+											Value="Stretch"></Setter>
+									<Setter Property="VerticalContentAlignment"
+											Value="Stretch"></Setter>
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="ListViewItem">
+												<Border x:Name="mainBorder"
+														BorderThickness="0,0,0,1"
+														BorderBrush="Black">
+													<Grid x:Name="mainGrid">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*" />
+															<ColumnDefinition Width="10" />
+															<ColumnDefinition Width="Auto" />
+															<ColumnDefinition Width="100" />
+														</Grid.ColumnDefinitions>
+														<GridViewRowPresenter />
+														<WrapPanel Grid.Column="2"
+																   Width="160">
+															<Button x:Name="DeleteToolItemButton"
+																	Content="Xóa"
+																	Width="40"
+																	Click="HandleManagerPluginTabButtonEvent"
+																	Background="Transparent"
+																	BorderThickness="0"
+																	Height="30" />
+															<Button x:Name="ModifyToolItemButton"
+																	Content="Sửa"
+																	Width="40"
+																	Background="Transparent"
+																	BorderThickness="0"
+																	Click="HandleManagerPluginTabButtonEvent"
+																	Height="30" />
+															<Button x:Name="ViewDetailToolItemButton"
+																	Content="Xem lịch sử phiên bản"
+																	Width="140"
+																	Background="Transparent"
+																	BorderThickness="0"
+																	Click="HandleManagerPluginTabButtonEvent"
+																	Height="30" />
+														</WrapPanel>
+													</Grid>
+												</Border>
 
+												<ControlTemplate.Triggers>
+													<Trigger Property="ListView.AlternationIndex"
+															 Value="1">
+														<Setter Property="Background"
+																TargetName="mainBorder"
+																Value="#FFCCCCCC" />
+													</Trigger>
+													<Trigger Property="ListView.AlternationIndex"
+															 Value="0">
+														<Setter Property="Background"
+																TargetName="mainBorder"
+																Value="#FF989898" />
+													</Trigger>
+													<Trigger Property="IsMouseOver"
+															 Value="True">
+														<Setter Property="Background"
+																TargetName="mainBorder"
+																Value="#FF769E9B" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</ListView.ItemContainerStyle>
+							<ListView.View>
+								<GridView>
+									<GridViewColumn Width="100">
+										<GridViewColumnHeader Content="Tên"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Name}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn>
+										<GridViewColumnHeader Content="Tác giả"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Author}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn Width="150">
+										<GridViewColumnHeader Content="Mô tả"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Description}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top"
+															   HorizontalAlignment="Left" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn>
+										<GridViewColumnHeader Content="Lượt download"
+															  HorizontalContentAlignment="Left" />
+
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<TextBlock Text="{Binding Downloads}"
+															   TextWrapping="Wrap"
+															   VerticalAlignment="Top"
+															   HorizontalAlignment="Left" />
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+									<GridViewColumn>
+										<GridViewColumnHeader Content="Lịch sử phiên bản"
+															  HorizontalContentAlignment="Left" />
+										<GridViewColumn.CellTemplate>
+											<DataTemplate>
+												<DataTemplate.Resources>
+													<sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">6</sys:Double>
+													<sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">6</sys:Double>
+												</DataTemplate.Resources>
+												<Border BorderThickness="0,0,1,0"
+														Margin="0,0,-9,0"
+														BorderBrush="Black">
+													<ListView ItemsSource="{Binding VersionSource}">
+														<ListView.View>
+															<GridView>
+																<GridViewColumn DisplayMemberBinding="{Binding Version}">
+																	<GridViewColumnHeader Content="Phiên bản" />
+																</GridViewColumn>
+																<GridViewColumn DisplayMemberBinding="{Binding Description}">
+																	<GridViewColumnHeader Content="Mô tả" />
+																</GridViewColumn>
+																<GridViewColumn DisplayMemberBinding="{Binding FilePath}">
+																	<GridViewColumnHeader Content="Đường dẫn" />
+																</GridViewColumn>
+															</GridView>
+														</ListView.View>
+													</ListView>
+												</Border>
+											</DataTemplate>
+										</GridViewColumn.CellTemplate>
+									</GridViewColumn>
+								</GridView>
+							</ListView.View>
+						</ListView>
+					</Grid>
+					
 					<WrapPanel Grid.Row="1">
 						<Button x:Name="PART_ReloadPluginFromDb"
 								Click="HandleManagerPluginTabButtonEvent"
-								Content="Reload"
-								Width="70"
+								Content="Reload thông tin plugin"
+								Width="140"
+								Margin="5" />
+						<Button x:Name="PART_ReloadToolFromDb"
+								Click="HandleManagerPluginTabButtonEvent"
+								Content="Reload thông tin tool"
+								Width="140"
 								Margin="5" />
 						<Button x:Name="PART_SyncPluginFolderWithDbButton"
 								Click="HandleManagerPluginTabButtonEvent"
@@ -496,7 +700,7 @@
 										 Width="180"
 										 Tag="Main class name *"
 										 Margin="10,0,0,0" />
-								
+
 								<TextBox x:Name="PART_PathToPluginTextbox"
 										 Width="100"
 										 Tag="File path *"
@@ -665,9 +869,13 @@
 				</ScrollViewer>
 
 			</TabItem>
+			<TabItem Header="Thêm tool">
+				<tabs:AddToolTab />
+			</TabItem>
 			<TabItem Header="Quản lý server">
 				<tabs:ServerControllerTab />
 			</TabItem>
+
 		</TabControl>
 
 		<ouc:TaskHandlingPanel Grid.Row="1"

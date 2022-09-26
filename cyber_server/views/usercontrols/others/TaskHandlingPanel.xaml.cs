@@ -23,9 +23,13 @@ namespace cyber_server.views.usercontrols.others
         public const string ADD_VERSION_TASK_TYPE_KEY = "ADD_VERSION_TASK_TYPE_KEY";
         public const string DELETE_VERSION_TASK_TYPE_KEY = "DELETE_VERSION_TASK_TYPE_KEY";
         public const string ADD_PLUGIN_TASK_TYPE_KEY = "ADD_PLUGIN_TASK_TYPE_KEY";
+        public const string ADD_TOOL_TASK_TYPE_KEY = "ADD_TOOL_TASK_TYPE_KEY";
+        public const string RELOAD_TOOL_TASK_TYPE_KEY = "RELOAD_TOOL_TASK_TYPE_KEY";
         public const string RELOAD_PLUGIN_TASK_TYPE_KEY = "RELOAD_PLUGIN_TASK_TYPE_KEY";
         public const string DELETE_PLUGIN_TASK_TYPE_KEY = "DELETE_PLUGIN_TASK_TYPE_KEY";
+        public const string DELETE_TOOL_TASK_TYPE_KEY = "DELETE_TOOL_TASK_TYPE_KEY";
         public const string MODIFI_PLUGIN_TASK_TYPE_KEY = "MODIFI_PLUGIN_TASK_TYPE_KEY";
+        public const string MODIFI_TOOL_TASK_TYPE_KEY = "MODIFI_TOOL_TASK_TYPE_KEY";
         public const string SYNC_TASK_TYPE_KEY = "SYNC_TASK_TYPE_KEY";
 
         private TextBlock _currentTaskNameTb;

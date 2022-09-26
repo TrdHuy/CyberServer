@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CyberDragonDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="CyberDragonDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Plugin">
           <Key>
             <PropertyRef Name="PluginId" />
@@ -65,6 +65,7 @@
           <Property Name="Version" Type="nchar" MaxLength="10" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="ToolId" Type="int" Nullable="false" />
+          <Property Name="ExecutePath" Type="nvarchar(max)" Nullable="false" />
           <Property Name="DatePublished" Type="datetime" Nullable="false" />
           <Property Name="FolderPath" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
@@ -101,7 +102,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ToolVersi__ToolI__7755B73D">
+        <Association Name="FK__ToolVersi__ToolI__0880433F">
           <End Role="Tool" Type="Self.Tool" Multiplicity="1" />
           <End Role="ToolVersion" Type="Self.ToolVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -140,7 +141,7 @@
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="Tag" EntitySet="Tag" />
           </AssociationSet>
-          <AssociationSet Name="FK__ToolVersi__ToolI__7755B73D" Association="Self.FK__ToolVersi__ToolI__7755B73D">
+          <AssociationSet Name="FK__ToolVersi__ToolI__0880433F" Association="Self.FK__ToolVersi__ToolI__0880433F">
             <End Role="Tool" EntitySet="Tool" />
             <End Role="ToolVersion" EntitySet="ToolVersion" />
           </AssociationSet>
@@ -149,8 +150,7 @@
             <End Role="Vote" EntitySet="Vote" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CyberDragonDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -224,6 +224,7 @@
           <Property Name="FolderPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Tool" Relationship="Self.FK__ToolVersi__ToolI__7755B73D" FromRole="ToolVersion" ToRole="Tool" />
+          <Property Name="ExecutePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Vote">
           <Key>
@@ -371,6 +372,7 @@
           <EntitySetMapping Name="ToolVersions">
             <EntityTypeMapping TypeName="CyberDragonDBModel.ToolVersion">
               <MappingFragment StoreEntitySet="ToolVersion">
+                <ScalarProperty Name="ExecutePath" ColumnName="ExecutePath" />
                 <ScalarProperty Name="VersionId" ColumnName="VersionId" />
                 <ScalarProperty Name="Version" ColumnName="Version" />
                 <ScalarProperty Name="Description" ColumnName="Description" />

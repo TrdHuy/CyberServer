@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="53e05d8e0faa440ba4b4e8ab9784f26b" Name="Diagram1">
+      <Diagram DiagramId="53e05d8e0faa440ba4b4e8ab9784f26b" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="CyberDragonDBModel.Plugin" Width="1.5" PointX="0.75" PointY="3.5" IsExpanded="true" />
         <EntityTypeShape EntityType="CyberDragonDBModel.PluginVersion" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
         <EntityTypeShape EntityType="CyberDragonDBModel.Tag" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
