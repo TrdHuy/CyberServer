@@ -563,7 +563,7 @@ namespace cyber_server.views.windows
                                             var pluginVersions = CyberPluginAndToolManager.Current.GetAllPluginVersionInStorageFolder(key);
                                             foreach (var version in pluginVersions)
                                             {
-                                                if (plugin.PluginVersions.Where(v => v.Version == version)
+                                                if (plugin.PluginVersions.Where(v => Version.Parse(v.Version) == Version.Parse(version))
                                                     .FirstOrDefault() == null)
                                                 {
                                                     CyberPluginAndToolManager.Current.DeletePluginVersionDirectory(key, version, true);
