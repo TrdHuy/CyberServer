@@ -39,7 +39,9 @@
 					  Margin="5"
 					  Width="60">
 				<ComboBoxItem Content="Get all plugin data request" />
-				<ComboBoxItem Content="Download plugin request"/>
+				<ComboBoxItem Content="Download plugin request" />
+				<ComboBoxItem Content="Get all tool data request" />
+				<ComboBoxItem Content="Download tool request"/>
 			</ComboBox>
 		</WrapPanel>
 

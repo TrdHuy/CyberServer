@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -123,7 +124,7 @@ namespace cyber_server.views.windows.others
 
                                                 var isCopFileSuccess = CyberPluginAndToolManager
                                                     .Current
-                                                    .CopyPluginToServerLocation(toolVer.GetVersionSourceFilePath()
+                                                    .CopyToolToServerLocation(toolVer.GetVersionSourceFilePath()
                                                         , tv.FolderPath);
                                                 if (isCopFileSuccess)
                                                 {
@@ -208,12 +209,12 @@ namespace cyber_server.views.windows.others
                                                             var tv = version.BuildToolVersionFromViewModel(tool.StringId);
                                                             success = CyberPluginAndToolManager
                                                                 .Current
-                                                                .CopyPluginToServerLocation(version.GetVersionSourceFilePath()
+                                                                .CopyToolToServerLocation(version.GetVersionSourceFilePath()
                                                                     , tv.FolderPath);
                                                             tool.ToolVersions.Add(tv);
                                                             if (success)
                                                             {
-                                                                CyberPluginAndToolManager.Current.DeletePluginDirectory(tool.StringId);
+                                                                CyberPluginAndToolManager.Current.DeleteToolDirectory(tool.StringId);
                                                                 break;
                                                             }
                                                         }
@@ -229,7 +230,7 @@ namespace cyber_server.views.windows.others
                                                             {
                                                                 CyberPluginAndToolManager
                                                                     .Current
-                                                                    .CopyPluginIconToServerLocation(_viewModel.IconSource, tool.StringId);
+                                                                    .CopyToolIconToServerLocation(_viewModel.IconSource, tool.StringId);
                                                                 tool.IconSource = CyberServerDefinition.SERVER_REMOTE_ADDRESS
                                                                     + "/toolresource/"
                                                                     + tool.StringId + "/" + System.IO.Path.GetFileName(_viewModel.IconSource);
@@ -308,6 +309,15 @@ namespace cyber_server.views.windows.others
                             }
                             break;
                         }
+                    case "PART_CleanAllVersionFieldBtn":
+                        {
+                            PART_ToolVersionTb.Text = "";
+                            PART_VersionDesTb.Text = "";
+                            PART_PathToToolTextbox.Text = "";
+                            PART_DatePublisedDP.SelectedDate = null;
+                            PART_ExecutePathTextbox.Text = "";
+                            break;
+                        }
                 }
 
 
@@ -380,6 +390,20 @@ namespace cyber_server.views.windows.others
                 return -1;
             }
             return index;
+        }
+
+        private void HandleComboboxSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var index = PART_ListVersionCbx.SelectedIndex;
+            if (index != -1)
+            {
+                var vm = _viewModel.VersionSource[index];
+                PART_ToolVersionTb.Text = vm.Version;
+                PART_VersionDesTb.Text = vm.Description;
+                PART_PathToToolTextbox.Text = vm.FilePath;
+                PART_DatePublisedDP.SelectedDate = DateTime.ParseExact(vm.DatePublished, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                PART_ExecutePathTextbox.Text = vm.ExecutePath;
+            }
         }
     }
 }

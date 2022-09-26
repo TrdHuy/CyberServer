@@ -1,5 +1,6 @@
 ﻿using cyber_base.implement.async_task;
 using cyber_server.implements.http_server;
+using cyber_server.implements.http_server.handlers;
 using cyber_server.views.windows.others;
 using cyber_server_base.async_task.core;
 using Newtonsoft.Json;
@@ -71,6 +72,96 @@ namespace cyber_server.views.usercontrols.tabs
                             client.DefaultRequestHeaders.Add("h2sw-request-info", "GET_ALL_PLUGIN_DATA");
                             client.DefaultRequestHeaders.Add("GET_ALL_PLUGIN_DATA__MAXIMUM_AMOUNT", "10");
                             client.DefaultRequestHeaders.Add("GET_ALL_PLUGIN_DATA__START_INDEX", "0");
+                            var response = await client.GetAsync("http://107.127.131.89:8080/requestinfo");
+
+                            var responseContent = await response.Content.ReadAsStringAsync();
+                            var w = new TextWindow(responseContent);
+                            w.ShowDialog();
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        using (HttpClient client = new HttpClient())
+                        {
+                            var toolKey = "cyber_tool";
+                            var toolVersion = "1.0.0.2";
+                            client.DefaultRequestHeaders.Add(CyberHttpServer.REQUEST_DOWNLOAD_TOOL_HEADER_KEY
+                                , RequestDownloadToolHttpHandler.REQUEST_CHECK_TOOL_DOWNLOADABLE_HEADER_ID);
+                            client.DefaultRequestHeaders.Add(RequestDownloadToolHttpHandler.REQUEST_KEY_TO_CHECK_DOWNLOADABLE_HEADER_ID
+                                , toolKey);
+                            client.DefaultRequestHeaders.Add(RequestDownloadToolHttpHandler.REQUEST_VERSION_TO_CHECK_DOWNLOADABLE_HEADER_ID
+                                , toolVersion);
+                            var response = await client.GetAsync("http://107.127.131.89:8080" + CyberHttpServer.DOWNLOAD_TOOL_API_PATH);
+
+                            var responseContent = await response.Content.ReadAsStringAsync();
+                            var w = new TextWindow(responseContent);
+                            w.ShowDialog();
+
+                            var isDownloadable = false;
+                            var fileName = "";
+                            var executePath = "";
+                            try
+                            {
+                                isDownloadable = response.Headers.GetValues(RequestDownloadToolHttpHandler.RESPONSE_IS_TOOL_DOWNLOADABLE_HEADER_ID)
+                                    .FirstOrDefault() == "1";
+                                fileName = response.Headers.GetValues(RequestDownloadToolHttpHandler.RESPONSE_TOOL_FILE_NAME_HEADER_ID)
+                                    .FirstOrDefault();
+                                executePath = response.Headers.GetValues(RequestDownloadToolHttpHandler.RESPONSE_TOOL_EXECUTE_PATH_HEADER_ID)
+                                    .FirstOrDefault();
+                            }
+                            catch
+                            {
+                                isDownloadable = false;
+                            }
+
+                            if (!isDownloadable)
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                var downloadFileFolder = "temp\\" + "tools"
+                                        + "\\" + toolKey + "\\" + toolVersion;
+                                var versionExecutePath = "temp\\" + "tools"
+                                        + "\\" + toolKey + "\\" + toolVersion + "\\" + executePath;
+                                if (!Directory.Exists(downloadFileFolder))
+                                {
+                                    Directory.CreateDirectory(downloadFileFolder);
+                                }
+                                var downloadFilePath = downloadFileFolder + "\\" + fileName;
+                                var requestHeaderContentMap = new Dictionary<string, string>();
+                                requestHeaderContentMap.Add(CyberHttpServer.REQUEST_DOWNLOAD_TOOL_HEADER_KEY
+                                    , RequestDownloadToolHttpHandler.REQUEST_DOWNLOAD_TOOL_HEADER_ID);
+                                requestHeaderContentMap.Add(RequestDownloadToolHttpHandler.REQUEST_DOWNLOAD_TOOL_KEY_HEADER_ID
+                                    , toolKey);
+                                requestHeaderContentMap.Add(RequestDownloadToolHttpHandler.REQUEST_DOWNLOAD_TOOL_VERSION_HEADER_ID
+                                    , toolVersion);
+                                var param = new object[] { "http://107.127.131.89:8080/downloadtool"
+                                    , downloadFilePath
+                                    , requestHeaderContentMap};
+                                var downloadTask = new DownloadPluginTask(param);
+                                downloadTask.ProgressChanged += (s, e2) =>
+                                {
+                                };
+                                await downloadTask.Execute();
+
+                                if (downloadTask.IsCompleted)
+                                {
+
+                                }
+                            }
+
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        using (HttpClient client = new HttpClient())
+                        {
+                            client.DefaultRequestHeaders.Add("h2sw-request-info", "GET_ALL_SOFTWARE_DATA");
+                            client.DefaultRequestHeaders.Add("GET_ALL_SOFTWARE_DATA__MAXIMUM_AMOUNT", "10");
+                            client.DefaultRequestHeaders.Add("GET_ALL_SOFTWARE_DATA__START_INDEX", "0");
                             var response = await client.GetAsync("http://107.127.131.89:8080/requestinfo");
 
                             var responseContent = await response.Content.ReadAsStringAsync();

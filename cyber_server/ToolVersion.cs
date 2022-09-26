@@ -9,6 +9,7 @@
 
 namespace cyber_server
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -23,6 +24,7 @@ namespace cyber_server
         public string FileName { get; set; }
         public string ExecutePath { get; set; }
     
+        [JsonIgnore]
         public virtual Tool Tool { get; set; }
     }
 }

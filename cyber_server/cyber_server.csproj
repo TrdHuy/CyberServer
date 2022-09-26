@@ -104,6 +104,7 @@
     <Compile Include="implements\db_manager\CyberDbManager.cs" />
     <Compile Include="implements\http_server\CyberHttpServer.cs" />
     <Compile Include="implements\http_server\handlers\RequestDownloadPluginHttpHandler.cs" />
+    <Compile Include="implements\http_server\handlers\RequestDownloadToolHttpHandler.cs" />
     <Compile Include="implements\http_server\handlers\RequestInfoHttpHandler.cs" />
     <Compile Include="implements\http_server\handlers\RequestResourceHttpHandler.cs" />
     <Compile Include="implements\log_manager\ServerLogManager.cs" />

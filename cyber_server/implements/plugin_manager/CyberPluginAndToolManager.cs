@@ -169,6 +169,16 @@ namespace cyber_server.implements.plugin_manager
             return false;
         }
 
+        public string GetSetupZipFilePathByToolVersion(string toolKey, string toolVersion, string toolZipFileName)
+        {
+            return GetToolVersionForderPath(toolKey) + "\\" + toolVersion + "\\" + toolZipFileName;
+        }
+
+        public string GetToolVersionForderPath(string toolKey)
+        {
+            return toolFolderLocation + "\\" + toolKey + "\\" + "versions";
+        }
+
         public string GetSetupZipFilePathByPluginVersion(string pluginKey, string pluginVersion, string pluginZipFileName)
         {
             return GetPluginVersionForderPath(pluginKey) + "\\" + pluginVersion + "\\" + pluginZipFileName;

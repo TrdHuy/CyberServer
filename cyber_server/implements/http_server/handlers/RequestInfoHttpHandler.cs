@@ -82,7 +82,53 @@ namespace cyber_server.implements.http_server.handlers
                         }
                     case REQUEST_SOFTWARE_INFO_HEADER_ID:
                         {
-                            break;
+                            response.Headers.Add("Content-Type", "application/json");
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                            string jsonstring = "";
+                            var maximumElement = -1;
+                            var currentStartIndex = 0;
+                            var isEndOfDbset = 0;
+
+                            if (!string.IsNullOrEmpty(request.Headers[REQUEST_SOFTWARE_INFO_MAXIMUM_AMOUNT_HEADER_ID])
+                                && !string.IsNullOrEmpty(request.Headers[REQUEST_SOFTWARE_INFO_START_INDEX_HEADER_ID]))
+                            {
+                                maximumElement = Convert.ToInt32(request.Headers[REQUEST_SOFTWARE_INFO_MAXIMUM_AMOUNT_HEADER_ID]);
+                                currentStartIndex = Convert.ToInt32(request.Headers[REQUEST_SOFTWARE_INFO_START_INDEX_HEADER_ID]);
+                            }
+                            object queryResult = null;
+
+                            await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
+                            {
+                                if (maximumElement == -1)
+                                {
+                                    queryResult = dbContext.Tools;
+                                    isEndOfDbset = 1;
+                                }
+                                else
+                                {
+                                    var tempQuery = dbContext.Tools
+                                            .OrderBy(p => p.ToolId)
+                                            .Skip(currentStartIndex)
+                                            .Take(maximumElement);
+                                    if (tempQuery.Count() < maximumElement)
+                                    {
+                                        isEndOfDbset = 1;
+                                    }
+                                    queryResult = tempQuery;
+                                }
+
+                            });
+                            var setting = new JsonSerializerSettings
+                            {
+                                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+                            };
+                            jsonstring = JsonConvert.SerializeObject(queryResult, Formatting.Indented, setting);
+
+                            // Gửi thông tin về cho Client
+                            byte[] buf = System.Text.Encoding.UTF8.GetBytes(jsonstring);
+                            response.ContentLength64 = buf.Length;
+                            response.Headers.Add(RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID, isEndOfDbset + "");
+                            return buf;
                         }
                 }
             }

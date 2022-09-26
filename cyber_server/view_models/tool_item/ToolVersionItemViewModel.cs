@@ -42,9 +42,9 @@ namespace cyber_server.view_models.tool_item
             {
                 if (_vo != null)
                 {
-                    return _vo.DatePublished.ToString("dd-MM-yyy");
+                    return _vo.DatePublished.ToString("dd-MM-yyyy");
                 }
-                return _datePublised.ToString("dd-MM-yyy");
+                return _datePublised.ToString("dd-MM-yyyy");
             }
             set
             {

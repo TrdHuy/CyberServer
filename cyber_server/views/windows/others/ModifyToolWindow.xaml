@@ -175,6 +175,7 @@
 					  VirtualizingPanel.VirtualizationMode="Recycling"
 					  VirtualizingPanel.IsVirtualizingWhenGrouping="True"
 					  BorderThickness="0"
+					  SelectionChanged="HandleComboboxSelectionChanged"
 					  SelectedIndex="{Binding SelectedVersionIndex}"
 					  VerticalContentAlignment="Center"
 					  ItemsSource="{Binding Path=VersionSource}"
@@ -322,7 +323,7 @@
 						Click="HandleButtonEvent"
 						Margin="10,0,0,0"
 						Height="20" />
-				<Button x:Name="PART_DeleteAllVersionBtn"
+				<Button x:Name="PART_CleanAllVersionFieldBtn"
 						Content="Clean all"
 						Click="HandleButtonEvent"
 						Margin="10,0,0,0"
