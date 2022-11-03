@@ -31,8 +31,7 @@
 									   StrokeThickness="0" />
 
 							<ScrollViewer Margin="5,0,0,0"
-										  VerticalContentAlignment="Center"
-										  VerticalAlignment="Center"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 										  VerticalScrollBarVisibility="Disabled"
 										  HorizontalScrollBarVisibility="Disabled"
 										  x:Name="PART_ContentHost" />
@@ -81,9 +80,13 @@
 						<RowDefinition Height="500" />
 						<RowDefinition />
 					</Grid.RowDefinitions>
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             			<Grid>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="247*" />
+							<ColumnDefinition Width="547*" />
+						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
-							<RowDefinition Height="30"/>
+							<RowDefinition Height="30" />
 							<RowDefinition />
 							<RowDefinition Height="30" />
 							<RowDefinition />
@@ -91,11 +94,13 @@
 						<TextBlock Text="Thông tin các Plugin"
 								   VerticalAlignment="Center"
 								   FontWeight="Bold"
-								   FontSize="15"/>
+								   FontSize="15"
+								   Grid.ColumnSpan="2" />
 						<ListView x:Name="PART_PluginLV"
 								  AlternationCount="2"
 								  Grid.Row="1"
-								  ItemsSource="{Binding ElementName=PART_MainWindow, Path=PluginSource}">
+								  ItemsSource="{Binding ElementName=PART_MainWindow, Path=PluginSource}"
+								  Grid.ColumnSpan="2">
 							<ListView.ItemContainerStyle>
 								<Style TargetType="ListViewItem">
 									<Setter Property="Height"
@@ -293,11 +298,13 @@
 								   Grid.Row="2"
 								   VerticalAlignment="Center"
 								   FontWeight="Bold"
-								   FontSize="15" />
+								   FontSize="15"
+								   Grid.ColumnSpan="2" />
 						<ListView x:Name="PART_ToolLV"
 								  AlternationCount="2"
 								  Grid.Row="3"
-								  ItemsSource="{Binding ElementName=PART_MainWindow, Path=ToolSource}">
+								  ItemsSource="{Binding ElementName=PART_MainWindow, Path=ToolSource}"
+								  Grid.ColumnSpan="2">
 							<ListView.ItemContainerStyle>
 								<Style TargetType="ListViewItem">
 									<Setter Property="Height"
@@ -476,7 +483,7 @@
 							</ListView.View>
 						</ListView>
 					</Grid>
-					
+
 					<WrapPanel Grid.Row="1">
 						<Button x:Name="PART_ReloadPluginFromDb"
 								Click="HandleManagerPluginTabButtonEvent"
@@ -871,6 +878,9 @@
 			</TabItem>
 			<TabItem Header="Thêm tool">
 				<tabs:AddToolTab />
+			</TabItem>
+			<TabItem Header="Quản lý chứng chỉ">
+				<tabs:CertificateManagerTab />
 			</TabItem>
 			<TabItem Header="Quản lý server">
 				<tabs:ServerControllerTab />

@@ -31,7 +31,11 @@ namespace cyber_server.views.usercontrols.others
         public const string MODIFI_PLUGIN_TASK_TYPE_KEY = "MODIFI_PLUGIN_TASK_TYPE_KEY";
         public const string MODIFI_TOOL_TASK_TYPE_KEY = "MODIFI_TOOL_TASK_TYPE_KEY";
         public const string SYNC_TASK_TYPE_KEY = "SYNC_TASK_TYPE_KEY";
-
+        public const string SAVE_CERTIFICATE_TO_DB_TASK_TYPE_KEY = "SAVE_CERTIFICATE_TO_DB_TASK_TYPE_KEY";
+        public const string CHECK_VALIDATION_CERTIFICATE_TYPE_KEY = "CHECK_CERTIFICATE_INVAILD_TYPE_KEY";
+        public const string RELOAD_CERTIFICATE_FROM_DB_TASK_TYPE_KEY = "RELOAD_CERTIFICATE_FROM_DB_TASK_TYPE_KEY";
+        public const string DELETE_CERTIFICATE_FROM_DB_TASK_TYPE_KEY = "DELETE_CERTIFICATE_FROM_DB_TASK_TYPE_KEY";
+        
         private TextBlock _currentTaskNameTb;
         private Path _waitingIconPath;
         private class TaskInfo
@@ -220,7 +224,7 @@ namespace cyber_server.views.usercontrols.others
         }
 
         public async Task ExecuteTask(string taskTypeKey
-            , Action mainFunc
+            , Func<Task> mainFunc
             , int delay = 0
             , int executeTime = 0
             , bool bypassIfSemaphoreNotAvaild = false)

@@ -16,16 +16,18 @@ namespace cyber_server.implements.http_server
 {
     internal class CyberHttpServer : IServerModule
     {
-        public const string END_POINT = "http://107.127.131.89:8080/";
+        public const string END_POINT1 = "http://107.127.131.89:8080/";
+        public const string END_POINT2 = "https://107.127.131.89:8088/";
         public const string REQUEST_PLUGIN_RESOURCE_PATH = "/pluginresource";
         public const string REQUEST_TOOL_RESOURCE_PATH = "/toolresource";
         public const string DOWNLOAD_PLUGIN_API_PATH = "/downloadplugin";
         public const string DOWNLOAD_TOOL_API_PATH = "/downloadtool";
+        public const string DOWNLOAD_CERTIFICATE_API_PATH = "/certificate";
         public const string REQUEST_INFO_API_PATH = "/requestinfo";
         public const string REQUEST_INFO_HEADER_KEY = "h2sw-request-info";
         public const string REQUEST_DOWNLOAD_PLUGIN_HEADER_KEY = "h2sw-download-plugin";
         public const string REQUEST_DOWNLOAD_TOOL_HEADER_KEY = "h2sw-download-tool";
-
+        public const string REQUEST_DOWNLOAD_CERTIFICATE_HEADER_KEY = "h2sw-download-certificate";
 
         private HttpListener listener;
 
@@ -49,7 +51,8 @@ namespace cyber_server.implements.http_server
 
             // Khởi tạo HttpListener
             listener = new HttpListener();
-            listener.Prefixes.Add(END_POINT);
+            listener.Prefixes.Add(END_POINT1);
+            listener.Prefixes.Add(END_POINT2);
         }
 
         public void Dispose()
@@ -74,8 +77,7 @@ namespace cyber_server.implements.http_server
                 {
                     // Một client kết nối đến
                     HttpListenerContext context = await listener.GetContextAsync();
-                    await ProcessRequest(context);
-
+                    ProcessRequest(context);
                 }
                 catch (Exception ex)
                 {
@@ -99,113 +101,158 @@ namespace cyber_server.implements.http_server
         //      /json           trả về một nội dung json
         //      /anh2.png       trả về một file ảnh 
         //      /requestinfo    thông tin truy vấn
-
-        async Task ProcessRequest(HttpListenerContext context)
+        private async void ProcessRequest(HttpListenerContext context)
         {
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
-            ServerLogManager.Current.AppendConsoleLogLine($"{request.HttpMethod} {request.RawUrl} {request.Url.AbsolutePath} {request.RemoteEndPoint}");
-
             var outputstream = response.OutputStream;
 
-            if (request.Url.AbsolutePath.Contains(REQUEST_PLUGIN_RESOURCE_PATH))
+            try
             {
-                byte[] buffer = await new RequestResourceHttpHandler(request.Url.AbsolutePath, resMode: ResourceMode.Plugin)
-                    .Handle(request, response);
-                await outputstream.WriteAsync(buffer, 0, buffer.Length);
-            }
-            else if (request.Url.AbsolutePath.Contains(REQUEST_TOOL_RESOURCE_PATH))
-            {
-                byte[] buffer = await new RequestResourceHttpHandler(request.Url.AbsolutePath, resMode: ResourceMode.Tool)
-                    .Handle(request, response);
-                await outputstream.WriteAsync(buffer, 0, buffer.Length);
-            }
-            else
-            {
-                switch (request.Url.AbsolutePath)
+               
+                ServerLogManager.Current.AppendConsoleLogLine($"{request.HttpMethod} {request.RawUrl} {request.Url.AbsolutePath} {request.RemoteEndPoint}");
+
+
+                if (request.Url.AbsolutePath.Contains(REQUEST_PLUGIN_RESOURCE_PATH))
                 {
-                    case REQUEST_INFO_API_PATH:
-                        {
-                            byte[] buffer = await new RequestInfoHttpHandler().Handle(request, response);
-                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
-                            break;
-                        }
-                    case DOWNLOAD_PLUGIN_API_PATH:
-                        {
-                            byte[] buffer = await new RequestDownloadPluginHttpHandler().Handle(request, response);
-                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
-                            break;
-                        }
-                    case DOWNLOAD_TOOL_API_PATH:
-                        {
-                            byte[] buffer = await new RequestDownloadToolHttpHandler().Handle(request, response);
-                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
-                            break;
-                        }
-                    case "/":
-                        {
-                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes("Hello world!");
-                            response.ContentLength64 = buffer.Length;
-                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
-                        }
-                        break;
-
-                    case "/stop":
-                        {
-                            listener.Stop();
-                            Console.WriteLine("stop http");
-                        }
-                        break;
-
-                    case "/json":
-                        {
-                            response.Headers.Add("Content-Type", "application/json");
-                            var product = new
-                            {
-                                Name = "Macbook Pro",
-                                Price = 2000,
-                                Manufacturer = "Apple"
-                            };
-                            string jsonstring = JsonConvert.SerializeObject(product);
-                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonstring);
-                            response.ContentLength64 = buffer.Length;
-                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
-
-                        }
-                        break;
-                    case "/anh2.png":
-                        {
-                            response.Headers.Add("Content-Type", "image/png");
-
-                            byte[] buffer;
-                            using (FileStream stream = File.Open("anh2.png", FileMode.Open))
-                            {
-                                buffer = new byte[stream.Length];
-                                await stream.ReadAsync(buffer, 0, (int)stream.Length);
-                            }
-                            response.ContentLength64 = buffer.Length;
-                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
-
-                        }
-                        break;
-
-                    default:
-                        {
-                            response.StatusCode = (int)HttpStatusCode.NotFound;
-                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes("NOT FOUND!");
-                            response.ContentLength64 = buffer.Length;
-                            await outputstream.WriteAsync(buffer, 0, buffer.Length);
-                        }
-                        break;
+                    byte[] buffer = await new RequestResourceHttpHandler(request.Url.AbsolutePath, resMode: ResourceMode.Plugin)
+                        .Handle(request, response);
+                    await outputstream.WriteAsync(buffer, 0, buffer.Length);
                 }
+                else if (request.Url.AbsolutePath.Contains(REQUEST_TOOL_RESOURCE_PATH))
+                {
+                    byte[] buffer = await new RequestResourceHttpHandler(request.Url.AbsolutePath, resMode: ResourceMode.Tool)
+                        .Handle(request, response);
+                    await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                }
+                else
+                {
+                    switch (request.Url.AbsolutePath)
+                    {
+                        case REQUEST_INFO_API_PATH:
+                            {
+                                byte[] buffer = await new RequestInfoHttpHandler().Handle(request, response);
+                                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                                break;
+                            }
+                        case DOWNLOAD_PLUGIN_API_PATH:
+                            {
+                                byte[] buffer = await new RequestDownloadPluginHttpHandler().Handle(request, response);
+                                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                                break;
+                            }
+                        case DOWNLOAD_TOOL_API_PATH:
+                            {
+                                byte[] buffer = await new RequestDownloadToolHttpHandler().Handle(request, response);
+                                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                                break;
+                            }
+                        case DOWNLOAD_CERTIFICATE_API_PATH:
+                            {
+                                byte[] buffer = await new RequestDownloadCertificateHttpHandler().Handle(request, response);
+                                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                                break;
+                            }
+                        case "/":
+                            {
+                                byte[] buffer = System.Text.Encoding.UTF8.GetBytes("Hello world!");
+                                response.ContentLength64 = buffer.Length;
+                                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                            }
+                            break;
+
+                        case "/stop":
+                            {
+                                listener.Stop();
+                                Console.WriteLine("stop http");
+                            }
+                            break;
+
+                        case "/json":
+                            {
+                                response.Headers.Add("Content-Type", "application/json");
+                                var product = new
+                                {
+                                    Name = "Macbook Pro",
+                                    Price = 2000,
+                                    Manufacturer = "Apple"
+                                };
+                                string jsonstring = JsonConvert.SerializeObject(product);
+                                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonstring);
+                                response.ContentLength64 = buffer.Length;
+                                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+
+                            }
+                            break;
+                        case "/anh2.png":
+                            {
+                                response.Headers.Add("Content-Type", "image/png");
+
+                                byte[] buffer;
+                                using (FileStream stream = File.Open("anh2.png", FileMode.Open))
+                                {
+                                    buffer = new byte[stream.Length];
+                                    await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                                }
+                                response.ContentLength64 = buffer.Length;
+                                await outputstream.WriteAsync(buffer, 0, buffer.Length);
+
+                            }
+                            break;
+
+                        default:
+                            {
+                                var requestPathArr = request.Url.AbsolutePath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                                if (requestPathArr.Length > 0)
+                                {
+                                    switch (requestPathArr[0])
+                                    {
+                                        case "htdocs":
+                                            {
+                                                var filePath = String.Join("/", requestPathArr);
+                                                if (File.Exists(filePath))
+                                                {
+                                                    var jsCode = File.ReadAllText(filePath);
+                                                    byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsCode);
+                                                    response.ContentLength64 = buffer.Length;
+                                                    await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                                                }
+                                                else
+                                                {
+                                                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                                                    byte[] buffer = System.Text.Encoding.UTF8.GetBytes("NOT FOUND!");
+                                                    response.ContentLength64 = buffer.Length;
+                                                    await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                                                }
+                                                break;
+                                            }
+                                    }
+                                }
+                                else
+                                {
+                                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                                    byte[] buffer = System.Text.Encoding.UTF8.GetBytes("NOT FOUND!");
+                                    response.ContentLength64 = buffer.Length;
+                                    await outputstream.WriteAsync(buffer, 0, buffer.Length);
+                                }
+
+                            }
+                            break;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ServerLogManager.Current.AppendConsoleLogLine(ex.Message);
+                ServerLogManager.Current.E(ex.ToString());
+            }
+            finally
+            {
+                // Đóng stream để hoàn thành gửi về client
+                outputstream.Close();
             }
 
-
-            // switch (request.Url.AbsolutePath)
-
-
-            // Đóng stream để hoàn thành gửi về client
-            outputstream.Close();
         }
 
         private void ExtractRequest(HttpListenerRequest request)

@@ -31,5 +31,6 @@ namespace cyber_server
         public virtual DbSet<Tool> Tools { get; set; }
         public virtual DbSet<ToolVersion> ToolVersions { get; set; }
         public virtual DbSet<Vote> Votes { get; set; }
+        public virtual DbSet<Certificate> Certificates { get; set; }
     }
 }

@@ -1,8 +1,7 @@
 ﻿<Application x:Class="cyber_server.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:cyber_server"
-             StartupUri="views/windows/CyberServerWindow.xaml">
+             xmlns:local="clr-namespace:cyber_server">
     <Application.Resources>
          
     </Application.Resources>

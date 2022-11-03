@@ -9,6 +9,7 @@
 		WindowStartupLocation="CenterOwner"
 		Closing="HandleWindowClosing"
 		Width="300">
+	
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
@@ -19,13 +20,23 @@
 			<TextBlock x:Name="PART_UneditText"
 					   Text="Hello World"
 					   Margin="10,0,0,0"
-					   VerticalAlignment="Center"/>
+					   VerticalAlignment="Center" />
 			<TextBox x:Name="PART_EditableText"
 					 Background="Transparent"
 					 Margin="2,0,10,0"
-					 VerticalAlignment="Center"
+					 MinWidth="100"
+					 VerticalContentAlignment="Center"
 					 BorderThickness="0"
 					 Text="Hello World" />
+
+			<PasswordBox x:Name="PART_EditablePassword"
+						 MinWidth="100"
+						 Background="Transparent"
+						 BorderThickness="0"
+						 Margin="2,0,10,0"
+						 Password="123"
+						 VerticalContentAlignment="Center">
+			</PasswordBox>
 		</StackPanel>
 		<StackPanel Grid.Row="1"
 					HorizontalAlignment="Right"

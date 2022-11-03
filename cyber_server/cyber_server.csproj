@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
@@ -65,6 +68,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -85,6 +89,9 @@
     </ApplicationDefinition>
     <Compile Include="base\ICyberHttpRequestHandler.cs" />
     <Compile Include="base\IServerModule.cs" />
+    <Compile Include="Certificate.cs">
+      <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="CyberDragonDBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -101,8 +108,10 @@
       <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="definition\CyberServerDefinition.cs" />
+    <Compile Include="implements\cert_manager\DESCryptoManager.cs" />
     <Compile Include="implements\db_manager\CyberDbManager.cs" />
     <Compile Include="implements\http_server\CyberHttpServer.cs" />
+    <Compile Include="implements\http_server\handlers\RequestDownloadCertificateHttpHandler.cs" />
     <Compile Include="implements\http_server\handlers\RequestDownloadPluginHttpHandler.cs" />
     <Compile Include="implements\http_server\handlers\RequestDownloadToolHttpHandler.cs" />
     <Compile Include="implements\http_server\handlers\RequestInfoHttpHandler.cs" />
@@ -132,6 +141,9 @@
     <Compile Include="views\usercontrols\tabs\AddToolTab.xaml.cs">
       <DependentUpon>AddToolTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\usercontrols\tabs\CertificateManagerTab.xaml.cs">
+      <DependentUpon>CertificateManagerTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\usercontrols\tabs\ServerControllerTab.xaml.cs">
       <DependentUpon>ServerControllerTab.xaml</DependentUpon>
     </Compile>
@@ -151,6 +163,7 @@
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="view_models\BaseViewModel.cs" />
+    <Compile Include="view_models\list_view_item\certificate_item\CertificateItemViewModel.cs" />
     <Compile Include="view_models\plugin_version_item\PluginItemViewModel.cs" />
     <Compile Include="view_models\plugin_version_item\PluginVersionItemViewModel.cs" />
     <Compile Include="view_models\tabs\ServerControllerTabViewModel.cs" />
@@ -170,6 +183,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\usercontrols\tabs\AddToolTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\usercontrols\tabs\CertificateManagerTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -250,6 +267,9 @@
       <DependentUpon>CyberDragonDB.mdf</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="htdocs\js\Wiki_ColumnChartScr.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -272,5 +292,6 @@
       <Name>cyber_server_base</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

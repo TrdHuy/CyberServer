@@ -127,7 +127,7 @@ namespace cyber_server.implements.http_server.handlers
                             // Gửi thông tin về cho Client
                             byte[] buf = System.Text.Encoding.UTF8.GetBytes(jsonstring);
                             response.ContentLength64 = buf.Length;
-                            response.Headers.Add(RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID, isEndOfDbset + "");
+                            response.Headers.Add(RESPONSE_SOFTWARE_INFO_END_OF_DBSET_HEADER_ID, isEndOfDbset + "");
                             return buf;
                         }
                 }
