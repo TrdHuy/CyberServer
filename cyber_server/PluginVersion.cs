@@ -9,6 +9,7 @@
 
 namespace cyber_server
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -19,7 +20,7 @@ namespace cyber_server
 
         }
 
-        public int VersionId { get; set; }
+        public int VersionId { get; set; } = -1;
         public string Version { get; set; }
         public string Description { get; set; }
         public int PluginId { get; set; }
@@ -31,6 +32,7 @@ namespace cyber_server
         public long CompressLength { get; set; }
         public long RawLength { get; set; }
     
+        [JsonIgnore]
         public virtual Plugin Plugin { get; set; }
     }
 }
