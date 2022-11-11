@@ -47,6 +47,8 @@ namespace cyber_server.views.windows
         public CyberServerWindow()
         {
             InitializeComponent();
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.MODIFI_TOOL_TASK_TYPE_KEY, "Modifying tool data", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.MODIFI_VERSION_TASK_TYPE_KEY, "Modifying tool version data", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY, "Adding new version", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY, "Adding new plugin", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_TOOL_TASK_TYPE_KEY, "Adding new tool", 1, 1);
@@ -54,6 +56,8 @@ namespace cyber_server.views.windows
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY, "Reloading plugins", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_PLUGIN_TASK_TYPE_KEY, "Deleting plugin", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_TOOL_TASK_TYPE_KEY, "Deleting tool", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_VERSION_TASK_TYPE_KEY, "Deleting version", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.IMPORT_TOOL_TASK_TYPE_KEY, "Importing tool", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.SYNC_TASK_TYPE_KEY, "Syncing", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.SAVE_CERTIFICATE_TO_DB_TASK_TYPE_KEY, "Saving certificate", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_CERTIFICATE_FROM_DB_TASK_TYPE_KEY, "Reloading certificate", 1, 1);
@@ -425,55 +429,6 @@ namespace cyber_server.views.windows
                            bypassIfSemaphoreNotAvaild: true);
                         break;
                     }
-                case "PART_ReloadToolFromDb":
-                    {
-                        await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.RELOAD_TOOL_TASK_TYPE_KEY,
-                           mainFunc: async () =>
-                           {
-                               ToolSource.Clear();
-                               await CyberDbManager.Current.RequestDbContextAsync((context) =>
-                               {
-                                   foreach (var tool in context.Tools)
-                                   {
-                                       var vm = new ToolItemViewModel(tool);
-                                       ToolSource.Add(vm);
-                                   }
-                               });
-                           },
-                           executeTime: 1000,
-                           bypassIfSemaphoreNotAvaild: true);
-                        break;
-                    }
-                case "DeleteToolItemButton":
-                    {
-                        var itemViewModel = btn.DataContext as ToolItemViewModel;
-                        if (itemViewModel != null)
-                        {
-                            var confirm = MessageBox.Show("Bạn có chắc xóa dữ liệu này!", "Xác nhận", MessageBoxButton.YesNo);
-                            if (confirm == MessageBoxResult.Yes)
-                            {
-                                await PART_TaskHandlingPanel.ExecuteTask(CurrentTaskManager.DELETE_TOOL_TASK_TYPE_KEY,
-                                   mainFunc: async () =>
-                                   {
-                                       var sucess = await CyberDbManager.Current.RequestDbContextAsync((context) =>
-                                       {
-                                           context.ToolVersions.RemoveRange(itemViewModel.RawModel.ToolVersions);
-                                           context.Tools.Remove(itemViewModel.RawModel);
-                                           context.SaveChanges();
-                                       });
-
-                                       if (sucess)
-                                       {
-                                           CyberPluginAndToolManager.Current.DeleteToolDirectory(itemViewModel.RawModel.StringId, true);
-                                           ToolSource.Remove(itemViewModel);
-                                       }
-                                   },
-                                   executeTime: 0,
-                                   bypassIfSemaphoreNotAvaild: true);
-                            }
-                        }
-                        break;
-                    }
                 case "DeletePluginItemButton":
                     {
                         var itemViewModel = btn.DataContext as PluginItemViewModel;
@@ -504,20 +459,6 @@ namespace cyber_server.views.windows
                                    bypassIfSemaphoreNotAvaild: true);
 
                             }
-                        }
-                        break;
-                    }
-                case "ModifyToolItemButton":
-                    {
-                        var itemViewModel = btn.DataContext as ToolItemViewModel;
-                        var modifyToolWindow = new ModifyToolWindow();
-                        modifyToolWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                        modifyToolWindow.Owner = this;
-                        var modifyToolWindowContext = modifyToolWindow.DataContext as ModifyToolWindowViewModel;
-                        if (modifyToolWindowContext != null)
-                        {
-                            modifyToolWindowContext.SetRawModel(itemViewModel.RawModel);
-                            modifyToolWindow.ShowDialog();
                         }
                         break;
                     }

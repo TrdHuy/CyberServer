@@ -14,6 +14,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>cyber_server.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -66,6 +66,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
@@ -138,14 +140,14 @@
     <Compile Include="views\usercontrols\others\TaskHandlingPanel.xaml.cs">
       <DependentUpon>TaskHandlingPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="views\usercontrols\tabs\AddToolTab.xaml.cs">
-      <DependentUpon>AddToolTab.xaml</DependentUpon>
-    </Compile>
     <Compile Include="views\usercontrols\tabs\CertificateManagerTab.xaml.cs">
       <DependentUpon>CertificateManagerTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\usercontrols\tabs\ServerControllerTab.xaml.cs">
       <DependentUpon>ServerControllerTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\usercontrols\tabs\ToolManagerTab.xaml.cs">
+      <DependentUpon>ToolManagerTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\windows\CyberServerWindow.xaml.cs">
       <DependentUpon>CyberServerWindow.xaml</DependentUpon>
@@ -156,9 +158,6 @@
     <Compile Include="views\windows\others\ModifyPluginWindow.xaml.cs">
       <DependentUpon>ModifyPluginWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="views\windows\others\ModifyToolWindow.xaml.cs">
-      <DependentUpon>ModifyToolWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="views\windows\others\TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>
@@ -167,6 +166,7 @@
     <Compile Include="view_models\plugin_version_item\PluginItemViewModel.cs" />
     <Compile Include="view_models\plugin_version_item\PluginVersionItemViewModel.cs" />
     <Compile Include="view_models\tabs\ServerControllerTabViewModel.cs" />
+    <Compile Include="view_models\tabs\ToolManagerTabViewModel.cs" />
     <Compile Include="view_models\tool_item\ToolItemViewModel.cs" />
     <Compile Include="view_models\tool_item\ToolVersionItemViewModel.cs" />
     <Compile Include="view_models\windows\ModifyPluginWindowViewModel.cs" />
@@ -174,15 +174,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="view_models\windows\ModifyToolWindowViewModel.cs" />
     <Compile Include="Vote.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
     <Page Include="views\usercontrols\others\TaskHandlingPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="views\usercontrols\tabs\AddToolTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -191,6 +186,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\usercontrols\tabs\ServerControllerTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\usercontrols\tabs\ToolManagerTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -203,10 +202,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\windows\others\ModifyPluginWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="views\windows\others\ModifyToolWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

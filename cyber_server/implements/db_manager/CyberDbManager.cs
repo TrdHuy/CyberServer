@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace cyber_server.implements.db_manager
 {
@@ -61,13 +62,25 @@ namespace cyber_server.implements.db_manager
             return isSucess;
         }
 
-        public void RollBack()
+        public bool RollBack(bool force = true)
         {
             var changedEntries = _appDbContext.ChangeTracker.Entries()
                 .Where(x => x.State != EntityState.Unchanged).ToList();
-
+            var confirm = false;
             foreach (var entry in changedEntries)
             {
+                if ((entry.State == EntityState.Modified
+                    || entry.State == EntityState.Added
+                    || entry.State == EntityState.Deleted)
+                    && !confirm
+                    && !force)
+                {
+                    confirm = MessageBox.Show("Hoàn tác thay đổi?", "Xác nhận",
+                        MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+                    if (!confirm)
+                        return false;
+                }
+
                 switch (entry.State)
                 {
                     case EntityState.Modified:
@@ -82,6 +95,7 @@ namespace cyber_server.implements.db_manager
                         break;
                 }
             }
+            return true;
         }
 
     }

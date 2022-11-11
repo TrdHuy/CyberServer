@@ -57,6 +57,20 @@ namespace cyber_server.implements.plugin_manager
             }
         }
 
+        public void DeleteToolVersionDirectory(string toolKey, string version, bool rescursive = false)
+        {
+            var folder = toolFolderLocation + "\\" + toolKey + "\\versions\\" + version;
+            if (Directory.Exists(folder))
+            {
+                Directory.Delete(folder, rescursive);
+            }
+        }
+
+        public bool CheckToolPathExistOnServer(string toolPath)
+        {
+            return File.Exists(toolFolderLocation + "\\" + toolPath);
+        }
+
         public bool RenamePluginFolder(string oldPluginKey, string newPluginKey)
         {
             if (Directory.Exists(pluginFolderLocation + "\\" + oldPluginKey))
@@ -72,6 +86,8 @@ namespace cyber_server.implements.plugin_manager
 
         public bool CopyPluginToServerLocation(string sourceFile, string destination)
         {
+            if (string.IsNullOrEmpty(sourceFile)
+                || string.IsNullOrEmpty(destination)) return false;
             if (File.Exists(sourceFile))
             {
                 var fileName = Path.GetFileName(sourceFile);
@@ -88,6 +104,8 @@ namespace cyber_server.implements.plugin_manager
 
         public bool CopyToolToServerLocation(string sourceFile, string destination)
         {
+            if (string.IsNullOrEmpty(sourceFile)
+                || string.IsNullOrEmpty(destination)) return false;
             if (File.Exists(sourceFile))
             {
                 var fileName = Path.GetFileName(sourceFile);
@@ -171,10 +189,10 @@ namespace cyber_server.implements.plugin_manager
 
         public string GetSetupZipFilePathByToolVersion(string toolKey, string toolVersion, string toolZipFileName)
         {
-            return GetToolVersionForderPath(toolKey) + "\\" + toolVersion + "\\" + toolZipFileName;
+            return GetToolVersionFolderPath(toolKey) + "\\" + toolVersion + "\\" + toolZipFileName;
         }
 
-        public string GetToolVersionForderPath(string toolKey)
+        public string GetToolVersionFolderPath(string toolKey)
         {
             return toolFolderLocation + "\\" + toolKey + "\\" + "versions";
         }
@@ -215,6 +233,7 @@ namespace cyber_server.implements.plugin_manager
             return toolKey + "\\" + "versions" + "\\" + version;
 
         }
+
         public string[] GetAllPluginDirectory()
         {
             return Directory.GetDirectories(pluginFolderLocation);
@@ -242,6 +261,43 @@ namespace cyber_server.implements.plugin_manager
                 keys[i++] = new DirectoryInfo(folder).Name;
             }
             return keys;
+        }
+
+        public string[] GetAllToolKeyInToolStorageFolder()
+        {
+            var folders = Directory.GetDirectories(toolFolderLocation);
+            var keys = new string[folders.Length];
+            int i = 0;
+            foreach (var folder in folders)
+            {
+                keys[i++] = new DirectoryInfo(folder).Name;
+            }
+            return keys;
+        }
+
+        public string[] GetAllToolVersionInStorageFolder(string toolKey)
+        {
+            var folders = Directory.GetDirectories(toolFolderLocation + "\\" + toolKey + "\\" + "versions");
+            var version = new string[folders.Length];
+            int i = 0;
+            foreach (var folder in folders)
+            {
+                version[i++] = new DirectoryInfo(folder).Name;
+            }
+            return version;
+        }
+
+        public bool RenameToolVersionFolder(string toolKey, string oldToolVersion, string newToolVersion)
+        {
+            var toolVersionFolderPath = GetToolVersionFolderPath(toolKey);
+            if (Directory.Exists(toolVersionFolderPath + "\\" + oldToolVersion))
+            {
+                Directory.Move(toolVersionFolderPath + "\\" + oldToolVersion,
+                    toolVersionFolderPath + "\\" + newToolVersion);
+                return true;
+            }
+            ServerLogManager.Current.D("source file not found!");
+            return false;
         }
     }
 }

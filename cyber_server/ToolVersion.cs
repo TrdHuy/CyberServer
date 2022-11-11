@@ -15,7 +15,12 @@ namespace cyber_server
     
     public partial class ToolVersion
     {
-        public int VersionId { get; set; }
+        public ToolVersion()
+        {
+
+        }
+
+        public int VersionId { get; set; } = -1;
         public string Version { get; set; }
         public string Description { get; set; }
         public int ToolId { get; set; }
@@ -23,6 +28,8 @@ namespace cyber_server
         public string FolderPath { get; set; }
         public string FileName { get; set; }
         public string ExecutePath { get; set; }
+        public long CompressLength { get; set; }
+        public long RawLength { get; set; }
     
         [JsonIgnore]
         public virtual Tool Tool { get; set; }

@@ -48,6 +48,8 @@
           <Property Name="MainClassName" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FolderPath" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CompressLength" Type="bigint" Nullable="false" />
+          <Property Name="RawLength" Type="bigint" Nullable="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -84,6 +86,8 @@
           <Property Name="DatePublished" Type="datetime" Nullable="false" />
           <Property Name="FolderPath" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CompressLength" Type="bigint" Nullable="false" />
+          <Property Name="RawLength" Type="bigint" Nullable="false" />
         </EntityType>
         <EntityType Name="Vote">
           <Key>
@@ -202,6 +206,8 @@
           <Property Name="FolderPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Plugin" Relationship="Self.FK__PluginVer__Plugi__625A9A57" FromRole="PluginVersion" ToRole="Plugin" />
+          <Property Name="CompressLength" Type="Int64" Nullable="false" />
+          <Property Name="RawLength" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -241,6 +247,8 @@
           <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Tool" Relationship="Self.FK__ToolVersi__ToolI__7755B73D" FromRole="ToolVersion" ToRole="Tool" />
           <Property Name="ExecutePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CompressLength" Type="Int64" Nullable="false" />
+          <Property Name="RawLength" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityType Name="Vote">
           <Key>
@@ -364,6 +372,8 @@
           <EntitySetMapping Name="PluginVersions">
             <EntityTypeMapping TypeName="CyberDragonDBModel.PluginVersion">
               <MappingFragment StoreEntitySet="PluginVersion">
+                <ScalarProperty Name="RawLength" ColumnName="RawLength" />
+                <ScalarProperty Name="CompressLength" ColumnName="CompressLength" />
                 <ScalarProperty Name="VersionId" ColumnName="VersionId" />
                 <ScalarProperty Name="Version" ColumnName="Version" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
@@ -404,6 +414,8 @@
           <EntitySetMapping Name="ToolVersions">
             <EntityTypeMapping TypeName="CyberDragonDBModel.ToolVersion">
               <MappingFragment StoreEntitySet="ToolVersion">
+                <ScalarProperty Name="RawLength" ColumnName="RawLength" />
+                <ScalarProperty Name="CompressLength" ColumnName="CompressLength" />
                 <ScalarProperty Name="ExecutePath" ColumnName="ExecutePath" />
                 <ScalarProperty Name="VersionId" ColumnName="VersionId" />
                 <ScalarProperty Name="Version" ColumnName="Version" />

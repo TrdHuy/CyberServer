@@ -59,6 +59,14 @@
 								</TextBlock.Style>
 							</TextBlock>
 						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsEnabled"
+									 Value="False">
+								<Setter Property="Fill"
+										TargetName="BackgroundRec"
+										Value="gray" />
+							</Trigger>
+						</ControlTemplate.Triggers>
 
 
 					</ControlTemplate>
@@ -876,8 +884,8 @@
 				</ScrollViewer>
 
 			</TabItem>
-			<TabItem Header="Thêm tool">
-				<tabs:AddToolTab />
+			<TabItem Header="Quản lý công cụ">
+				<tabs:ToolManagerTab />
 			</TabItem>
 			<TabItem Header="Quản lý chứng chỉ">
 				<tabs:CertificateManagerTab />

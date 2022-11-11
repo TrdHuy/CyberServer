@@ -18,7 +18,55 @@ namespace cyber_server.view_models.plugin_version_item
         private string _mainClassName;
         private string _executePath;
         private DateTime _datePublised;
+        private long _compressLength;
+        private long _rawLength;
+
         public PluginVersion RawModel => _vo;
+
+        public long CompressLength
+        {
+            get
+            {
+                if (_vo != null)
+                    return _vo.CompressLength;
+                return _compressLength;
+            }
+            set
+            {
+                _compressLength = value;
+                Invalidate("SizeContent");
+            }
+        }
+
+        public long RawLength
+        {
+            get
+            {
+                if (_vo != null)
+                    return _vo.RawLength;
+                return _rawLength;
+            }
+            set
+            {
+                _rawLength = value;
+                Invalidate("SizeContent");
+            }
+        }
+
+        [Bindable(true)]
+        public string SizeContent
+        {
+            get
+            {
+                if(_vo != null)
+                    return "Compress length: " + _vo.CompressLength / Math.Pow(2, 20) + "MB\n" +
+                        "Raw length: " + _vo.RawLength / Math.Pow(2, 20) + "MB";
+                if (_compressLength != 0 && _rawLength != 0)
+                    return "Compress length: " + _compressLength / Math.Pow(2, 20) + "MB\n" +
+                        "Raw length: " + _rawLength / Math.Pow(2, 20) + "MB";
+                return "";
+            }
+        }
 
         [Bindable(true)]
         public string Version
@@ -147,6 +195,8 @@ namespace cyber_server.view_models.plugin_version_item
             _vo.FolderPath = CyberPluginAndToolManager.Current.BuildPluginVersionFolderPath(pluginKey, _version);
             _vo.DatePublished = _datePublised;
             _vo.ExecutePath = _executePath;
+            _vo.CompressLength = _compressLength;
+            _vo.RawLength = _rawLength;
             _vo.MainClassName = _mainClassName;
             _vo.FileName = Path.GetFileName(_filePath);
             return _vo;

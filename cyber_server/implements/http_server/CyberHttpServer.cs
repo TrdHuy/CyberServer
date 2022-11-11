@@ -22,7 +22,7 @@ namespace cyber_server.implements.http_server
         public const string REQUEST_TOOL_RESOURCE_PATH = "/toolresource";
         public const string DOWNLOAD_PLUGIN_API_PATH = "/downloadplugin";
         public const string DOWNLOAD_TOOL_API_PATH = "/downloadtool";
-        public const string DOWNLOAD_CERTIFICATE_API_PATH = "/certificate";
+        public const string DOWNLOAD_CERTIFICATE_API_PATH = "/downloadcertificate";
         public const string REQUEST_INFO_API_PATH = "/requestinfo";
         public const string REQUEST_INFO_HEADER_KEY = "h2sw-request-info";
         public const string REQUEST_DOWNLOAD_PLUGIN_HEADER_KEY = "h2sw-download-plugin";
@@ -109,9 +109,7 @@ namespace cyber_server.implements.http_server
 
             try
             {
-               
                 ServerLogManager.Current.AppendConsoleLogLine($"{request.HttpMethod} {request.RawUrl} {request.Url.AbsolutePath} {request.RemoteEndPoint}");
-
 
                 if (request.Url.AbsolutePath.Contains(REQUEST_PLUGIN_RESOURCE_PATH))
                 {

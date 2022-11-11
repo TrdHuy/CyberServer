@@ -12,25 +12,49 @@ namespace cyber_server.view_models.tool_item
     public class ToolVersionItemViewModel : BaseViewModel
     {
         private ToolVersion _vo;
-        private string _version;
-        private string _description;
-        private string _filePath;
-        private string _executePath;
-        private DateTime _datePublised;
+        private string _localFilePath = "";
+
         public ToolVersion RawModel => _vo;
+
+        [Bindable(true)]
+        public string CompressLength
+        {
+            get
+            {
+                return Math.Round(_vo.CompressLength / Math.Pow(2, 20), 2) + "MB";
+            }
+            set
+            {
+                _vo.CompressLength = Convert.ToInt64(value);
+                InvalidateOwn();
+            }
+        }
+
+        [Bindable(true)]
+        public string RawLength
+        {
+            get
+            {
+                return Math.Round(_vo.RawLength / Math.Pow(2, 20), 2) + "MB";
+            }
+            set
+            {
+                _vo.RawLength = Convert.ToInt64(value);
+                InvalidateOwn();
+            }
+        }
+
 
         [Bindable(true)]
         public string Version
         {
             get
             {
-                if (_vo != null)
-                    return _vo.Version;
-                return _version;
+                return _vo.Version;
             }
             set
             {
-                _version = value;
+                _vo.Version = value;
                 InvalidateOwn();
             }
         }
@@ -40,15 +64,11 @@ namespace cyber_server.view_models.tool_item
         {
             get
             {
-                if (_vo != null)
-                {
-                    return _vo.DatePublished.ToString("dd-MM-yyyy");
-                }
-                return _datePublised.ToString("dd-MM-yyyy");
+                return _vo.DatePublished.ToString("dd-MM-yyyy");
             }
             set
             {
-                _datePublised = DateTime.Parse(value);
+                _vo.DatePublished = DateTime.Parse(value);
                 InvalidateOwn();
             }
         }
@@ -58,15 +78,11 @@ namespace cyber_server.view_models.tool_item
         {
             get
             {
-                if (_vo != null)
-                {
-                    return _vo.Description;
-                }
-                return _description;
+                return _vo.Description;
             }
             set
             {
-                _description = value;
+                _vo.Description = value;
                 InvalidateOwn();
             }
         }
@@ -76,15 +92,12 @@ namespace cyber_server.view_models.tool_item
         {
             get
             {
-                if (_vo != null)
-                {
-                    return _vo.FolderPath;
-                }
-                return _filePath;
+                if (!string.IsNullOrEmpty(_localFilePath)) return _localFilePath;
+                return _vo.FolderPath + "\\" + _vo.FileName;
             }
             set
             {
-                _filePath = value;
+                _localFilePath = value;
                 InvalidateOwn();
             }
         }
@@ -94,15 +107,11 @@ namespace cyber_server.view_models.tool_item
         {
             get
             {
-                if (_vo != null)
-                {
-                    return _vo.ExecutePath;
-                }
-                return _executePath;
+                return _vo.ExecutePath;
             }
             set
             {
-                _executePath = value;
+                _vo.ExecutePath = value;
                 InvalidateOwn();
             }
         }
@@ -113,21 +122,17 @@ namespace cyber_server.view_models.tool_item
 
         public ToolVersionItemViewModel()
         {
+            _vo = new ToolVersion();
         }
 
         public ToolVersion BuildToolVersionFromViewModel(string toolKey)
         {
-            if (_vo != null)
+            _vo.FolderPath = CyberPluginAndToolManager.Current.BuildToolVersionFolderPath(toolKey, _vo.Version);
+            if (!string.IsNullOrEmpty(_localFilePath))
             {
-                return _vo;
+                _vo.FileName = Path.GetFileName(_localFilePath);
+                _localFilePath = "";
             }
-            _vo = new ToolVersion();
-            _vo.Version = _version;
-            _vo.Description = _description;
-            _vo.FolderPath = CyberPluginAndToolManager.Current.BuildToolVersionFolderPath(toolKey, _version);
-            _vo.DatePublished = _datePublised;
-            _vo.ExecutePath = _executePath;
-            _vo.FileName = Path.GetFileName(_filePath);
             return _vo;
         }
 
@@ -140,9 +145,9 @@ namespace cyber_server.view_models.tool_item
             return true;
         }
 
-        public string GetVersionSourceFilePath()
+        public string GetVersionSourceLocalFilePath()
         {
-            return _filePath;
+            return _localFilePath;
         }
     }
 }
