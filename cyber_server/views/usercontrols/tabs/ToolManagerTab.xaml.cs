@@ -188,8 +188,7 @@ namespace cyber_server.views.usercontrols.tabs
         private async void HandleButtonClickEvent(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
-            if (btn == null) return;
-            switch (btn.Name)
+            switch (btn?.Name)
             {
                 case "PART_ClearAddToolTab":
                     {
@@ -543,6 +542,44 @@ namespace cyber_server.views.usercontrols.tabs
                             currentEditToolVM.SelectedToolVersionItemForEditting = selectedModifyVersionVM;
                             ToolVersionEditorMode = EditorMode.MODIFY_EDITOR_MODE;
                         }
+                        break;
+                    }
+            }
+
+            var checkBox = sender as CheckBox;
+            switch (checkBox?.Name)
+            {
+                case "MarkRequireLatestVersionCheckBox":
+                    {
+                        var context = checkBox.DataContext as ToolItemViewModel;
+                        var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+                        if (handler == null || context == null) return;
+                        var isEditable = true;
+                        if (ToolEditorMode == EditorMode.MODIFY_EDITOR_MODE)
+                        {
+                            MessageBox.Show("Thoát chế độ chỉnh sửa để thực hiện thao tác này!");
+                            isEditable = false;
+                        }
+                        await handler.ExecuteTask(CurrentTaskManager.MODIFI_TOOL_TASK_TYPE_KEY,
+                           mainFunc: async () =>
+                           {
+                               await CyberDbManager.Current.RequestDbContextAsync((dbcontext) =>
+                               {
+                                   if (isEditable)
+                                   {
+                                       dbcontext.SaveChanges();
+                                   }
+                                   else
+                                   {
+                                       CyberDbManager.Current.RollBack();
+                                       context.RefreshViewModel();
+                                   }
+                               });
+
+                               if (isEditable) await Task.Delay(1000);
+                           },
+                           executeTime: 0,
+                           bypassIfSemaphoreNotAvaild: true);
                         break;
                     }
             }

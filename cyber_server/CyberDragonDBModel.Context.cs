@@ -25,12 +25,12 @@ namespace cyber_server
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Plugin> Plugins { get; set; }
         public virtual DbSet<PluginVersion> PluginVersions { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<Tool> Tools { get; set; }
         public virtual DbSet<ToolVersion> ToolVersions { get; set; }
         public virtual DbSet<Vote> Votes { get; set; }
         public virtual DbSet<Certificate> Certificates { get; set; }
+        public virtual DbSet<Plugin> Plugins { get; set; }
+        public virtual DbSet<Tool> Tools { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace cyber_server.view_models.tool_item
 
         public Tool RawModel => _baseModel;
 
-
+        [Bindable(true)]
         public ToolVersionItemViewModel SelectedToolVersionItemForEditting
         {
             get
@@ -28,6 +29,7 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
         public string StringId
         {
             get
@@ -41,6 +43,7 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
         public string Name
         {
             get => _baseModel.Name;
@@ -51,6 +54,7 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
         public string Author
         {
             get => _baseModel.Author;
@@ -61,6 +65,7 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
         public string Description
         {
             get => _baseModel.Description;
@@ -71,6 +76,7 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
         public string ProjectUrl
         {
             get => _baseModel.ProjectURL;
@@ -81,6 +87,7 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
         public string IconSource
         {
             get => _baseModel.IconSource;
@@ -91,6 +98,7 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
         public bool IsPreReleased
         {
             get => _baseModel.IsPreReleased;
@@ -101,6 +109,18 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
+        public bool IsRequireLatestVersionToRun
+        {
+            get => _baseModel.IsRequireLatestVersionToRun;
+            set
+            {
+                _baseModel.IsRequireLatestVersionToRun = value;
+                InvalidateOwn();
+            }
+        }
+
+        [Bindable(true)]
         public bool IsAuthenticated
         {
             get => _baseModel.IsAuthenticated;
@@ -111,6 +131,7 @@ namespace cyber_server.view_models.tool_item
             }
         }
 
+        [Bindable(true)]
         public int Downloads
         {
             get => _baseModel.Downloads;

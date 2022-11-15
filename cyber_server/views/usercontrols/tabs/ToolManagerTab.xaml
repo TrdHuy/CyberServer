@@ -89,6 +89,12 @@
 															BorderThickness="0"
 															Click="HandleButtonClickEvent"
 															Height="30" />
+													<CheckBox x:Name="MarkRequireLatestVersionCheckBox"
+															  Click="HandleButtonClickEvent"
+															  IsChecked="{Binding IsRequireLatestVersionToRun}"
+															  ToolTip="Yêu cầu phiên bản client mới nhất khi chạy"
+															  Content="Required latest" />
+
 												</WrapPanel>
 											</Grid>
 										</Border>

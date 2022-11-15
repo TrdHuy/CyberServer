@@ -30,8 +30,9 @@ namespace cyber_server
         public string ProjectURL { get; set; }
         public string IconSource { get; set; }
         public bool IsAuthenticated { get; set; }
-        public int Downloads { get; set; }
         public bool IsPreReleased { get; set; }
+        public bool IsRequireLatestVersionToRun { get; set; }
+        public int Downloads { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PluginVersion> PluginVersions { get; set; }
