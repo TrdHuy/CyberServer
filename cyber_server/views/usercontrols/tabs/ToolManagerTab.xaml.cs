@@ -267,7 +267,7 @@ namespace cyber_server.views.usercontrols.tabs
                                 }
                                 else if (ToolEditorMode == EditorMode.MODIFY_EDITOR_MODE)
                                 {
-                                    var isSuccess = await PART_ToolManagerTabViewModel.AddNewToolVersion(
+                                    var isSuccess = await PART_ToolManagerTabViewModel.AddNewToolVersionForEdittingMode(
                                        PART_ToolVersionTb.Text
                                        , PART_PathToToolTextbox.Text
                                        , PART_DatePublisedDP.Text

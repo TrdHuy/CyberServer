@@ -37,7 +37,11 @@ namespace cyber_server.views.usercontrols.others
         public const string CHECK_VALIDATION_CERTIFICATE_TYPE_KEY = "CHECK_CERTIFICATE_INVAILD_TYPE_KEY";
         public const string RELOAD_CERTIFICATE_FROM_DB_TASK_TYPE_KEY = "RELOAD_CERTIFICATE_FROM_DB_TASK_TYPE_KEY";
         public const string DELETE_CERTIFICATE_FROM_DB_TASK_TYPE_KEY = "DELETE_CERTIFICATE_FROM_DB_TASK_TYPE_KEY";
-        
+        public const string BACKUP_DATABASE_TYPE_KEY = "BACKUP_DATABASE_TYPE_KEY";
+        public const string IMPORT_CSV_TO_DATABASE_TYPE_KEY = "IMPORT_CSV_TO_DATABASE_TYPE_KEY";
+        public const string GET_DATABASE_TABLE_DATA = "GET_DATABASE_TABLE_DATA";
+        public const string DROP_ALL_DATABASE_TABLE_DATA = "DROP_ALL_DATABASE_TABLE_DATA";
+
         private TextBlock _currentTaskNameTb;
         private Path _waitingIconPath;
         private class TaskInfo

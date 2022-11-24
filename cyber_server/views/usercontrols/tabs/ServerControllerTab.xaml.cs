@@ -1,12 +1,17 @@
 ﻿using cyber_base.implement.async_task;
+using cyber_server.implements.db_manager;
 using cyber_server.implements.http_server;
 using cyber_server.implements.http_server.handlers;
+using cyber_server.implements.task_handler;
+using cyber_server.views.usercontrols.others;
 using cyber_server.views.windows.others;
 using cyber_server_base.async_task.core;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -51,6 +56,93 @@ namespace cyber_server.views.usercontrols.tabs
                     case "PART_StopServerButton":
                         {
                             CyberHttpServer.Current.Stop();
+                            break;
+                        }
+                    case "PART_BackupDbButton":
+                        {
+                            var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+                            if (handler == null) return;
+                            await handler.ExecuteTask(CurrentTaskManager.BACKUP_DATABASE_TYPE_KEY,
+                            mainFunc: async () =>
+                            {
+                                try
+                                {
+                                    using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+                                    {
+                                        dialog.Description = "Hãy chọn thư mục lưu file backup!";
+                                        System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                                        if (result == System.Windows.Forms.DialogResult.OK
+                                            && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                                        {
+                                            var path = await CyberDbManager.Current.Backup(dialog.SelectedPath);
+                                            if (path != null && path.Count > 0)
+                                                MessageBox.Show("Xuất file csv thành công!");
+                                        }
+
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("Xuất file csv thất bại!\n" + ex.Message);
+                                }
+                            },
+                            executeTime: 0,
+                            bypassIfSemaphoreNotAvaild: true);
+                            break;
+                        }
+                    case "PART_ImportCsvToDbButton":
+                        {
+                            var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+                            if (handler == null) return;
+                            await handler.ExecuteTask(CurrentTaskManager.IMPORT_CSV_TO_DATABASE_TYPE_KEY,
+                            mainFunc: async () =>
+                            {
+                                try
+                                {
+                                    var ofd = new OpenFileDialog();
+                                    ofd.Filter = "Csv files (*.csv)|*.csv";
+                                    ofd.Multiselect = true;
+                                    var result = ofd.ShowDialog();
+                                    await CyberDbManager.Current.ImportCSVToDb(ofd.FileNames);
+                                    if (ofd.FileNames.Length > 0)
+                                    {
+                                        MessageBox.Show("Import csv thành công!");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("Import csv thất bại!\n" + ex.Message);
+                                }
+                            },
+                            executeTime: 0,
+                            bypassIfSemaphoreNotAvaild: true);
+                            break;
+                        }
+                    case "PART_ShowDatabseTableButton":
+                        {
+                            var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+                            if (handler == null) return;
+                            await handler.ExecuteTask(CurrentTaskManager.GET_DATABASE_TABLE_DATA,
+                            mainFunc: async () =>
+                            {
+                                await CyberDbManager.Current.ShowDatabaseTable2();
+                            },
+                            executeTime: 0,
+                            bypassIfSemaphoreNotAvaild: true);
+                            break;
+                        }
+                    case "PART_DropAllTableButton":
+                        {
+                            var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+                            if (handler == null) return;
+                            await handler.ExecuteTask(CurrentTaskManager.GET_DATABASE_TABLE_DATA,
+                            mainFunc: async () =>
+                            {
+                                await CyberDbManager.Current.DropAllTable();
+                                MessageBox.Show("Reset dữ liệu thành công", "Thông báo");
+                            },
+                            executeTime: 0,
+                            bypassIfSemaphoreNotAvaild: true);
                             break;
                         }
                 }
@@ -237,6 +329,51 @@ namespace cyber_server.views.usercontrols.tabs
                             }
 
                         }
+                        break;
+                    }
+                case 4:
+                    {
+                        try
+                        {
+                            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+                            {
+                                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                                if (result == System.Windows.Forms.DialogResult.OK
+                                    && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                                {
+                                    var path = await CyberDbManager.Current.Backup(dialog.SelectedPath);
+                                    if (path.Count > 0)
+                                        MessageBox.Show("Xuất file csv thành công!");
+                                }
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Xuất file csv thất bại!\n" + ex.Message);
+                        }
+
+                        break;
+                    }
+                case 5:
+                    {
+                        try
+                        {
+                            var ofd = new OpenFileDialog();
+                            ofd.Filter = "Csv files (*.csv)|*.csv";
+                            ofd.Multiselect = true;
+                            var result = ofd.ShowDialog();
+                            await CyberDbManager.Current.ImportCSVToDb(ofd.FileNames);
+                            if (ofd.FileNames.Length > 0)
+                            {
+                                MessageBox.Show("Import csv thành công!");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Import csv thất bại!\n" + ex.Message);
+                        }
+
                         break;
                     }
             }

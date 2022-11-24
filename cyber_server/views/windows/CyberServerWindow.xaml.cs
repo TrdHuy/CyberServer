@@ -47,6 +47,8 @@ namespace cyber_server.views.windows
         public CyberServerWindow()
         {
             InitializeComponent();
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.BACKUP_DATABASE_TYPE_KEY, "Backing up database to csv!", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.IMPORT_CSV_TO_DATABASE_TYPE_KEY, "Importing csv to database!", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.MODIFI_TOOL_TASK_TYPE_KEY, "Modifying tool data", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.MODIFI_VERSION_TASK_TYPE_KEY, "Modifying tool version data", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ADD_VERSION_TASK_TYPE_KEY, "Adding new version", 1, 1);
@@ -63,6 +65,8 @@ namespace cyber_server.views.windows
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_CERTIFICATE_FROM_DB_TASK_TYPE_KEY, "Reloading certificate", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_CERTIFICATE_FROM_DB_TASK_TYPE_KEY, "Deleting certificate", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.CHECK_VALIDATION_CERTIFICATE_TYPE_KEY, "Checking validation", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.GET_DATABASE_TABLE_DATA, "Getting table data", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DROP_ALL_DATABASE_TABLE_DATA, "Dropping table data", 1, 1);
             TaskHandlerManager.Current.RegisterHandler(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY, PART_TaskHandlingPanel);
         }
 

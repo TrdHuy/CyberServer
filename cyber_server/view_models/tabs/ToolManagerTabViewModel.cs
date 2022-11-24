@@ -112,12 +112,12 @@ namespace cyber_server.view_models.tabs
 
             if (sucess)
             {
-                CyberPluginAndToolManager.Current.DeleteToolDirectory(toolItemVM.RawModel.StringId, true);
                 ToolsSource.Remove(toolItemVM);
             }
             return sucess;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public async Task<bool> SyncToolFolderWithDb()
         {
             string message = "Đã xóa:\n";
@@ -220,7 +220,7 @@ namespace cyber_server.view_models.tabs
             return success;
         }
 
-        public async Task<bool> AddNewToolVersion(string version, string toolPath, string datePublished
+        public async Task<bool> AddNewToolVersionForEdittingMode(string version, string toolPath, string datePublished
         , string versionDes, string executePath, long compressToolSize, long rawToolSize
         , ToolItemViewModel modifiedItemViewModel)
         {
@@ -242,20 +242,16 @@ namespace cyber_server.view_models.tabs
 
                 var toolVer = toolVerVM.BuildToolVersionFromViewModel(modifiedItemViewModel.StringId);
 
-                var success = CyberPluginAndToolManager
-                                    .Current
-                                    .CopyToolToServerLocation(toolPath
-                                        , toolVer.FolderPath);
-                if (success)
+                toolVer.File = File.ReadAllBytes(toolPath);
+
+                modifiedItemViewModel.VersionSource.Insert(newIndex, toolVerVM);
+                await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
                 {
-                    modifiedItemViewModel.VersionSource.Insert(newIndex, toolVerVM);
-                    await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
-                    {
-                        modifiedItemViewModel.RawModel.ToolVersions.Add(toolVer);
-                        dbContext.SaveChanges();
-                    });
-                }
-                return success;
+                    modifiedItemViewModel.RawModel.ToolVersions.Add(toolVer);
+                    dbContext.SaveChanges();
+                });
+
+                return true;
             }
             return false;
         }
@@ -281,25 +277,7 @@ namespace cyber_server.view_models.tabs
                 var success = true;
                 var toolVer = modifiedVersionItemViewModel.BuildToolVersionFromViewModel(modifiedItemViewModel.StringId);
 
-                if (!string.IsNullOrEmpty(localVersionFilePath))
-                {
-                    success = CyberPluginAndToolManager
-                                    .Current
-                                    .CopyToolToServerLocation(toolPath
-                                        , toolVer.FolderPath);
-                    if (oVer != nVer)
-                    {
-                        CyberPluginAndToolManager
-                            .Current
-                            .DeleteToolVersionDirectory(oldToolKey, oldVersion, true);
-                    }
-                }
-                else if (oVer != nVer)
-                {
-                    success = CyberPluginAndToolManager
-                        .Current
-                        .RenameToolVersionFolder(oldToolKey, oldVersion, newVersion);
-                }
+                toolVer.File = File.ReadAllBytes(toolPath);
 
                 modifiedItemViewModel.VersionSource.Insert(newIndex, modifiedVersionItemViewModel);
                 await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
@@ -340,68 +318,56 @@ namespace cyber_server.view_models.tabs
                 tool.IsPreReleased = isPreReleased;
                 tool.IsAuthenticated = isAuthenticated;
                 tool.Downloads = 0;
-                var isCopFileSuccess = true;
 
                 // Build version source
                 foreach (var version in versionSource)
                 {
                     var localFilePath = version.GetVersionSourceLocalFilePath();
                     var tv = version.BuildToolVersionFromViewModel(tool.StringId);
-                    isCopFileSuccess = CyberPluginAndToolManager
-                         .Current
-                         .CopyToolToServerLocation(localFilePath
-                             , tv.FolderPath);
-                    tool.ToolVersions.Add(tv);
-
-                    if (!isCopFileSuccess)
+                    if (File.Exists(localFilePath))
                     {
-                        CyberPluginAndToolManager.Current.DeletePluginDirectory(tool.StringId);
-                        break;
+                        tv.File = File.ReadAllBytes(localFilePath);
+                        tool.ToolVersions.Add(tv);
                     }
                 }
 
-                if (isCopFileSuccess)
+
+                //Build icon source
+                try
                 {
-                    //Build icon source
-                    try
+                    if (toolIconSource != "")
                     {
-                        if (toolIconSource != "")
+                        var isLocalFile = new Uri(toolIconSource).IsFile;
+                        if (isLocalFile)
                         {
-                            var isLocalFile = new Uri(toolIconSource).IsFile;
-                            if (isLocalFile)
-                            {
-                                CyberPluginAndToolManager
-                                    .Current
-                                    .CopyToolIconToServerLocation(toolIconSource, tool.StringId);
-                                tool.IconSource = CyberServerDefinition.SERVER_REMOTE_ADDRESS
-                                    + "/toolresource/"
-                                    + tool.StringId + "/" + System.IO.Path.GetFileName(toolIconSource);
-                            }
-                            else
-                            {
-                                tool.IconSource = toolIconSource;
-                            }
+                            CyberPluginAndToolManager
+                                .Current
+                                .CopyToolIconToServerLocation(toolIconSource, tool.StringId);
+                            tool.IconSource = CyberServerDefinition.SERVER_REMOTE_ADDRESS
+                                + "/toolresource/"
+                                + tool.StringId + "/" + System.IO.Path.GetFileName(toolIconSource);
+                        }
+                        else
+                        {
+                            tool.IconSource = toolIconSource;
                         }
                     }
-                    catch
-                    {
-                        tool.IconSource = "";
-                    }
-
-                    await CyberDbManager.Current.RequestDbContextAsync((context) =>
-                    {
-                        context.Tools.Add(tool);
-                        context.SaveChanges();
-                        var vm = new ToolItemViewModel(tool);
-                        ToolsSource.Add(vm);
-                    });
-                    success = true;
-                    MessageBox.Show("Thêm mới tool thành công!");
                 }
-                else
+                catch
                 {
-                    MessageBox.Show("Lỗi thêm dữ liệu:\n Copy file zip đến server thất bại");
+                    tool.IconSource = "";
                 }
+
+                await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                {
+                    context.Tools.Add(tool);
+                    context.SaveChanges();
+                    var vm = new ToolItemViewModel(tool);
+                    ToolsSource.Add(vm);
+                });
+                success = true;
+                MessageBox.Show("Thêm mới tool thành công!");
+
 
             }
             else
@@ -424,22 +390,17 @@ namespace cyber_server.view_models.tabs
                     var success = true;
                     await CyberDbManager.Current.RequestDbContextAsync((context) =>
                     {
-                        //Build plugin version source
+                        //Build tool version source
                         foreach (var version in versionSource)
                         {
                             if (version.IsThisVersionAddedNewly())
                             {
                                 var localFilePath = version.GetVersionSourceLocalFilePath();
                                 var tv = version.BuildToolVersionFromViewModel(toolKey);
-                                success = CyberPluginAndToolManager
-                                    .Current
-                                    .CopyToolToServerLocation(localFilePath
-                                        , tv.FolderPath);
-                                modifiedItemVM.RawModel.ToolVersions.Add(tv);
-                                if (success)
+                                if (File.Exists(localFilePath))
                                 {
-                                    CyberPluginAndToolManager.Current.DeleteToolDirectory(toolKey);
-                                    break;
+                                    tv.File = File.ReadAllBytes(localFilePath);
+                                    modifiedItemVM.RawModel.ToolVersions.Add(tv);
                                 }
                             }
                         }
@@ -621,13 +582,12 @@ namespace cyber_server.view_models.tabs
                         {
                             dbcontext.ToolVersions.Remove(context.RawModel);
                             tool.ToolVersions.Remove(context.RawModel);
-                            CyberPluginAndToolManager.Current.DeleteToolVersionDirectory(tool.StringId, context.Version, true);
                             dbcontext.SaveChanges();
                             modifingContext.VersionSource.Remove(context);
                         }
                         else
                         {
-                            MessageBox.Show("Không thể xóa phiên bản duy nhất!\nVui lòng thêm các phiên bản khác để tiến hành thao tác này!","Thông báo");
+                            MessageBox.Show("Không thể xóa phiên bản duy nhất!\nVui lòng thêm các phiên bản khác để tiến hành thao tác này!", "Thông báo");
                         }
 
                     });

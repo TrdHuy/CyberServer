@@ -24,10 +24,10 @@ namespace cyber_server
         public string Version { get; set; }
         public string Description { get; set; }
         public int ToolId { get; set; }
-        public System.DateTime DatePublished { get; set; }
-        public string FolderPath { get; set; }
-        public string FileName { get; set; }
         public string ExecutePath { get; set; }
+        public System.DateTime DatePublished { get; set; }
+        public byte[] File { get; set; }
+        public string FileName { get; set; }
         public long CompressLength { get; set; }
         public long RawLength { get; set; }
     

@@ -16,6 +16,18 @@ namespace cyber_server.view_models.tool_item
 
         public ToolVersion RawModel => _vo;
 
+        public byte[] File
+        {
+            get
+            {
+                return _vo.File;
+            }
+            set
+            {
+                _vo.File = value;
+            }
+        }
+
         [Bindable(true)]
         public string CompressLength
         {
@@ -92,8 +104,7 @@ namespace cyber_server.view_models.tool_item
         {
             get
             {
-                if (!string.IsNullOrEmpty(_localFilePath)) return _localFilePath;
-                return _vo.FolderPath + "\\" + _vo.FileName;
+                return _localFilePath;
             }
             set
             {
@@ -127,11 +138,9 @@ namespace cyber_server.view_models.tool_item
 
         public ToolVersion BuildToolVersionFromViewModel(string toolKey)
         {
-            _vo.FolderPath = CyberPluginAndToolManager.Current.BuildToolVersionFolderPath(toolKey, _vo.Version);
             if (!string.IsNullOrEmpty(_localFilePath))
             {
                 _vo.FileName = Path.GetFileName(_localFilePath);
-                _localFilePath = "";
             }
             return _vo;
         }

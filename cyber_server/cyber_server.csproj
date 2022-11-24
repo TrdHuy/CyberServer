@@ -59,6 +59,15 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Word.15.0.4797.1004\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -137,6 +146,7 @@
     <Compile Include="ToolVersion.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="utils\Utils.cs" />
     <Compile Include="views\usercontrols\others\TaskHandlingPanel.xaml.cs">
       <DependentUpon>TaskHandlingPanel.xaml</DependentUpon>
     </Compile>
@@ -152,11 +162,17 @@
     <Compile Include="views\windows\CyberServerWindow.xaml.cs">
       <DependentUpon>CyberServerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\windows\others\DatabaseTableWindow.xaml.cs">
+      <DependentUpon>DatabaseTableWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\windows\others\EditBoxWindow.xaml.cs">
       <DependentUpon>EditBoxWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\windows\others\ModifyPluginWindow.xaml.cs">
       <DependentUpon>ModifyPluginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\windows\others\MultiOptionWindow.xaml.cs">
+      <DependentUpon>MultiOptionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\windows\others\TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>
@@ -197,11 +213,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="views\windows\others\DatabaseTableWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="views\windows\others\EditBoxWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\windows\others\ModifyPluginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\windows\others\MultiOptionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -245,8 +269,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CyberDragonDB.mdf">
+    <Content Include="CyberDB.mdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CyberDB_log.ldf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DependentUpon>CyberDB.mdf</DependentUpon>
     </Content>
     <Content Include="CyberDragonDBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -257,10 +285,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
       <LastGenOutput>CyberDragonDBModel.cs</LastGenOutput>
-    </Content>
-    <Content Include="CyberDragonDB_log.ldf">
-      <DependentUpon>CyberDragonDB.mdf</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="htdocs\js\Wiki_ColumnChartScr.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

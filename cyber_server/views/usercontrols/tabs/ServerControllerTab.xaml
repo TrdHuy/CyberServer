@@ -30,7 +30,23 @@
 					Click="HandleButtonClickEvent"
 					Content="Stop server"
 					Margin="5" />
-
+			<Button x:Name="PART_ImportCsvToDbButton"
+					Click="HandleButtonClickEvent"
+					Content="Import csv to database"
+					Margin="5" />
+			<Button x:Name="PART_BackupDbButton"
+					Click="HandleButtonClickEvent"
+					Content="Backup database to csv"
+					Margin="5" />
+			<Button x:Name="PART_ShowDatabseTableButton"
+					Click="HandleButtonClickEvent"
+					Content="Show database table"
+					Margin="5" />
+			<Button x:Name="PART_DropAllTableButton"
+					Click="HandleButtonClickEvent"
+					Content="Drop all database table"
+					Margin="5" />
+			
 			<Button Click="testRequest"
 					Content="Test request"
 					Margin="5" />
@@ -41,7 +57,9 @@
 				<ComboBoxItem Content="Get all plugin data request" />
 				<ComboBoxItem Content="Download plugin request" />
 				<ComboBoxItem Content="Get all tool data request" />
-				<ComboBoxItem Content="Download tool request"/>
+				<ComboBoxItem Content="Download tool request" />
+				<ComboBoxItem Content="Backup database" />
+				<ComboBoxItem Content="Import csv to database"/>
 			</ComboBox>
 		</WrapPanel>
 

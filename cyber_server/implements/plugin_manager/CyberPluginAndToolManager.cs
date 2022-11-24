@@ -40,6 +40,7 @@ namespace cyber_server.implements.plugin_manager
             }
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public void DeleteToolDirectory(string toolKey, bool rescursive = false)
         {
             if (Directory.Exists(toolFolderLocation + "\\" + toolKey))
@@ -57,6 +58,7 @@ namespace cyber_server.implements.plugin_manager
             }
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public void DeleteToolVersionDirectory(string toolKey, string version, bool rescursive = false)
         {
             var folder = toolFolderLocation + "\\" + toolKey + "\\versions\\" + version;
@@ -102,6 +104,7 @@ namespace cyber_server.implements.plugin_manager
             return false;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public bool CopyToolToServerLocation(string sourceFile, string destination)
         {
             if (string.IsNullOrEmpty(sourceFile)
@@ -120,6 +123,7 @@ namespace cyber_server.implements.plugin_manager
             return false;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public bool CopyToolIconToServerLocation(string sourceFile, string toolKey)
         {
             if (File.Exists(sourceFile))
@@ -187,11 +191,13 @@ namespace cyber_server.implements.plugin_manager
             return false;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public string GetSetupZipFilePathByToolVersion(string toolKey, string toolVersion, string toolZipFileName)
         {
             return GetToolVersionFolderPath(toolKey) + "\\" + toolVersion + "\\" + toolZipFileName;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public string GetToolVersionFolderPath(string toolKey)
         {
             return toolFolderLocation + "\\" + toolKey + "\\" + "versions";
@@ -220,6 +226,7 @@ namespace cyber_server.implements.plugin_manager
             return pluginKey + "\\" + "versions" + "\\" + version;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public string BuildToolVersionFolderPath(string toolKey, string version)
         {
             try
@@ -263,6 +270,7 @@ namespace cyber_server.implements.plugin_manager
             return keys;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public string[] GetAllToolKeyInToolStorageFolder()
         {
             var folders = Directory.GetDirectories(toolFolderLocation);
@@ -275,6 +283,7 @@ namespace cyber_server.implements.plugin_manager
             return keys;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public string[] GetAllToolVersionInStorageFolder(string toolKey)
         {
             var folders = Directory.GetDirectories(toolFolderLocation + "\\" + toolKey + "\\" + "versions");
@@ -287,6 +296,7 @@ namespace cyber_server.implements.plugin_manager
             return version;
         }
 
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
         public bool RenameToolVersionFolder(string toolKey, string oldToolVersion, string newToolVersion)
         {
             var toolVersionFolderPath = GetToolVersionFolderPath(toolKey);

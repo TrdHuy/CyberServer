@@ -114,25 +114,15 @@ namespace cyber_server.implements.http_server.handlers
                                             .ToolVersions
                                             .Where(v => Version.Parse(v.Version) == requestToolVersion)
                                             .FirstOrDefault();
-
                                 });
 
                                 if (query != null)
                                 {
-                                    var zipFilePath = CyberPluginAndToolManager.Current.GetSetupZipFilePathByToolVersion(
-                                            requestToolKey,
-                                            requestToolVersion.ToString(),
-                                            query.FileName);
                                     response.StatusCode = (int)HttpStatusCode.OK;
 
-                                    if (File.Exists(zipFilePath))
+                                    if (query.File != null && query.File.Length > 0)
                                     {
-                                        byte[] buffer;
-                                        using (FileStream stream = File.Open(zipFilePath, FileMode.Open))
-                                        {
-                                            buffer = new byte[stream.Length];
-                                            await stream.ReadAsync(buffer, 0, (int)stream.Length);
-                                        }
+                                        byte[] buffer = query.File;
                                         response.ContentLength64 = buffer.Length;
 
                                         await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>

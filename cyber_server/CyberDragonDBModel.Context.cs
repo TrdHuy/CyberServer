@@ -10,27 +10,90 @@
 namespace cyber_server
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+    using System.Threading.Tasks;
+
     public partial class CyberDragonDbContext : DbContext
     {
+        private const string PLUGIN_VERSION_TABLE_NAME = "PluginVersion";
+        private const string TAG_TABLE_NAME = "Tag";
+        private const string VOTE_TABLE_NAME = "Vote";
+        private const string CERTIFICATE_TABLE_NAME = "Certificate";
+        private const string PLUGIN_TABLE_NAME = "Plugin";
+        private const string TOOL_TABLE_NAME = "Tool";
+        private const string TOOL_VERSION_TABLE_NAME = "ToolVersion";
+        private readonly string[] TABLE_NAME_ARRAY = new string[] {
+                PLUGIN_VERSION_TABLE_NAME
+                , TAG_TABLE_NAME
+                , VOTE_TABLE_NAME
+                , CERTIFICATE_TABLE_NAME
+                , PLUGIN_TABLE_NAME
+                , TOOL_TABLE_NAME
+                , TOOL_VERSION_TABLE_NAME
+            };
         public CyberDragonDbContext()
-            : base("name=CyberDragonDbContext")
+                : base("name=CyberDragonDbContext")
         {
         }
-    
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
+        public string[] GetListTableName()
+        {
+            return TABLE_NAME_ARRAY;
+        }
+
+        public async Task<IEnumerable> GetTableEnumerableByName(string tableName)
+        {
+            switch (tableName)
+            {
+                case PLUGIN_VERSION_TABLE_NAME:
+                    return await PluginVersions.ToListAsync<PluginVersion>();
+                case PLUGIN_TABLE_NAME:
+                    return await Plugins.ToListAsync<Plugin>();
+                case TOOL_VERSION_TABLE_NAME:
+                    return await ToolVersions.ToListAsync<ToolVersion>();
+                case TOOL_TABLE_NAME:
+                    return await Tools.ToListAsync<Tool>();
+                case TAG_TABLE_NAME:
+                    return await Tags.ToListAsync<Tag>();
+                case VOTE_TABLE_NAME:
+                    return await Votes.ToListAsync<Vote>();
+                case CERTIFICATE_TABLE_NAME:
+                    return await Certificates.ToListAsync<Certificate>();
+                default:
+                    return null;
+            }
+        }
+
+        public async Task DropAllTable()
+        {
+            PluginVersions.RemoveRange(PluginVersions);
+            Tags.RemoveRange(Tags);
+            Votes.RemoveRange(Votes);
+            Plugins.RemoveRange(Plugins);
+            Certificates.RemoveRange(Certificates);
+            ToolVersions.RemoveRange(ToolVersions);
+            Tools.RemoveRange(Tools);
+            await SaveChangesAsync();
+            foreach (var tableName in TABLE_NAME_ARRAY)
+            {
+                await Database.ExecuteSqlCommandAsync("DBCC CHECKIDENT('" + tableName + "', RESEED, 0)");
+            }
+        }
+
         public virtual DbSet<PluginVersion> PluginVersions { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<ToolVersion> ToolVersions { get; set; }
         public virtual DbSet<Vote> Votes { get; set; }
         public virtual DbSet<Certificate> Certificates { get; set; }
         public virtual DbSet<Plugin> Plugins { get; set; }
         public virtual DbSet<Tool> Tools { get; set; }
+        public virtual DbSet<ToolVersion> ToolVersions { get; set; }
     }
 }
