@@ -130,6 +130,8 @@
     <Compile Include="implements\log_manager\ServerLogManager.cs" />
     <Compile Include="implements\plugin_manager\CyberPluginAndToolManager.cs" />
     <Compile Include="implements\task_handler\TaskHandlerManager.cs" />
+    <Compile Include="models\BaseObjectSwModel.cs" />
+    <Compile Include="models\BaseObjectVersionModel.cs" />
     <Compile Include="Plugin.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
@@ -150,8 +152,12 @@
     <Compile Include="views\usercontrols\others\TaskHandlingPanel.xaml.cs">
       <DependentUpon>TaskHandlingPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\usercontrols\tabs\BaseSwManagerTabUserControl.cs" />
     <Compile Include="views\usercontrols\tabs\CertificateManagerTab.xaml.cs">
       <DependentUpon>CertificateManagerTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\usercontrols\tabs\PluginManagerTab.xaml.cs">
+      <DependentUpon>PluginManagerTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\usercontrols\tabs\ServerControllerTab.xaml.cs">
       <DependentUpon>ServerControllerTab.xaml</DependentUpon>
@@ -168,9 +174,6 @@
     <Compile Include="views\windows\others\EditBoxWindow.xaml.cs">
       <DependentUpon>EditBoxWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="views\windows\others\ModifyPluginWindow.xaml.cs">
-      <DependentUpon>ModifyPluginWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="views\windows\others\MultiOptionWindow.xaml.cs">
       <DependentUpon>MultiOptionWindow.xaml</DependentUpon>
     </Compile>
@@ -178,14 +181,17 @@
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="view_models\BaseViewModel.cs" />
+    <Compile Include="view_models\list_view_item\BaseObjectSwItemViewModel.cs" />
+    <Compile Include="view_models\list_view_item\BaseObjectVersionItemViewModel.cs" />
     <Compile Include="view_models\list_view_item\certificate_item\CertificateItemViewModel.cs" />
-    <Compile Include="view_models\plugin_version_item\PluginItemViewModel.cs" />
-    <Compile Include="view_models\plugin_version_item\PluginVersionItemViewModel.cs" />
+    <Compile Include="view_models\list_view_item\plugin_item\PluginItemViewModel.cs" />
+    <Compile Include="view_models\list_view_item\plugin_item\PluginVersionItemViewModel.cs" />
+    <Compile Include="view_models\list_view_item\tool_item\ToolItemViewModel.cs" />
+    <Compile Include="view_models\list_view_item\tool_item\ToolVersionItemViewModel.cs" />
+    <Compile Include="view_models\tabs\BaseSwManagerTabViewModel.cs" />
     <Compile Include="view_models\tabs\ServerControllerTabViewModel.cs" />
-    <Compile Include="view_models\tabs\ToolManagerTabViewModel.cs" />
-    <Compile Include="view_models\tool_item\ToolItemViewModel.cs" />
-    <Compile Include="view_models\tool_item\ToolVersionItemViewModel.cs" />
-    <Compile Include="view_models\windows\ModifyPluginWindowViewModel.cs" />
+    <Compile Include="view_models\tabs\sw_manager\PluginManagerTabViewModel.cs" />
+    <Compile Include="view_models\tabs\sw_manager\ToolManagerTabViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -193,11 +199,19 @@
     <Compile Include="Vote.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
+    <Page Include="resources\ResourceThemes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="views\usercontrols\others\TaskHandlingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\usercontrols\tabs\CertificateManagerTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\usercontrols\tabs\PluginManagerTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -218,10 +232,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\windows\others\EditBoxWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="views\windows\others\ModifyPluginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -311,6 +321,8 @@
       <Name>cyber_server_base</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="view_models\windows\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

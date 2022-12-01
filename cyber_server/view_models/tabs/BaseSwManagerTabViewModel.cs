@@ -1,0 +1,419 @@
+﻿using cyber_server.implements.db_manager;
+using cyber_server.implements.plugin_manager;
+using cyber_server.models;
+using cyber_server.view_models.list_view_item;
+using cyber_server.views.usercontrols.tabs;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.IO.Compression;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace cyber_server.view_models.tabs
+{
+    public abstract class BaseSwManagerTabViewModel : BaseViewModel
+    {
+        private BaseObjectSwItemViewModel _selectedModifyToolItem;
+        private string _previewSizeContent;
+        private string _pathToSw;
+        private EditorMode _currentEditorMode;
+
+        [Bindable(true)]
+        public EditorMode CurrentEditorMode
+        {
+            get
+            {
+                return _currentEditorMode;
+            }
+            set
+            {
+                _currentEditorMode = value;
+                InvalidateOwn();
+
+            }
+        }
+
+        [Bindable(true)]
+        public ObservableCollection<BaseObjectSwItemViewModel> SwSource { get; set; }
+            = new ObservableCollection<BaseObjectSwItemViewModel>();
+
+        [Bindable(true)]
+        public BaseObjectSwItemViewModel SelectedModifyToolItem
+        {
+            get
+            {
+                return _selectedModifyToolItem;
+            }
+            set
+            {
+                _selectedModifyToolItem = value;
+                InvalidateOwn();
+            }
+        }
+
+        [Bindable(true)]
+        public string PreviewSizeContent
+        {
+            get
+            {
+                return _previewSizeContent;
+            }
+            set
+            {
+                _previewSizeContent = value;
+                InvalidateOwn();
+            }
+        }
+
+        [Bindable(true)]
+        public string PathToToolString
+        {
+            get
+            {
+                return _pathToSw;
+            }
+            set
+            {
+                _pathToSw = value;
+                InvalidateOwn();
+            }
+        }
+
+        public async Task<bool> DeleteVerionInModifyingMode(BaseObjectVersionItemViewModel context, BaseObjectSwItemViewModel modifingContext)
+        {
+            var confirm = MessageBox.Show("Bạn có muốn xóa phiên bản này?", "", MessageBoxButton.YesNo);
+            if (confirm == MessageBoxResult.Yes)
+            {
+                if (context != null && context.RawModel != null)
+                {
+                    return await DeleteSwVersionInDatabase(context, modifingContext);
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> DeleteVerionInAddingMode(BaseObjectVersionItemViewModel context
+            , ObservableCollection<BaseObjectVersionItemViewModel> versionItemViewModels)
+        {
+            await Task.Delay(10);
+            return versionItemViewModels.Remove(context);
+        }
+
+        public async Task<bool> CreateNewSwVersion(BaseObjectVersionItemViewModel swVersionVM
+            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        {
+            {
+                var newIndex = GetIndexOfNewVersion(swVersionVM, versionSource);
+
+                if (newIndex != -1)
+                {
+                    await Task.Delay(1000);
+                    versionSource.Insert(newIndex, swVersionVM);
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public bool RenewSwVersionIndexForAddingMode(BaseObjectVersionItemViewModel swVersionVM
+            , BaseObjectVersionItemViewModel selectedVersionVM
+            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        {
+            var oldIndex = versionSource.IndexOf(selectedVersionVM);
+            versionSource.RemoveAt(oldIndex);
+            var newIndex = GetIndexOfNewVersion(swVersionVM, versionSource);
+            var success = newIndex != -1;
+            if (success)
+            {
+                versionSource.Insert(newIndex, selectedVersionVM);
+            }
+            else
+            {
+                versionSource.Insert(oldIndex, selectedVersionVM);
+            }
+            return success;
+        }
+
+        public async Task<bool> AddNewSwVersionForEdittingMode(BaseObjectVersionItemViewModel swVersionVM
+        , BaseObjectSwItemViewModel modifiedItemViewModel)
+        {
+            var newIndex = GetIndexOfNewVersion(swVersionVM, modifiedItemViewModel.VersionSource);
+            if (newIndex != -1)
+            {
+                await Task.Delay(1000);
+
+                var toolVer = swVersionVM.BuildToolVersionFromViewModel(modifiedItemViewModel.StringId);
+
+                toolVer.File = File.ReadAllBytes(swVersionVM.FilePath);
+
+                var success = await AddSwVersionToDatabase(modifiedItemViewModel, toolVer);
+                if (success)
+                {
+                    modifiedItemViewModel.VersionSource.Insert(newIndex, swVersionVM);
+                }
+                return success;
+            }
+            return false;
+        }
+
+        public async Task<bool> SaveEdittedToolVersionToDb(string oldVersion
+            , BaseObjectSwItemViewModel modifiedItemViewModel
+            , BaseObjectVersionItemViewModel modifiedVersionItemViewModel)
+        {
+            // Remove temporaly
+            var oldIndex = modifiedItemViewModel.VersionSource.IndexOf(modifiedVersionItemViewModel);
+            modifiedItemViewModel.VersionSource.RemoveAt(oldIndex);
+
+            var newIndex = GetIndexOfNewVersion(modifiedVersionItemViewModel, modifiedItemViewModel.VersionSource);
+            if (newIndex != -1)
+            {
+                var oVer = Version.Parse(oldVersion);
+                var nVer = Version.Parse(modifiedVersionItemViewModel.Version);
+                await Task.Delay(100);
+
+                var localVersionFilePath = modifiedVersionItemViewModel.GetVersionSourceLocalFilePath();
+                var success = true;
+                var swVersionModel = modifiedVersionItemViewModel.BuildToolVersionFromViewModel(modifiedItemViewModel.StringId);
+
+                swVersionModel.File = File.ReadAllBytes(modifiedVersionItemViewModel.FilePath);
+
+                modifiedItemViewModel.VersionSource.Insert(newIndex, modifiedVersionItemViewModel);
+                await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
+                {
+                    if (success)
+                    {
+                        dbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        CyberDbManager.Current.RollBack();
+                    }
+                });
+                return true;
+            }
+            else
+            {
+                modifiedItemViewModel.VersionSource.Insert(oldIndex, modifiedVersionItemViewModel);
+            }
+            return false;
+        }
+
+        public async Task<bool> AddNewSwToDb(string swKey, string swName, string swAuthor, string swDes
+            , string swUrl, string swIconSource, bool isPreReleased, bool isAuthenticated
+            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        {
+            var success = false;
+            if (await IsMeetConditionToAddSwToDb(swKey, swName, swAuthor, versionSource))
+            {
+                await Task.Delay(1000);
+                var swModel = BuildSwModel(swKey
+                    , swName
+                    , swAuthor
+                    , swDes
+                    , swUrl
+                    , swIconSource
+                    , isPreReleased
+                    , isAuthenticated
+                    , versionSource);
+
+                var vm = await AddNewSwToDatabase(swModel);
+                if (vm != null)
+                {
+                    SwSource.Add(vm);
+                    MessageBox.Show("Thêm mới sw thành công!");
+                }
+                else
+                {
+                    MessageBox.Show("Thêm mới sw thất bại!");
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Điền các trường còn thiếu!");
+            }
+            return success;
+        }
+
+        public async Task<bool> SaveModifyingSwToDb(string swKey, string swName, string swAuthor
+           , string swIconSource
+           , ObservableCollection<BaseObjectVersionItemViewModel> versionSource
+           , BaseObjectSwItemViewModel modifiedItemVM)
+        {
+            var confirm = MessageBox.Show("Bạn có chắc thay đổi trên?", "", MessageBoxButton.YesNo);
+            if (confirm == MessageBoxResult.Yes)
+            {
+                if (IsMeetConditionToSaveEditedSwToDb(swName, swAuthor, versionSource))
+                {
+                    var success = true;
+                    await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                    {
+                        modifiedItemVM.RawModel.IconSource = BuildSwIconSource(swKey, swIconSource);
+
+                        if (success)
+                        {
+                            context.SaveChanges();
+                        }
+                        else
+                        {
+                            CyberDbManager.Current.RollBack();
+                        }
+                    });
+                    return success;
+                }
+                else
+                {
+                    MessageBox.Show("Điền các trường còn thiếu!");
+                }
+            }
+            return false;
+        }
+
+        public abstract Task ReloadSwSource();
+
+        public abstract Task<bool> DeleteSwFromDb(BaseObjectSwItemViewModel toolItemVM);
+
+        [Obsolete("Method is deprecated, since using byte array instead saving to folder physically")]
+        public abstract Task<bool> SyncSwFolderWithDb();
+
+        protected abstract Task<BaseObjectSwItemViewModel> AddNewSwToDatabase(BaseObjectSwModel swModel);
+
+        protected abstract Task<bool> AddSwVersionToDatabase(BaseObjectSwItemViewModel modifiedItemViewModel, BaseObjectVersionModel toolVer);
+
+        protected abstract BaseObjectSwModel BuildSwModel(string swKey
+            , string swName
+            , string swAuthor
+            , string swDes
+            , string swUrl
+            , string swIconSource
+            , bool isPreReleased
+            , bool isAuthenticated
+            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource);
+
+        protected abstract Task<bool> IsSwKeyExistInDatabase(string swKey);
+
+        protected abstract Task<bool> DeleteSwVersionInDatabase(BaseObjectVersionItemViewModel context, BaseObjectSwItemViewModel modifingContext);
+
+        protected virtual string BuildSwIconSource(string swKey, string swIconSource)
+        {
+            return swIconSource;
+        }
+
+        protected bool IsMeetConditionToSaveEditedSwToDb(string swName, string swAuthor
+            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        {
+
+            if (string.IsNullOrEmpty(swName)
+                || string.IsNullOrEmpty(swAuthor)
+                || versionSource.Count == 0) return false;
+
+            return true;
+        }
+
+        protected async Task<bool> IsMeetConditionToAddSwToDb(string swKey, string swName, string swAuthor
+            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        {
+
+            if (string.IsNullOrEmpty(swName)
+                || string.IsNullOrEmpty(swKey)
+                || string.IsNullOrEmpty(swAuthor)
+                || versionSource.Count == 0) return false;
+            if (!string.IsNullOrEmpty(swKey))
+            {
+                var regexItem = new Regex(@"^[a-zA-Z0-9_]*$");
+                if (!regexItem.IsMatch(swKey))
+                {
+                    MessageBox.Show("Tool key không được chứ ký tự đặc biệt");
+                    return false;
+                }
+            }
+
+            var isSwKeyExist = await IsSwKeyExistInDatabase(swKey);
+
+            if (isSwKeyExist)
+            {
+                MessageBox.Show("Key này đã tồn tại\nHãy chọn key khác!");
+                return false;
+            }
+            return true;
+        }
+
+        protected virtual int GetIndexOfNewVersion(BaseObjectVersionItemViewModel swVersionVM, ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        {
+            Version newVersion = new Version();
+            try
+            {
+                newVersion = Version.Parse(swVersionVM.Version);
+            }
+            catch
+            {
+                MessageBox.Show("Version ko đúng format!\nFormat: [Major].[Minor].[Build].[Revision]\nVí dụ: 1.1.1.1");
+                return -1;
+            }
+
+            int index = 0;
+            for (int i = 0; i < versionSource.Count; i++)
+            {
+                var ver = versionSource[i];
+                Version v = Version.Parse(ver.Version);
+                if (newVersion == v)
+                {
+                    MessageBox.Show("Đã có version này!");
+                    return -1;
+                }
+
+                if (i == 0 && newVersion > v)
+                {
+                    index = 0;
+                    break;
+                }
+
+                if (newVersion < v)
+                {
+                    index = i + 1;
+                }
+            }
+
+            if (string.IsNullOrEmpty(swVersionVM.Version)
+                || string.IsNullOrEmpty(swVersionVM.DatePublished)
+                || string.IsNullOrEmpty(swVersionVM.Description)
+                || string.IsNullOrEmpty(swVersionVM.ExecutePath))
+            {
+                MessageBox.Show("Điền các trường còn thiếu!");
+                return -1;
+            }
+
+            var isExistExePath = false;
+            if (File.Exists(swVersionVM.FilePath))
+            {
+                using (ZipArchive archive = ZipFile.OpenRead(swVersionVM.FilePath))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        if (entry.FullName == swVersionVM.ExecutePath)
+                        {
+                            isExistExePath = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!isExistExePath)
+                {
+                    MessageBox.Show("Đường dẫn tới file exe không tồn tại!");
+                    return -1;
+                }
+            }
+            else if (!CyberPluginAndToolManager.Current.CheckToolPathExistOnServer(swVersionVM.ExecutePath))
+            {
+                MessageBox.Show("File tool không tồn tại!");
+                return -1;
+            }
+            return index;
+        }
+
+    }
+}

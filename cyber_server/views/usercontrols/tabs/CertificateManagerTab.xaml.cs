@@ -39,13 +39,13 @@ namespace cyber_server.views.usercontrols.tabs
         {
             InitializeComponent();
             PART_CertsListView.ItemsSource = CertSource;
-            Loaded += HandleLoadedEvent;
         }
 
-        private async void HandleLoadedEvent(object sender, RoutedEventArgs e)
+
+        public async void OnTabReloaded(object sender, RoutedEventArgs e)
         {
-            var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
-            await handler.ExecuteTask(CurrentTaskManager.RELOAD_CERTIFICATE_FROM_DB_TASK_TYPE_KEY,
+            var handler = TaskHandlerManager.Current?.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+            await handler?.ExecuteTask(CurrentTaskManager.RELOAD_CERTIFICATE_FROM_DB_TASK_TYPE_KEY,
                 mainFunc: async () =>
                 {
                     CertSource.Clear();

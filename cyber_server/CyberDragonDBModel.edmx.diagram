@@ -5,17 +5,17 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="53e05d8e0faa440ba4b4e8ab9784f26b" Name="Diagram1" ZoomLevel="74">
-        <EntityTypeShape EntityType="CyberDragonDBModel.PluginVersion" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
         <EntityTypeShape EntityType="CyberDragonDBModel.Tag" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
         <EntityTypeShape EntityType="CyberDragonDBModel.Vote" Width="1.5" PointX="3" PointY="7.5" IsExpanded="true" />
         <EntityTypeShape EntityType="CyberDragonDBModel.Certificate" Width="1.5" PointX="5.375" PointY="5.75" />
         <EntityTypeShape EntityType="CyberDragonDBModel.Plugin" Width="1.5" PointX="0.75" PointY="3.375" />
         <EntityTypeShape EntityType="CyberDragonDBModel.Tool" Width="1.5" PointX="5.75" PointY="1.125" />
-        <AssociationConnector Association="CyberDragonDBModel.FK__PluginVer__Plugi__59904A2C" />
         <AssociationConnector Association="CyberDragonDBModel.FK__Tag__PluginId__57A801BA" />
         <AssociationConnector Association="CyberDragonDBModel.FK__Vote__PluginId__589C25F3" />
         <EntityTypeShape EntityType="CyberDragonDBModel.ToolVersion" Width="1.5" PointX="8" PointY="1.125" />
         <AssociationConnector Association="CyberDragonDBModel.FK__ToolVersi__ToolI__49C3F6B7" />
+        <EntityTypeShape EntityType="CyberDragonDBModel.PluginVersion" Width="1.5" PointX="3" PointY="0.75" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__PluginVer__Plugi__5CD6CB2B" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

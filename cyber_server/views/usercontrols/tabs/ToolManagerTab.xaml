@@ -1,17 +1,15 @@
-﻿<UserControl x:Class="cyber_server.views.usercontrols.tabs.ToolManagerTab"
-			 x:Name="PART_ToolManagerTabUC"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:tvivm="clr-namespace:cyber_server.view_models.tool_item"
-			 xmlns:vm="clr-namespace:cyber_server.view_models.tabs"
-			 xmlns:local="clr-namespace:cyber_server.views.usercontrols.tabs"
-			 mc:Ignorable="d"
-			 Loaded="HandleLoadedEvent"
-			 d:DesignHeight="900"
-			 d:DesignWidth="800">
+﻿<local:BaseSwManagerTabUserControl x:Class="cyber_server.views.usercontrols.tabs.ToolManagerTab"
+								   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+								   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+								   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+								   xmlns:sys="clr-namespace:System;assembly=mscorlib"
+								   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+								   xmlns:tvivm="clr-namespace:cyber_server.view_models.list_view_item.tool_item"
+								   xmlns:vm="clr-namespace:cyber_server.view_models.tabs.sw_manager"
+								   xmlns:local="clr-namespace:cyber_server.views.usercontrols.tabs"
+								   mc:Ignorable="d"
+								   d:DesignHeight="900"
+								   d:DesignWidth="800">
 	<UserControl.DataContext>
 		<vm:ToolManagerTabViewModel x:Name="PART_ToolManagerTabViewModel" />
 	</UserControl.DataContext>
@@ -43,7 +41,7 @@
 						   FontSize="15"
 						   Grid.ColumnSpan="2" />
 				<ListView x:Name="PART_ToolLV"
-						  ItemsSource="{Binding ToolsSource}"
+						  ItemsSource="{Binding SwSource}"
 						  AlternationCount="2"
 						  Grid.Row="1"
 						  Grid.ColumnSpan="2">
@@ -76,6 +74,7 @@
 												<WrapPanel Grid.Column="2"
 														   Width="160">
 													<Button x:Name="DeleteToolItemButton"
+															Tag="{x:Static local:SwManagerViewElementTagId.DeleteSwItemButton}"
 															Content="Xóa"
 															Width="40"
 															Click="HandleButtonClickEvent"
@@ -83,6 +82,7 @@
 															BorderThickness="0"
 															Height="30" />
 													<Button x:Name="ModifyToolItemButton"
+															Tag="{x:Static local:SwManagerViewElementTagId.ModifySwItemButton}"
 															Content="Sửa"
 															Width="40"
 															Background="Transparent"
@@ -90,6 +90,7 @@
 															Click="HandleButtonClickEvent"
 															Height="30" />
 													<CheckBox x:Name="MarkRequireLatestVersionCheckBox"
+															  Tag="{x:Static local:SwManagerViewElementTagId.MarkRequireLatestVersionCheckBox}"
 															  Click="HandleButtonClickEvent"
 															  IsChecked="{Binding IsRequireLatestVersionToRun}"
 															  ToolTip="Yêu cầu phiên bản client mới nhất khi chạy"
@@ -226,9 +227,11 @@
 					<Button x:Name="PART_ReloadToolFromDb"
 							Click="HandleButtonClickEvent"
 							Content="Reload thông tin tool"
+							Tag="{x:Static local:SwManagerViewElementTagId.ReloadSwFromDbButton}"
 							Width="140"
 							Margin="5" />
 					<Button x:Name="PART_SyncToolFolderWithDbButton"
+							Tag="{x:Static local:SwManagerViewElementTagId.SyncSwFolderWithDbButton}"
 							Click="HandleButtonClickEvent"
 							Content="Đồng bộ db và tool folder"
 							Width="170"
@@ -251,6 +254,7 @@
 							   FontSize="15"
 							   Grid.ColumnSpan="2" />
 					<Button x:Name="PART_OpenToolEditorButton"
+							Tag="{x:Static local:SwManagerViewElementTagId.ExpandSwEditorButton}"
 							Content="v"
 							Height="20"
 							Click="HandleButtonClickEvent"
@@ -259,7 +263,7 @@
 				</StackPanel>
 
 				<Grid x:Name="PART_ToolEditorPanel"
-					  DataContext="{Binding ElementName=PART_ToolManagerTabUC, Path=AddingContext}"
+					  DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BaseSwManagerTabUserControl},Mode=FindAncestor}, Path=AddingContext}"
 					  Margin="10,0,10,0"
 					  Grid.Row="1">
 					<Grid.ColumnDefinitions>
@@ -388,6 +392,7 @@
 															</Grid.ColumnDefinitions>
 															<Button x:Name="SUB_ModifyVersionItem"
 																	Content="/"
+																	Tag="{x:Static local:SwManagerViewElementTagId.ModifyVersionItem}"
 																	Margin="1,0"
 																	FontSize="8"
 																	ToolTip="Sửa"
@@ -395,6 +400,7 @@
 																	VerticalAlignment="Top"
 																	Click="HandleButtonClickEvent" />
 															<Button x:Name="SUB_DeleteVersionItem"
+																	Tag="{x:Static local:SwManagerViewElementTagId.DeleteVersionItem}"
 																	Content="X"
 																	FontSize="8"
 																	ToolTip="Xoá"
@@ -474,18 +480,19 @@
 									Margin="0,5">
 							<TextBox x:Name="PART_ToolVersionTb"
 									 Width="100"
-									 Text="{Binding SelectedToolVersionItemForEditting.Version}"
+									 Text="{Binding SelectedSwVersionItemForEditting.Version}"
 									 Tag="Version *"
 									 Margin="0" />
 
 							<TextBox x:Name="PART_PathToToolTextbox"
 									 Width="100"
-									 Text="{Binding SelectedToolVersionItemForEditting.FilePath}"
+									 Text="{Binding SelectedSwVersionItemForEditting.FilePath}"
 									 Tag="File path *"
 									 Margin="10,0,0,0"
 									 IsReadOnly="True" />
 
 							<Button x:Name="PART_OpenToolFileChooser"
+									Tag="{x:Static local:SwManagerViewElementTagId.OpenSwFileChooserButton}"
 									Content="..."
 									Width="15"
 									Click="HandleButtonClickEvent"
@@ -499,12 +506,12 @@
 								<Run Text="Compress: "
 									 FontWeight="Bold" />
 								<Run x:Name="PART_CompressLengthRun"
-									 Text="{Binding SelectedToolVersionItemForEditting.CompressLength}" />
+									 Text="{Binding SelectedSwVersionItemForEditting.CompressLength}" />
 								<LineBreak />
 								<Run Text="Raw: "
 									 FontWeight="Bold" />
 								<Run x:Name="PART_RawLengthRun"
-									 Text="{Binding SelectedToolVersionItemForEditting.RawLength}" />
+									 Text="{Binding SelectedSwVersionItemForEditting.RawLength}" />
 							</TextBlock>
 
 							<TextBlock x:Name="PART_SizeToolTB"
@@ -516,7 +523,7 @@
 									Grid.Column="2"
 									Orientation="Horizontal">
 							<TextBox x:Name="PART_ExecutePathTextbox"
-									 Text="{Binding SelectedToolVersionItemForEditting.ExecutePath}"
+									 Text="{Binding SelectedSwVersionItemForEditting.ExecutePath}"
 									 Width="200"
 									 Tag="Path to main exe" />
 							<TextBlock VerticalAlignment="Center"
@@ -528,7 +535,7 @@
 
 							<DatePicker x:Name="PART_DatePublisedDP"
 										Grid.Row="4"
-										Text="{Binding SelectedToolVersionItemForEditting.DatePublished}"
+										Text="{Binding SelectedSwVersionItemForEditting.DatePublished}"
 										Width="120"
 										HorizontalAlignment="Left"
 										VerticalAlignment="Center"
@@ -541,7 +548,7 @@
 									Orientation="Horizontal">
 							<TextBox x:Name="PART_VersionDesTb"
 									 Width="300"
-									 Text="{Binding SelectedToolVersionItemForEditting.Description}"
+									 Text="{Binding SelectedSwVersionItemForEditting.Description}"
 									 VerticalContentAlignment="Top"
 									 TextWrapping="Wrap"
 									 AcceptsReturn="True"
@@ -551,21 +558,25 @@
 									 Tag="Version description *">
 							</TextBox>
 							<Button x:Name="PART_SaveEditVersionBtn"
+									Tag="{x:Static local:SwManagerViewElementTagId.SaveEditVersionButton}"
 									Content="Save"
 									Click="HandleButtonClickEvent"
 									Margin="10,0,0,0"
 									Height="20" />
 							<Button x:Name="PART_CreateNewVersionBtn"
+									Tag="{x:Static local:SwManagerViewElementTagId.CreateNewVersionButton}"
 									Content="Add version"
 									Click="HandleButtonClickEvent"
 									Margin="10,0,0,0"
 									Height="20" />
 							<Button x:Name="PART_RefreshVersionFieldBtn"
+									Tag="{x:Static local:SwManagerViewElementTagId.RefreshVersionFieldButton}"
 									Content="Clean all"
 									Click="HandleButtonClickEvent"
 									Margin="10,0,0,0"
 									Height="20" />
 							<Button x:Name="PART_ExitEditVersionBtn"
+									Tag="{x:Static local:SwManagerViewElementTagId.ExitEditVersionButton}"
 									Content="Exit"
 									Click="HandleButtonClickEvent"
 									Margin="10,0,0,0"
@@ -597,6 +608,7 @@
 									 Width="250"
 									 Text="{Binding IconSource, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
 							<Button x:Name="PART_OpenIconFileChooser"
+									Tag="{x:Static local:SwManagerViewElementTagId.OpenIconFileChooserButton}"
 									Content="..."
 									Click="HandleButtonClickEvent"
 									Width="15"
@@ -644,29 +656,34 @@
 					<WrapPanel Grid.Row="1"
 							   Grid.ColumnSpan="3">
 						<Button x:Name="PART_SaveToolToDb"
+								Tag="{x:Static local:SwManagerViewElementTagId.SaveSwToDbButton}"
 								Click="HandleButtonClickEvent"
 								Content="Save"
 								Padding="5"
 								Margin="5" />
 
 						<Button x:Name="PART_AddToolToDb"
+								Tag="{x:Static local:SwManagerViewElementTagId.AddSwToDbButton}"
 								Click="HandleButtonClickEvent"
 								Content="Add new"
 								Padding="5"
 								Margin="5" />
 
 						<Button x:Name="PART_ClearAddToolTab"
+								Tag="{x:Static local:SwManagerViewElementTagId.ClearAddSwButton}"
 								Click="HandleButtonClickEvent"
 								Content="Refresh"
 								Padding="5"
 								Margin="5" />
 						<Button x:Name="PART_AccessBaseFolderTab"
+								Tag="{x:Static local:SwManagerViewElementTagId.AccessBaseFolderTabButton}"
 								Click="HandleButtonClickEvent"
 								Content="Access folder"
 								Padding="5"
 								Margin="5" />
 
 						<Button x:Name="PART_ExitModifingTool"
+								Tag="{x:Static local:SwManagerViewElementTagId.ExitModifingSwButton}"
 								Click="HandleButtonClickEvent"
 								Content="Exit"
 								Padding="5"
@@ -678,4 +695,4 @@
 		</Grid>
 	</ScrollViewer>
 
-</UserControl>
+</local:BaseSwManagerTabUserControl>

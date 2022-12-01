@@ -47,7 +47,7 @@
           <Property Name="DatePublished" Type="datetime" Nullable="false" />
           <Property Name="ExecutePath" Type="nvarchar(max)" Nullable="false" />
           <Property Name="MainClassName" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="FolderPath" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="File" Type="varbinary(max)" Nullable="false" />
           <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
           <Property Name="CompressLength" Type="bigint" Nullable="false" />
           <Property Name="RawLength" Type="bigint" Nullable="false" />
@@ -99,7 +99,7 @@
           <Property Name="VoteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PluginId" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__PluginVer__Plugi__3A81B327">
+        <Association Name="FK__PluginVer__Plugi__5CD6CB2B">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="PluginVersion" Type="Self.PluginVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -155,7 +155,7 @@
           <EntitySet Name="Tool" EntityType="Self.Tool" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ToolVersion" EntityType="Self.ToolVersion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vote" EntityType="Self.Vote" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__PluginVer__Plugi__3A81B327" Association="Self.FK__PluginVer__Plugi__3A81B327">
+          <AssociationSet Name="FK__PluginVer__Plugi__5CD6CB2B" Association="Self.FK__PluginVer__Plugi__5CD6CB2B">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="PluginVersion" EntitySet="PluginVersion" />
           </AssociationSet>
@@ -176,23 +176,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CyberDragonDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="PluginVersion">
-          <Key>
-            <PropertyRef Name="VersionId" />
-          </Key>
-          <Property Name="VersionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Version" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PluginId" Type="Int32" Nullable="false" />
-          <Property Name="DatePublished" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ExecutePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MainClassName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FolderPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CompressLength" Type="Int64" Nullable="false" />
-          <Property Name="RawLength" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__59904A2C" FromRole="PluginVersion" ToRole="Plugin" />
-        </EntityType>
         <EntityType Name="Tag">
           <Key>
             <PropertyRef Name="TagId" />
@@ -212,16 +195,11 @@
           <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Vote__PluginId__589C25F3" FromRole="Vote" ToRole="Plugin" />
         </EntityType>
         <EntityContainer Name="CyberDragonDbContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="PluginVersions" EntityType="Self.PluginVersion" />
           <EntitySet Name="Tags" EntityType="Self.Tag" />
           <EntitySet Name="Votes" EntityType="Self.Vote" />
           <EntitySet Name="Certificates" EntityType="CyberDragonDBModel.Certificate" />
           <EntitySet Name="Plugins" EntityType="CyberDragonDBModel.Plugin" />
           <EntitySet Name="Tools" EntityType="CyberDragonDBModel.Tool" />
-          <AssociationSet Name="FK__PluginVer__Plugi__59904A2C" Association="CyberDragonDBModel.FK__PluginVer__Plugi__59904A2C">
-            <End Role="Plugin" EntitySet="Plugins" />
-            <End Role="PluginVersion" EntitySet="PluginVersions" />
-          </AssociationSet>
           <AssociationSet Name="FK__Tag__PluginId__57A801BA" Association="CyberDragonDBModel.FK__Tag__PluginId__57A801BA">
             <End Role="Plugin" EntitySet="Plugins" />
             <End Role="Tag" EntitySet="Tags" />
@@ -234,6 +212,11 @@
           <AssociationSet Name="FK__ToolVersi__ToolI__49C3F6B7" Association="CyberDragonDBModel.FK__ToolVersi__ToolI__49C3F6B7">
             <End Role="Tool" EntitySet="Tools" />
             <End Role="ToolVersion" EntitySet="ToolVersions" />
+          </AssociationSet>
+          <EntitySet Name="PluginVersions" EntityType="CyberDragonDBModel.PluginVersion" />
+          <AssociationSet Name="FK__PluginVer__Plugi__5CD6CB2B" Association="CyberDragonDBModel.FK__PluginVer__Plugi__5CD6CB2B">
+            <End Role="Plugin" EntitySet="Plugins" />
+            <End Role="PluginVersion" EntitySet="PluginVersions" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Certificate">
@@ -266,9 +249,9 @@
           <Property Name="IsPreReleased" Type="Boolean" Nullable="false" />
           <Property Name="IsRequireLatestVersionToRun" Type="Boolean" Nullable="false" />
           <Property Name="Downloads" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="PluginVersions" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__59904A2C" FromRole="Plugin" ToRole="PluginVersion" />
           <NavigationProperty Name="Tags" Relationship="CyberDragonDBModel.FK__Tag__PluginId__57A801BA" FromRole="Plugin" ToRole="Tag" />
           <NavigationProperty Name="Votes" Relationship="CyberDragonDBModel.FK__Vote__PluginId__589C25F3" FromRole="Plugin" ToRole="Vote" />
+          <NavigationProperty Name="PluginVersions" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__5CD6CB2B" FromRole="Plugin" ToRole="PluginVersion" />
         </EntityType>
         <EntityType Name="Tool">
           <Key>
@@ -287,18 +270,6 @@
           <Property Name="Downloads" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ToolVersions" Relationship="CyberDragonDBModel.FK__ToolVersi__ToolI__49C3F6B7" FromRole="Tool" ToRole="ToolVersion" />
         </EntityType>
-        <Association Name="FK__PluginVer__Plugi__59904A2C">
-          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
-          <End Type="CyberDragonDBModel.PluginVersion" Role="PluginVersion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Plugin">
-              <PropertyRef Name="PluginId" />
-            </Principal>
-            <Dependent Role="PluginVersion">
-              <PropertyRef Name="PluginId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Tag__PluginId__57A801BA">
           <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
           <End Type="CyberDragonDBModel.Tag" Role="Tag" Multiplicity="*" />
@@ -351,29 +322,41 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PluginVersion">
+          <Key>
+            <PropertyRef Name="VersionId" />
+          </Key>
+          <Property Name="VersionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Version" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PluginId" Type="Int32" Nullable="false" />
+          <Property Name="DatePublished" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ExecutePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MainClassName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="File" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CompressLength" Type="Int64" Nullable="false" />
+          <Property Name="RawLength" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__5CD6CB2B" FromRole="PluginVersion" ToRole="Plugin" />
+        </EntityType>
+        <Association Name="FK__PluginVer__Plugi__5CD6CB2B">
+          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
+          <End Type="CyberDragonDBModel.PluginVersion" Role="PluginVersion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="PluginVersion">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="CyberDragonDBModelStoreContainer" CdmEntityContainer="CyberDragonDbContext">
-          <EntitySetMapping Name="PluginVersions">
-            <EntityTypeMapping TypeName="CyberDragonDBModel.PluginVersion">
-              <MappingFragment StoreEntitySet="PluginVersion">
-                <ScalarProperty Name="RawLength" ColumnName="RawLength" />
-                <ScalarProperty Name="CompressLength" ColumnName="CompressLength" />
-                <ScalarProperty Name="VersionId" ColumnName="VersionId" />
-                <ScalarProperty Name="Version" ColumnName="Version" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="PluginId" ColumnName="PluginId" />
-                <ScalarProperty Name="DatePublished" ColumnName="DatePublished" />
-                <ScalarProperty Name="ExecutePath" ColumnName="ExecutePath" />
-                <ScalarProperty Name="MainClassName" ColumnName="MainClassName" />
-                <ScalarProperty Name="FolderPath" ColumnName="FolderPath" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Tags">
             <EntityTypeMapping TypeName="CyberDragonDBModel.Tag">
               <MappingFragment StoreEntitySet="Tag">
@@ -452,6 +435,23 @@
                 <ScalarProperty Name="DatePublished" ColumnName="DatePublished" />
                 <ScalarProperty Name="ExecutePath" ColumnName="ExecutePath" />
                 <ScalarProperty Name="ToolId" ColumnName="ToolId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="VersionId" ColumnName="VersionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PluginVersions">
+            <EntityTypeMapping TypeName="CyberDragonDBModel.PluginVersion">
+              <MappingFragment StoreEntitySet="PluginVersion">
+                <ScalarProperty Name="RawLength" ColumnName="RawLength" />
+                <ScalarProperty Name="CompressLength" ColumnName="CompressLength" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="File" ColumnName="File" />
+                <ScalarProperty Name="MainClassName" ColumnName="MainClassName" />
+                <ScalarProperty Name="ExecutePath" ColumnName="ExecutePath" />
+                <ScalarProperty Name="DatePublished" ColumnName="DatePublished" />
+                <ScalarProperty Name="PluginId" ColumnName="PluginId" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Version" ColumnName="Version" />
                 <ScalarProperty Name="VersionId" ColumnName="VersionId" />

@@ -9,27 +9,19 @@
 
 namespace cyber_server
 {
+    using cyber_server.models;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
-    public partial class ToolVersion
+    public partial class ToolVersion : BaseObjectVersionModel
     {
         public ToolVersion()
         {
 
         }
 
-        public int VersionId { get; set; } = -1;
-        public string Version { get; set; }
-        public string Description { get; set; }
         public int ToolId { get; set; }
-        public string ExecutePath { get; set; }
-        public System.DateTime DatePublished { get; set; }
-        public byte[] File { get; set; }
-        public string FileName { get; set; }
-        public long CompressLength { get; set; }
-        public long RawLength { get; set; }
     
         [JsonIgnore]
         public virtual Tool Tool { get; set; }

@@ -9,10 +9,11 @@
 
 namespace cyber_server
 {
+    using cyber_server.models;
     using System;
     using System.Collections.Generic;
-    
-    public partial class Tool
+
+    public partial class Tool : BaseObjectSwModel
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Tool()
@@ -21,18 +22,9 @@ namespace cyber_server
         }
 
         public int ToolId { get; set; } = -1;
-        public string StringId { get; set; } = "";
-        public string Name { get; set; } = "";
-        public string Author { get; set; } = "";
-        public string Description { get; set; } = "";
-        public string ProjectURL { get; set; } = "";
-        public string IconSource { get; set; } = "";
-        public bool IsAuthenticated { get; set; }
-        public bool IsPreReleased { get; set; }
-        public bool IsRequireLatestVersionToRun { get; set; }
-        public int Downloads { get; set; }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ToolVersion> ToolVersions { get; set; }
+
     }
 }

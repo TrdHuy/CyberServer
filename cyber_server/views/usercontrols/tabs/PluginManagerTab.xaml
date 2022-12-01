@@ -1,0 +1,750 @@
+﻿<local:BaseSwManagerTabUserControl x:Class="cyber_server.views.usercontrols.tabs.PluginManagerTab"
+								   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+								   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+								   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+								   xmlns:sys="clr-namespace:System;assembly=mscorlib"
+								   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+								   xmlns:tvivm="clr-namespace:cyber_server.view_models.list_view_item.plugin_item"
+								   xmlns:vm="clr-namespace:cyber_server.view_models.tabs.sw_manager"
+								   xmlns:local="clr-namespace:cyber_server.views.usercontrols.tabs"
+								   mc:Ignorable="d"
+								   d:DesignHeight="900"
+								   d:DesignWidth="800">
+	<UserControl.DataContext>
+		<vm:PluginManagerTabViewModel x:Name="PART_PluginManagerTabViewModel" />
+	</UserControl.DataContext>
+	<UserControl.Resources>
+		<sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">6</sys:Double>
+		<sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">6</sys:Double>
+	</UserControl.Resources>
+	<ScrollViewer>
+		<Grid Background="White">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="300" />
+				<RowDefinition Height="10" />
+				<RowDefinition Height="auto" />
+			</Grid.RowDefinitions>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="247*" />
+					<ColumnDefinition Width="547*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="30" />
+					<RowDefinition />
+					<RowDefinition Height="auto" />
+				</Grid.RowDefinitions>
+				<TextBlock Text="Details of tools"
+						   Grid.Row="0"
+						   VerticalAlignment="Center"
+						   FontWeight="Bold"
+						   FontSize="15"
+						   Grid.ColumnSpan="2" />
+				<ListView x:Name="PART_ToolLV"
+						  ItemsSource="{Binding SwSource}"
+						  AlternationCount="2"
+						  Grid.Row="1"
+						  Grid.ColumnSpan="2">
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<Setter Property="Height"
+									Value="70" />
+							<Setter Property="BorderThickness"
+									Value="0,0,0,1" />
+							<Setter Property="BorderBrush"
+									Value="Black" />
+							<Setter Property="HorizontalContentAlignment"
+									Value="Stretch"></Setter>
+							<Setter Property="VerticalContentAlignment"
+									Value="Stretch"></Setter>
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="ListViewItem">
+										<Border x:Name="mainBorder"
+												BorderThickness="0,0,0,1"
+												BorderBrush="Black">
+											<Grid x:Name="mainGrid">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" />
+													<ColumnDefinition Width="10" />
+													<ColumnDefinition Width="Auto" />
+													<ColumnDefinition Width="100" />
+												</Grid.ColumnDefinitions>
+												<GridViewRowPresenter />
+												<WrapPanel Grid.Column="2"
+														   Width="160">
+													<Button x:Name="DeleteToolItemButton"
+															Tag="{x:Static local:SwManagerViewElementTagId.DeleteSwItemButton}"
+															Content="Xóa"
+															Width="40"
+															Click="HandleButtonClickEvent"
+															Background="Transparent"
+															BorderThickness="0"
+															Height="30" />
+													<Button x:Name="ModifyToolItemButton"
+															Content="Sửa"
+															Tag="{x:Static local:SwManagerViewElementTagId.ModifySwItemButton}"
+															Width="40"
+															Background="Transparent"
+															BorderThickness="0"
+															Click="HandleButtonClickEvent"
+															Height="30" />
+													<CheckBox x:Name="MarkRequireLatestVersionCheckBox"
+															  Tag="{x:Static local:SwManagerViewElementTagId.MarkRequireLatestVersionCheckBox}"
+															  Click="HandleButtonClickEvent"
+															  IsChecked="{Binding IsRequireLatestVersionToRun}"
+															  ToolTip="Yêu cầu phiên bản client mới nhất khi chạy"
+															  Content="Required latest" />
+
+												</WrapPanel>
+											</Grid>
+										</Border>
+
+										<ControlTemplate.Triggers>
+											<Trigger Property="ListView.AlternationIndex"
+													 Value="1">
+												<Setter Property="Background"
+														TargetName="mainBorder"
+														Value="#FFCCCCCC" />
+											</Trigger>
+											<Trigger Property="ListView.AlternationIndex"
+													 Value="0">
+												<Setter Property="Background"
+														TargetName="mainBorder"
+														Value="#FF989898" />
+											</Trigger>
+											<Trigger Property="IsMouseOver"
+													 Value="True">
+												<Setter Property="Background"
+														TargetName="mainBorder"
+														Value="#FF769E9B" />
+											</Trigger>
+										</ControlTemplate.Triggers>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</ListView.ItemContainerStyle>
+					<ListView.View>
+						<GridView>
+							<GridViewColumn Width="100">
+								<GridViewColumnHeader Content="Tên"
+													  HorizontalContentAlignment="Left" />
+								<GridViewColumn.CellTemplate>
+									<DataTemplate>
+										<Border BorderThickness="0,0,1,0"
+												Margin="0,0,-9,0"
+												BorderBrush="Black">
+											<TextBlock Text="{Binding Name}"
+													   TextWrapping="Wrap"
+													   VerticalAlignment="Top" />
+										</Border>
+									</DataTemplate>
+								</GridViewColumn.CellTemplate>
+							</GridViewColumn>
+							<GridViewColumn>
+								<GridViewColumnHeader Content="Tác giả"
+													  HorizontalContentAlignment="Left" />
+								<GridViewColumn.CellTemplate>
+									<DataTemplate>
+										<Border BorderThickness="0,0,1,0"
+												Margin="0,0,-9,0"
+												BorderBrush="Black">
+											<TextBlock Text="{Binding Author}"
+													   TextWrapping="Wrap"
+													   VerticalAlignment="Top" />
+										</Border>
+									</DataTemplate>
+								</GridViewColumn.CellTemplate>
+							</GridViewColumn>
+							<GridViewColumn Width="150">
+								<GridViewColumnHeader Content="Mô tả"
+													  HorizontalContentAlignment="Left" />
+								<GridViewColumn.CellTemplate>
+									<DataTemplate>
+										<Border BorderThickness="0,0,1,0"
+												Margin="0,0,-9,0"
+												BorderBrush="Black">
+											<TextBlock Text="{Binding Description}"
+													   TextWrapping="Wrap"
+													   VerticalAlignment="Top"
+													   HorizontalAlignment="Left" />
+										</Border>
+									</DataTemplate>
+								</GridViewColumn.CellTemplate>
+							</GridViewColumn>
+							<GridViewColumn>
+								<GridViewColumnHeader Content="Lượt download"
+													  HorizontalContentAlignment="Left" />
+
+								<GridViewColumn.CellTemplate>
+									<DataTemplate>
+										<Border BorderThickness="0,0,1,0"
+												Margin="0,0,-9,0"
+												BorderBrush="Black">
+											<TextBlock Text="{Binding Downloads}"
+													   TextWrapping="Wrap"
+													   VerticalAlignment="Top"
+													   HorizontalAlignment="Left" />
+										</Border>
+									</DataTemplate>
+								</GridViewColumn.CellTemplate>
+							</GridViewColumn>
+							<GridViewColumn>
+								<GridViewColumnHeader Content="Đánh giá"
+													  HorizontalContentAlignment="Left" />
+
+								<GridViewColumn.CellTemplate>
+									<DataTemplate>
+										<Border BorderThickness="0,0,1,0"
+												Margin="0,0,-9,0"
+												BorderBrush="Black">
+											<TextBlock Text="{Binding Rates}"
+													   TextWrapping="Wrap"
+													   VerticalAlignment="Top"
+													   HorizontalAlignment="Left" />
+										</Border>
+									</DataTemplate>
+								</GridViewColumn.CellTemplate>
+							</GridViewColumn>
+							<GridViewColumn>
+								<GridViewColumnHeader Content="Lịch sử phiên bản"
+													  HorizontalContentAlignment="Left" />
+								<GridViewColumn.CellTemplate>
+									<DataTemplate>
+
+										<Border BorderThickness="0,0,1,0"
+												Margin="0,0,-9,0"
+												BorderBrush="Black">
+											<ListView ItemsSource="{Binding VersionSource}">
+												<ListView.View>
+													<GridView>
+														<GridViewColumn DisplayMemberBinding="{Binding Version}">
+															<GridViewColumnHeader Content="Phiên bản" />
+														</GridViewColumn>
+														<GridViewColumn DisplayMemberBinding="{Binding Description}">
+															<GridViewColumnHeader Content="Mô tả" />
+														</GridViewColumn>
+														<GridViewColumn DisplayMemberBinding="{Binding FilePath}">
+															<GridViewColumnHeader Content="Đường dẫn" />
+														</GridViewColumn>
+													</GridView>
+												</ListView.View>
+											</ListView>
+										</Border>
+									</DataTemplate>
+								</GridViewColumn.CellTemplate>
+							</GridViewColumn>
+						</GridView>
+					</ListView.View>
+				</ListView>
+
+				<WrapPanel Grid.Row="2"
+						   Grid.ColumnSpan="2">
+					<Button x:Name="PART_ReloadPluginFromDb"
+							Click="HandleButtonClickEvent"
+							Tag="{x:Static local:SwManagerViewElementTagId.ReloadSwFromDbButton}"
+							Content="Reload thông tin plugin"
+							Width="140"
+							Margin="5" />
+					<Button x:Name="PART_SyncPluginFolderWithDbButton"
+							Tag="{x:Static local:SwManagerViewElementTagId.SyncSwFolderWithDbButton}"
+							Click="HandleButtonClickEvent"
+							Content="Đồng bộ db và plugin folder"
+							Width="170"
+							ToolTip="Xoá các thư mục tool mà không có trong database"
+							Margin="5" />
+				</WrapPanel>
+			</Grid>
+
+			<Grid Grid.Row="2">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="30" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<StackPanel Grid.Row="0"
+							Orientation="Horizontal">
+					<TextBlock Text="Plugin editor"
+							   VerticalAlignment="Center"
+							   FontWeight="Bold"
+							   FontSize="15"
+							   Grid.ColumnSpan="2" />
+					<Button x:Name="PART_ExpandPluginEditorButton"
+							Tag="{x:Static local:SwManagerViewElementTagId.ExpandSwEditorButton}"
+							Content="v"
+							Height="20"
+							Click="HandleButtonClickEvent"
+							Margin="5,0,0,0"
+							Width="20" />
+				</StackPanel>
+
+				<Grid x:Name="PART_PluginEditorPanel"
+					  DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BaseSwManagerTabUserControl},Mode=FindAncestor}, Path=AddingContext}"
+					  Margin="10,0,10,0"
+					  Grid.Row="1">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="19*" />
+						<ColumnDefinition Width="25*" />
+						<ColumnDefinition Width="215*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="auto" />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+					<Grid Background="#FF9E9D9D"
+						  Grid.ColumnSpan="3">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="10" />
+							<ColumnDefinition Width="90" />
+							<ColumnDefinition MinWidth="450" />
+							<ColumnDefinition Width="10" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
+						</Grid.RowDefinitions>
+
+						<TextBlock Grid.Row="0"
+								   VerticalAlignment="Center"
+								   Grid.Column="1">
+								<Run Text="Plugin key:" />
+								<Run Text="*"
+									 Foreground="Red" />
+						</TextBlock>
+						<TextBox x:Name="PART_PluginKeyTb"
+								 Text="{Binding StringId, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+								 Grid.Row="0"
+								 Grid.Column="2" />
+
+						<TextBlock Grid.Row="1"
+								   VerticalAlignment="Center"
+								   Grid.Column="1">
+								<Run Text="Plugin name:" />
+								<Run Text="*"
+									 Foreground="Red" />
+						</TextBlock>
+						<TextBox x:Name="PART_PluginNameTb"
+								 Text="{Binding Name, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+								 Grid.Row="1"
+								 Grid.Column="2" />
+
+						<TextBlock Grid.Row="2"
+								   VerticalAlignment="Center"
+								   Grid.Column="1">
+								<Run Text="Author(s):" />
+								<Run Text="*"
+									 Foreground="Red" />
+						</TextBlock>
+						<TextBox x:Name="PART_PluginAuthorTb"
+								 Text="{Binding Author, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+								 Grid.Row="2"
+								 Grid.Column="2" />
+
+						<TextBlock Text="Description:"
+								   Grid.Row="3"
+								   VerticalAlignment="Center"
+								   Grid.Column="1" />
+						<TextBox x:Name="PART_PluginDesTb"
+								 Text="{Binding Description, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+								 Grid.Row="3"
+								 Grid.Column="2" />
+
+
+						<!--Version field-->
+						<Rectangle Grid.Row="4"
+								   Fill="#FFC5C5C5"
+								   Grid.RowSpan="6"
+								   Grid.ColumnSpan="5" />
+						<TextBlock Grid.Row="4"
+								   VerticalAlignment="Center"
+								   Grid.Column="1">
+								<Run Text="Version:" />
+								<Run Text="*"
+									 Foreground="Red" />
+						</TextBlock>
+						<StackPanel Grid.Row="4"
+									Grid.Column="2"
+									Orientation="Horizontal">
+							<ComboBox x:Name="PART_ListVersionCbx"
+									  Margin="0,2"
+									  ItemsSource="{Binding VersionSource, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+									  Width="250"
+									  HorizontalAlignment="Left"
+									  VirtualizingPanel.CacheLength="1"
+									  VirtualizingPanel.CacheLengthUnit="Pixel"
+									  VirtualizingPanel.IsContainerVirtualizable="True"
+									  VirtualizingPanel.IsVirtualizing="True"
+									  VirtualizingPanel.VirtualizationMode="Recycling"
+									  VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+									  BorderThickness="0"
+									  VerticalContentAlignment="Center">
+								<ComboBox.ItemContainerStyle>
+									<Style TargetType="ComboBoxItem">
+										<Setter Property="Template">
+											<Setter.Value>
+												<ControlTemplate TargetType="ComboBoxItem">
+													<Border x:Name="BorderContainer"
+															Background="#FFBDBDBD"
+															BorderThickness="2"
+															Margin="0,5"
+															Padding="5">
+														<Grid>
+															<Grid.ColumnDefinitions>
+																<ColumnDefinition />
+																<ColumnDefinition Width="auto" />
+																<ColumnDefinition Width="auto" />
+															</Grid.ColumnDefinitions>
+															<Button x:Name="SUB_ModifyVersionItem"
+																	Content="/"
+																	Margin="1,0"
+																	FontSize="8"
+																	ToolTip="Sửa"
+																	Grid.Column="1"
+																	VerticalAlignment="Top"
+																	Click="HandleButtonClickEvent" />
+															<Button x:Name="SUB_DeleteVersionItem"
+																	Content="X"
+																	FontSize="8"
+																	ToolTip="Xoá"
+																	Margin="1,0"
+																	VerticalAlignment="Top"
+																	Grid.Column="2"
+																	Click="HandleButtonClickEvent" />
+															<TextBlock IsHitTestVisible="False"
+																	   Grid.ColumnSpan="3">
+																<Run Text="VERSION: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding Version}"
+																	 Foreground="Green" />
+																<LineBreak />
+																<Run Text="DESCRIPTION: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding Description}"
+																	 Foreground="Black" />
+																<LineBreak />
+																<Run Text="DATE PUBLISHED: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding DatePublished}"
+																	 Foreground="Red" />
+																<LineBreak />
+																<Run Text="PATH: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding FilePath}"
+																	 Foreground="Aqua" />
+																<LineBreak />
+																<Run Text="EXECUTE PATH: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding ExecutePath}"
+																	 Foreground="Black" />
+															</TextBlock>
+														</Grid>
+
+													</Border>
+													<ControlTemplate.Triggers>
+														<Trigger Property="IsMouseOver"
+																 Value="True">
+															<Setter Property="BorderBrush"
+																	Value="Aqua"
+																	TargetName="BorderContainer" />
+														</Trigger>
+														<Trigger Property="IsMouseOver"
+																 Value="False">
+															<Setter Property="BorderBrush"
+																	Value="Transparent"
+																	TargetName="BorderContainer" />
+														</Trigger>
+													</ControlTemplate.Triggers>
+												</ControlTemplate>
+											</Setter.Value>
+										</Setter>
+									</Style>
+								</ComboBox.ItemContainerStyle>
+								<ComboBox.ItemTemplate>
+									<DataTemplate DataType="{x:Type tvivm:PluginVersionItemViewModel}">
+										<Border BorderThickness="2"
+												BorderBrush="Black"
+												CornerRadius="2"
+												VerticalAlignment="Center">
+											<TextBlock>
+										<Run Text="VERSION: "
+												FontWeight="Bold" />
+										<Run Text="{Binding Version}"
+												FontWeight="Bold" />
+											</TextBlock>
+										</Border>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+						</StackPanel>
+						<StackPanel Grid.Row="5"
+									Orientation="Horizontal"
+									Grid.Column="2"
+									Margin="0,5">
+							<TextBox x:Name="PART_PluginVersionTb"
+									 Width="100"
+									 Text="{Binding SelectedSwVersionItemForEditting.Version}"
+									 Tag="Version *"
+									 Margin="0" />
+
+							<TextBox x:Name="PART_PathMainClassNameTextbox"
+									 Width="180"
+									 Tag="Main class name *"
+									 Margin="10,0,0,0" />
+
+							<DatePicker x:Name="PART_DatePublisedDP"
+										Grid.Row="4"
+										Text="{Binding SelectedSwVersionItemForEditting.DatePublished}"
+										Width="120"
+										Margin="10,0,0,0"
+										HorizontalAlignment="Left"
+										VerticalAlignment="Center"
+										Grid.Column="2" />
+
+							<TextBox x:Name="PART_PathToPLuginTextbox"
+									 Width="100"
+									 Text="{Binding SelectedSwVersionItemForEditting.FilePath}"
+									 Tag="File path *"
+									 Margin="10,0,0,0"
+									 IsReadOnly="True" />
+
+							<Button x:Name="PART_OpenPluginFileChooser"
+									Content="..."
+									Tag="{x:Static local:SwManagerViewElementTagId.OpenSwFileChooserButton}"
+									Width="15"
+									Click="HandleButtonClickEvent"
+									Margin="10,0,0,0"
+									Height="20" />
+
+							<TextBlock x:Name="PART_PreviewSizePluginlTB"
+									   VerticalAlignment="Center"
+									   Margin="10,0,0,0"
+									   FontSize="9">
+								<Run Text="Compress: "
+									 FontWeight="Bold" />
+								<Run x:Name="PART_CompressLengthRun"
+									 Text="{Binding SelectedSwVersionItemForEditting.CompressLength}" />
+								<LineBreak />
+								<Run Text="Raw: "
+									 FontWeight="Bold" />
+								<Run x:Name="PART_RawLengthRun"
+									 Text="{Binding SelectedSwVersionItemForEditting.RawLength}" />
+							</TextBlock>
+
+							<TextBlock x:Name="PART_SizeToolTB"
+									   VerticalAlignment="Center"
+									   Margin="10,0,0,0" />
+						</StackPanel>
+
+						<StackPanel Grid.Row="6"
+									Grid.Column="2"
+									Orientation="Horizontal">
+							<TextBox x:Name="PART_ExecutePathTextbox"
+									 Text="{Binding SelectedSwVersionItemForEditting.ExecutePath}"
+									 Width="200"
+									 Tag="Path to main dll" />
+							<Button x:Name="PART_QuickFillExecutePathButton"
+									Margin="5,0,0,0"
+									Click="HandleButtonClickEvent"
+									Content="QF" />
+							
+
+						</StackPanel>
+						<StackPanel Grid.Row="7"
+									Grid.Column="2"
+									Margin="0,5"
+									Grid.RowSpan="3"
+									Orientation="Horizontal">
+							<TextBox x:Name="PART_VersionDesTb"
+									 Width="300"
+									 Text="{Binding SelectedSwVersionItemForEditting.Description}"
+									 VerticalContentAlignment="Top"
+									 TextWrapping="Wrap"
+									 AcceptsReturn="True"
+									 Padding="0,5,0,0"
+									 VerticalScrollBarVisibility="Auto"
+									 Margin="0"
+									 Tag="Version description *">
+							</TextBox>
+							<WrapPanel Width="500">
+								<Button x:Name="PART_SaveEditVersionBtn"
+										Tag="{x:Static local:SwManagerViewElementTagId.SaveEditVersionButton}"
+										Content="Save"
+										Click="HandleButtonClickEvent"
+										Margin="10,0,0,0"
+										Height="20" />
+								<Button x:Name="PART_CreateNewVersionBtn"
+										Tag="{x:Static local:SwManagerViewElementTagId.CreateNewVersionButton}"
+										Content="Add version"
+										Click="HandleButtonClickEvent"
+										Margin="10,0,0,0"
+										Height="20" />
+								<Button x:Name="PART_RefreshVersionFieldBtn"
+										Tag="{x:Static local:SwManagerViewElementTagId.RefreshVersionFieldButton}"
+										Content="Clean all"
+										Click="HandleButtonClickEvent"
+										Margin="10,0,0,0"
+										Height="20" />
+								<Button x:Name="PART_ExitEditVersionBtn"
+										Tag="{x:Static local:SwManagerViewElementTagId.ExitEditVersionButton}"
+										Content="Exit"
+										Click="HandleButtonClickEvent"
+										Margin="10,0,0,0"
+										Height="20" />
+								<TextBlock Margin="10,5,0,0"
+										   FontSize="10"
+										   VerticalAlignment="Center">
+									<Run Text="Template main class for client:"
+										 TextDecorations="Underline"
+										 FontWeight="Bold" />
+									<Run>
+									[plugin_package_name].[main_class_name]
+									</Run>
+									<LineBreak />
+									<Run>
+										Eg: progtrol.ProgTroll
+									</Run>
+									<LineBreak />
+									<Run Text="Template path for client:"
+										 TextDecorations="Underline"
+										 FontWeight="Bold" />
+									<Run>
+									 plugins\[plugin_key]\[plugin_version]\[main_dll_file_name]
+									</Run>
+									<LineBreak />
+									<Run>
+										Eg: plugins\progtroll\1.0.0\progtroll.dll
+									</Run>
+								</TextBlock>
+
+							</WrapPanel>
+							
+							
+						</StackPanel>
+
+
+						<!--Project URL field-->
+						<TextBlock Grid.Row="10"
+								   VerticalAlignment="Center"
+								   Grid.Column="1">
+								<Run Text="Project URL:" />
+								<Run Text="*"
+									 Foreground="Red" />
+						</TextBlock>
+						<TextBox x:Name="PART_PluginURLTb"
+								 Grid.Row="10"
+								 Text="{Binding ProjectUrl, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+								 Grid.Column="2" />
+
+						<TextBlock Text="Icon source:"
+								   Grid.Row="11"
+								   VerticalAlignment="Center"
+								   Grid.Column="1" />
+						<StackPanel Grid.Row="11"
+									Orientation="Horizontal"
+									Grid.Column="2">
+							<TextBox x:Name="PART_PluginIconSourceTb"
+									 Width="250"
+									 Text="{Binding IconSource, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+							<Button x:Name="PART_OpenIconFileChooser"
+									Tag="{x:Static local:SwManagerViewElementTagId.OpenIconFileChooserButton}"
+									Content="..."
+									Click="HandleButtonClickEvent"
+									Width="15"
+									Margin="10,0,0,0"
+									Height="20" />
+							<TextBlock Margin="10,0,0,0"
+									   FontSize="10"
+									   VerticalAlignment="Center">
+									<Run Text="Template:"
+										 TextDecorations="Underline"
+										 FontWeight="Bold" />
+									<Run>
+									 [Cyber_server_address] /pluginresource/ [plugin_key] / [file_name]
+									</Run>
+									<LineBreak />
+									<Run>
+										Eg: http://107.127.131.89/pluginresource/swpublisher/icon128.png
+									</Run>
+							</TextBlock>
+						</StackPanel>
+
+
+						<TextBlock Text="Authenticated:"
+								   Grid.Row="12"
+								   VerticalAlignment="Center"
+								   Grid.Column="1" />
+						<CheckBox x:Name="PART_PluginIsAuthenticatedCb"
+								  Grid.Row="12"
+								  IsChecked="{Binding IsAuthenticated, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+								  Grid.Column="2"
+								  VerticalAlignment="Center" />
+
+						<TextBlock Text="Pre release:"
+								   Grid.Row="13"
+								   VerticalAlignment="Center"
+								   Grid.Column="1" />
+						<CheckBox x:Name="PART_PluginIsPrereleasedCb"
+								  IsChecked="{Binding IsPreReleased, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+								  Grid.Row="13"
+								  Grid.Column="2"
+								  VerticalAlignment="Center" />
+
+					</Grid>
+
+					<WrapPanel Grid.Row="1"
+							   Grid.ColumnSpan="3">
+						<Button x:Name="PART_SavePluginToDb"
+								Tag="{x:Static local:SwManagerViewElementTagId.SaveSwToDbButton}"
+								Click="HandleButtonClickEvent"
+								Content="Save"
+								Padding="5"
+								Margin="5" />
+
+						<Button x:Name="PART_AddPluginToDb"
+								Tag="{x:Static local:SwManagerViewElementTagId.AddSwToDbButton}"
+								Click="HandleButtonClickEvent"
+								Content="Add new"
+								Padding="5"
+								Margin="5" />
+
+						<Button x:Name="PART_ClearAddPluginTab"
+								Tag="{x:Static local:SwManagerViewElementTagId.ClearAddSwButton}"
+								Click="HandleButtonClickEvent"
+								Content="Refresh"
+								Padding="5"
+								Margin="5" />
+						<Button x:Name="PART_AccessBaseFolderTabButton"
+								Tag="{x:Static local:SwManagerViewElementTagId.AccessBaseFolderTabButton}"
+								Click="HandleButtonClickEvent"
+								Content="Access folder"
+								Padding="5"
+								Margin="5" />
+
+						<Button x:Name="PART_ExitModifingTool"
+								Tag="{x:Static local:SwManagerViewElementTagId.ExitModifingSwButton}"
+								Click="HandleButtonClickEvent"
+								Content="Exit"
+								Padding="5"
+								Margin="5" />
+					</WrapPanel>
+				</Grid>
+			</Grid>
+
+		</Grid>
+	</ScrollViewer>
+
+
+</local:BaseSwManagerTabUserControl>
