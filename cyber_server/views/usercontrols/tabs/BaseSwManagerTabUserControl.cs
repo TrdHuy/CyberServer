@@ -263,16 +263,7 @@ namespace cyber_server.views.usercontrols.tabs
                         {
                             if (SwEditorMode == EditorMode.ADD_NEW_EDITOR_MODE)
                             {
-                                var success = await SwManagerTabViewModel.AddNewSwToDb(
-                                   SwKeyTextbox.Text
-                                   , SwNameTextbox.Text
-                                   , SwAuthorTextbox.Text
-                                   , SwDescriptionTextBox.Text
-                                   , SwURLTextBox.Text
-                                   , SwIconSourceTextBox.Text
-                                   , SwIsPrereleasedCheckBox.IsChecked ?? false
-                                   , SwIsAuthenticatedCheckBox.IsChecked ?? false
-                                   , SwListVersionCombobox.ItemsSource as ObservableCollection<BaseObjectVersionItemViewModel>);
+                                var success = await SwManagerTabViewModel.AddNewSwToDb(AddingContext);
                                 if (success) RefreshTab();
                             }
 

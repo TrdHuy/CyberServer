@@ -27,6 +27,27 @@ namespace cyber_server
         [JsonIgnore]
         public virtual Plugin Plugin { get; set; }
 
+        public override object Clone()
+        {
+            byte[] newFile = new byte[File.Length];
+            Array.Copy(this.File, newFile, File.Length);
+            return new PluginVersion()
+            {
+                PluginId = -1,
+                MainClassName = MainClassName,
+                Version = Version,
+                RawLength = RawLength,
+                CompressLength = CompressLength,
+                DatePublished = DatePublished,
+                Description = Description,
+                ExecutePath = ExecutePath,
+                FileName = FileName,
+                File = newFile,
+                VersionId = -1,
+                Plugin = null,
+            };
+        }
+
         public void SetMainClassName(string mainClassName)
         {
             MainClassName = mainClassName;

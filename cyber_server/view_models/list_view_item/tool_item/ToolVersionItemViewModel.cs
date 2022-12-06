@@ -1,4 +1,5 @@
-﻿using System;
+﻿using cyber_server.models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,14 +10,14 @@ namespace cyber_server.view_models.list_view_item.tool_item
 {
     public class ToolVersionItemViewModel : BaseObjectVersionItemViewModel
     {
-        public ToolVersionItemViewModel(ToolVersion vo) : base(vo)
+        private ToolVersion _vo;
+        public override BaseObjectVersionModel RawModel => _vo;
+
+        public ToolVersionItemViewModel(ToolVersion vo)
         {
+            _vo = vo ?? new ToolVersion();
         }
 
-        public ToolVersionItemViewModel()
-        {
-            _vo = new ToolVersion();
-        }
     }
 }
 

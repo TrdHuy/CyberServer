@@ -1,4 +1,5 @@
 ﻿using cyber_server.implements.plugin_manager;
+using cyber_server.models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,28 +11,26 @@ namespace cyber_server.view_models.list_view_item.plugin_item
 {
     public class PluginVersionItemViewModel : BaseObjectVersionItemViewModel
     {
+        private PluginVersion _vo;
+        public override BaseObjectVersionModel RawModel => _vo;
+
         [Bindable(true)]
         public string MainClassName
         {
             get
             {
-                    return (_vo as PluginVersion)?.MainClassName;
+                    return _vo.MainClassName;
             }
             set
             {
-
-                (_vo as PluginVersion)?.SetMainClassName(value);
+                _vo.SetMainClassName(value);
                 InvalidateOwn();
             }
         }
 
-        public PluginVersionItemViewModel(PluginVersion vo) : base(vo)
+        public PluginVersionItemViewModel(PluginVersion vo)
         {
-        }
-
-        public PluginVersionItemViewModel()
-        {
-            _vo = new PluginVersion();
+            _vo = vo ?? new PluginVersion();
         }
 
     }

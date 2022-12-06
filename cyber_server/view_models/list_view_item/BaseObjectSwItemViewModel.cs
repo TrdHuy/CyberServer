@@ -1,8 +1,12 @@
-﻿using cyber_server.models;
+﻿using cyber_server.definition;
+using cyber_server.implements.plugin_manager;
+using cyber_server.models;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +16,7 @@ namespace cyber_server.view_models.list_view_item
     public abstract class BaseObjectSwItemViewModel : BaseViewModel
     {
         private BaseObjectVersionItemViewModel _selectedSwVersionItem;
-        protected BaseObjectSwModel _vo;
-
-        public BaseObjectSwModel RawModel => _vo;
+        public abstract BaseObjectSwModel RawModel { get; }
 
         [Bindable(true)]
         public BaseObjectVersionItemViewModel SelectedSwVersionItemForEditting
@@ -35,11 +37,11 @@ namespace cyber_server.view_models.list_view_item
         {
             get
             {
-                return _vo.StringId;
+                return RawModel.StringId;
             }
             set
             {
-                _vo.StringId = value;
+                RawModel.StringId = value;
                 InvalidateOwn();
             }
         }
@@ -47,10 +49,10 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public string Name
         {
-            get => _vo.Name;
+            get => RawModel.Name;
             set
             {
-                _vo.Name = value;
+                RawModel.Name = value;
                 InvalidateOwn();
             }
         }
@@ -58,10 +60,10 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public string Author
         {
-            get => _vo.Author;
+            get => RawModel.Author;
             set
             {
-                _vo.Author = value;
+                RawModel.Author = value;
                 InvalidateOwn();
             }
         }
@@ -69,10 +71,10 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public string Description
         {
-            get => _vo.Description;
+            get => RawModel.Description;
             set
             {
-                _vo.Description = value;
+                RawModel.Description = value;
                 InvalidateOwn();
             }
         }
@@ -80,10 +82,10 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public string ProjectUrl
         {
-            get => _vo.ProjectURL;
+            get => RawModel.ProjectURL;
             set
             {
-                _vo.ProjectURL = value;
+                RawModel.ProjectURL = value;
                 InvalidateOwn();
             }
         }
@@ -91,10 +93,10 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public string IconSource
         {
-            get => _vo.IconSource;
+            get => RawModel.IconSource;
             set
             {
-                _vo.IconSource = value;
+                RawModel.IconSource = value;
                 InvalidateOwn();
             }
         }
@@ -102,10 +104,10 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public bool IsPreReleased
         {
-            get => _vo.IsPreReleased;
+            get => RawModel.IsPreReleased;
             set
             {
-                _vo.IsPreReleased = value;
+                RawModel.IsPreReleased = value;
                 InvalidateOwn();
             }
         }
@@ -113,10 +115,10 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public bool IsRequireLatestVersionToRun
         {
-            get => _vo.IsRequireLatestVersionToRun;
+            get => RawModel.IsRequireLatestVersionToRun;
             set
             {
-                _vo.IsRequireLatestVersionToRun = value;
+                RawModel.IsRequireLatestVersionToRun = value;
                 InvalidateOwn();
             }
         }
@@ -124,10 +126,10 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public bool IsAuthenticated
         {
-            get => _vo.IsAuthenticated;
+            get => RawModel.IsAuthenticated;
             set
             {
-                _vo.IsAuthenticated = value;
+                RawModel.IsAuthenticated = value;
                 InvalidateOwn();
             }
         }
@@ -135,32 +137,46 @@ namespace cyber_server.view_models.list_view_item
         [Bindable(true)]
         public int Downloads
         {
-            get => _vo.Downloads;
+            get => RawModel.Downloads;
         }
 
         public ObservableCollection<BaseObjectVersionItemViewModel> VersionSource { get; set; }
             = new ObservableCollection<BaseObjectVersionItemViewModel>();
 
 
-        public BaseObjectSwItemViewModel(BaseObjectSwModel baseModel)
+        public BaseObjectSwItemViewModel(BaseObjectSwModel model)
         {
-            if (baseModel != null)
-            {
-                _vo = baseModel;
-                InitOtherPropertiesOfItem();
-            }
-            else
-            {
-                _vo = new BaseObjectSwModel();
-            }
+            InitOtherPropertiesOfItem(model);
         }
 
-        private async void InitOtherPropertiesOfItem()
+        public async Task<BaseObjectSwModel> BuildNewSwModel()
         {
-            await DoInitOtherPropertiesTask();
+            if (!IsNewModel()) return null;
+
+            foreach (var version in VersionSource)
+            {
+                var versionModel = await version.BuildNewVersionModel();
+                if(versionModel != null)
+                {
+                    AddNewVersionModelToRawModel(versionModel);
+                }
+            }
+            await BuildSwIconSource();
+            return RawModel;
         }
 
-        protected abstract Task DoInitOtherPropertiesTask();
-        
+        protected abstract Task<string> BuildSwIconSource();
+
+        protected abstract bool IsNewModel();
+
+        protected abstract void AddNewVersionModelToRawModel(BaseObjectVersionModel versionModel);
+
+        private async void InitOtherPropertiesOfItem(BaseObjectSwModel model)
+        {
+            await DoInitOtherPropertiesTask(model);
+        }
+
+        protected abstract Task DoInitOtherPropertiesTask(BaseObjectSwModel model);
+
     }
 }

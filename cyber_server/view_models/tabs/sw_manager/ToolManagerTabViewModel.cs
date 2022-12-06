@@ -127,41 +127,9 @@ namespace cyber_server.view_models.tabs.sw_manager
             });
         }
 
-        protected override BaseObjectSwModel BuildSwModel(string swKey
-           , string swName
-           , string swAuthor
-           , string swDes
-           , string swUrl
-           , string swIconSource
-           , bool isPreReleased
-           , bool isAuthenticated
-           , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        protected override async Task<BaseObjectSwModel> BuildNewSwModelFromViewModel(BaseObjectSwItemViewModel swItemViewModel)
         {
-            var tool = new Tool();
-            tool.StringId = swKey;
-            tool.Name = swName;
-            tool.Author = swAuthor;
-            tool.Description = swDes;
-            tool.ProjectURL = swUrl;
-            tool.IconSource = swIconSource;
-            tool.IsPreReleased = isPreReleased;
-            tool.IsAuthenticated = isAuthenticated;
-            tool.Downloads = 0;
-
-            // Build version source
-            foreach (var version in versionSource)
-            {
-                var localFilePath = version.GetVersionSourceLocalFilePath();
-                var tv = version.BuildToolVersionFromViewModel(tool.StringId) as ToolVersion;
-                if (tv != null && File.Exists(localFilePath))
-                {
-                    tv.File = File.ReadAllBytes(localFilePath);
-                    tool.ToolVersions.Add(tv);
-                }
-            }
-
-            tool.IconSource = BuildSwIconSource(swKey, swIconSource);
-
+            var tool = await swItemViewModel.BuildNewSwModel();
             return tool;
         }
 
@@ -194,7 +162,7 @@ namespace cyber_server.view_models.tabs.sw_manager
                             .Current
                             .CopyToolIconToServerLocation(swIconSource, swKey);
                         return CyberServerDefinition.SERVER_REMOTE_ADDRESS
-                            + "/toolresource/"
+                            + "toolresource/"
                             + swKey + "/" + System.IO.Path.GetFileName(swIconSource);
                     }
                 }

@@ -22,7 +22,27 @@ namespace cyber_server
         }
 
         public int ToolId { get; set; }
-    
+
+        public override object Clone()
+        {
+            byte[] newFile = new byte[File.Length];
+            Array.Copy(this.File, newFile, File.Length);
+            return new ToolVersion()
+            {
+                ToolId = -1,
+                Version = Version,
+                RawLength = RawLength,
+                CompressLength = CompressLength,
+                DatePublished = DatePublished,
+                Description = Description,
+                ExecutePath = ExecutePath,
+                FileName = FileName,
+                File = newFile,
+                VersionId = -1,
+                Tool = null,
+            };
+        }
+
         [JsonIgnore]
         public virtual Tool Tool { get; set; }
     }

@@ -133,7 +133,7 @@ namespace cyber_server.views.usercontrols.tabs
 
         protected override BaseObjectVersionItemViewModel BuildSwVersionItemViewModelFromViewElement()
         {
-            return new PluginVersionItemViewModel()
+            return new PluginVersionItemViewModel(null)
             {
                 Version = PART_PluginVersionTb.Text,
                 FilePath = PART_PathToPLuginTextbox.Text,

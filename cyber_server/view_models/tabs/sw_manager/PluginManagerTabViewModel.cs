@@ -124,41 +124,9 @@ namespace cyber_server.view_models.tabs.sw_manager
             });
         }
 
-        protected override BaseObjectSwModel BuildSwModel(string swKey
-           , string swName
-           , string swAuthor
-           , string swDes
-           , string swUrl
-           , string swIconSource
-           , bool isPreReleased
-           , bool isAuthenticated
-           , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        protected override async Task<BaseObjectSwModel> BuildNewSwModelFromViewModel(BaseObjectSwItemViewModel swItemViewModel)
         {
-            var plugin = new Plugin();
-            plugin.StringId = swKey;
-            plugin.Name = swName;
-            plugin.Author = swAuthor;
-            plugin.Description = swDes;
-            plugin.ProjectURL = swUrl;
-            plugin.IconSource = swIconSource;
-            plugin.IsPreReleased = isPreReleased;
-            plugin.IsAuthenticated = isAuthenticated;
-            plugin.Downloads = 0;
-
-            // Build version source
-            foreach (var version in versionSource)
-            {
-                var localFilePath = version.GetVersionSourceLocalFilePath();
-                var pv = version.BuildToolVersionFromViewModel(plugin.StringId) as PluginVersion;
-                if (pv != null && File.Exists(localFilePath))
-                {
-                    pv.File = File.ReadAllBytes(localFilePath);
-                    plugin.PluginVersions.Add(pv);
-                }
-            }
-
-            plugin.IconSource = BuildSwIconSource(swKey, swIconSource);
-
+            var plugin = await swItemViewModel.BuildNewSwModel();
             return plugin;
         }
 
@@ -191,7 +159,7 @@ namespace cyber_server.view_models.tabs.sw_manager
                             .Current
                             .CopyPluginIconToServerLocation(swIconSource, swKey);
                         return CyberServerDefinition.SERVER_REMOTE_ADDRESS
-                            + "/pluginresource/"
+                            + "pluginresource/"
                             + swKey + "/" + System.IO.Path.GetFileName(swIconSource);
                     }
                 }

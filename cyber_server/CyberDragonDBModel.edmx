@@ -31,6 +31,7 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="ProjectURL" Type="nvarchar(max)" Nullable="false" />
           <Property Name="IconSource" Type="nvarchar(max)" />
+          <Property Name="IconFile" Type="varbinary(max)" Nullable="false" />
           <Property Name="IsAuthenticated" Type="bit" Nullable="false" />
           <Property Name="IsPreReleased" Type="bit" Nullable="false" />
           <Property Name="IsRequireLatestVersionToRun" Type="bit" Nullable="false" />
@@ -71,6 +72,7 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="ProjectURL" Type="nvarchar(max)" Nullable="false" />
           <Property Name="IconSource" Type="nvarchar(max)" />
+          <Property Name="IconFile" Type="varbinary(max)" Nullable="false" />
           <Property Name="IsAuthenticated" Type="bit" Nullable="false" />
           <Property Name="IsPreReleased" Type="bit" Nullable="false" />
           <Property Name="IsRequireLatestVersionToRun" Type="bit" Nullable="false" />
@@ -99,7 +101,7 @@
           <Property Name="VoteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PluginId" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__PluginVer__Plugi__5CD6CB2B">
+        <Association Name="FK__PluginVer__Plugi__73BA3083">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="PluginVersion" Type="Self.PluginVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -111,7 +113,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tag__PluginId__3D5E1FD2">
+        <Association Name="FK__Tag__PluginId__71D1E811">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="Tag" Type="Self.Tag" Multiplicity="*" />
           <ReferentialConstraint>
@@ -123,7 +125,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ToolVersi__ToolI__49C3F6B7">
+        <Association Name="FK__ToolVersi__ToolI__74AE54BC">
           <End Role="Tool" Type="Self.Tool" Multiplicity="1" />
           <End Role="ToolVersion" Type="Self.ToolVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -135,7 +137,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Vote__PluginId__44FF419A">
+        <Association Name="FK__Vote__PluginId__72C60C4A">
           <End Role="Plugin" Type="Self.Plugin" Multiplicity="1" />
           <End Role="Vote" Type="Self.Vote" Multiplicity="*" />
           <ReferentialConstraint>
@@ -155,19 +157,19 @@
           <EntitySet Name="Tool" EntityType="Self.Tool" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ToolVersion" EntityType="Self.ToolVersion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vote" EntityType="Self.Vote" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__PluginVer__Plugi__5CD6CB2B" Association="Self.FK__PluginVer__Plugi__5CD6CB2B">
+          <AssociationSet Name="FK__PluginVer__Plugi__73BA3083" Association="Self.FK__PluginVer__Plugi__73BA3083">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="PluginVersion" EntitySet="PluginVersion" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tag__PluginId__3D5E1FD2" Association="Self.FK__Tag__PluginId__3D5E1FD2">
+          <AssociationSet Name="FK__Tag__PluginId__71D1E811" Association="Self.FK__Tag__PluginId__71D1E811">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="Tag" EntitySet="Tag" />
           </AssociationSet>
-          <AssociationSet Name="FK__ToolVersi__ToolI__49C3F6B7" Association="Self.FK__ToolVersi__ToolI__49C3F6B7">
+          <AssociationSet Name="FK__ToolVersi__ToolI__74AE54BC" Association="Self.FK__ToolVersi__ToolI__74AE54BC">
             <End Role="Tool" EntitySet="Tool" />
             <End Role="ToolVersion" EntitySet="ToolVersion" />
           </AssociationSet>
-          <AssociationSet Name="FK__Vote__PluginId__44FF419A" Association="Self.FK__Vote__PluginId__44FF419A">
+          <AssociationSet Name="FK__Vote__PluginId__72C60C4A" Association="Self.FK__Vote__PluginId__72C60C4A">
             <End Role="Plugin" EntitySet="Plugin" />
             <End Role="Vote" EntitySet="Vote" />
           </AssociationSet>
@@ -183,7 +185,7 @@
           <Property Name="Content" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
           <Property Name="TagId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PluginId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Tag__PluginId__57A801BA" FromRole="Tag" ToRole="Plugin" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Tag__PluginId__71D1E811" FromRole="Tag" ToRole="Plugin" />
         </EntityType>
         <EntityType Name="Vote">
           <Key>
@@ -192,31 +194,31 @@
           <Property Name="Stars" Type="Int32" Nullable="false" />
           <Property Name="VoteId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PluginId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Vote__PluginId__589C25F3" FromRole="Vote" ToRole="Plugin" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__Vote__PluginId__72C60C4A" FromRole="Vote" ToRole="Plugin" />
         </EntityType>
         <EntityContainer Name="CyberDragonDbContext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Tags" EntityType="Self.Tag" />
           <EntitySet Name="Votes" EntityType="Self.Vote" />
           <EntitySet Name="Certificates" EntityType="CyberDragonDBModel.Certificate" />
+          <EntitySet Name="ToolVersions" EntityType="CyberDragonDBModel.ToolVersion" />
+          <EntitySet Name="PluginVersions" EntityType="CyberDragonDBModel.PluginVersion" />
           <EntitySet Name="Plugins" EntityType="CyberDragonDBModel.Plugin" />
           <EntitySet Name="Tools" EntityType="CyberDragonDBModel.Tool" />
-          <AssociationSet Name="FK__Tag__PluginId__57A801BA" Association="CyberDragonDBModel.FK__Tag__PluginId__57A801BA">
+          <AssociationSet Name="FK__PluginVer__Plugi__73BA3083" Association="CyberDragonDBModel.FK__PluginVer__Plugi__73BA3083">
+            <End Role="Plugin" EntitySet="Plugins" />
+            <End Role="PluginVersion" EntitySet="PluginVersions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Tag__PluginId__71D1E811" Association="CyberDragonDBModel.FK__Tag__PluginId__71D1E811">
             <End Role="Plugin" EntitySet="Plugins" />
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
-          <AssociationSet Name="FK__Vote__PluginId__589C25F3" Association="CyberDragonDBModel.FK__Vote__PluginId__589C25F3">
+          <AssociationSet Name="FK__Vote__PluginId__72C60C4A" Association="CyberDragonDBModel.FK__Vote__PluginId__72C60C4A">
             <End Role="Plugin" EntitySet="Plugins" />
             <End Role="Vote" EntitySet="Votes" />
           </AssociationSet>
-          <EntitySet Name="ToolVersions" EntityType="CyberDragonDBModel.ToolVersion" />
-          <AssociationSet Name="FK__ToolVersi__ToolI__49C3F6B7" Association="CyberDragonDBModel.FK__ToolVersi__ToolI__49C3F6B7">
+          <AssociationSet Name="FK__ToolVersi__ToolI__74AE54BC" Association="CyberDragonDBModel.FK__ToolVersi__ToolI__74AE54BC">
             <End Role="Tool" EntitySet="Tools" />
             <End Role="ToolVersion" EntitySet="ToolVersions" />
-          </AssociationSet>
-          <EntitySet Name="PluginVersions" EntityType="CyberDragonDBModel.PluginVersion" />
-          <AssociationSet Name="FK__PluginVer__Plugi__5CD6CB2B" Association="CyberDragonDBModel.FK__PluginVer__Plugi__5CD6CB2B">
-            <End Role="Plugin" EntitySet="Plugins" />
-            <End Role="PluginVersion" EntitySet="PluginVersions" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Certificate">
@@ -234,66 +236,6 @@
           <Property Name="Expiration" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Password" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
-        <EntityType Name="Plugin">
-          <Key>
-            <PropertyRef Name="PluginId" />
-          </Key>
-          <Property Name="PluginId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StringId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Author" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProjectURL" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IconSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsAuthenticated" Type="Boolean" Nullable="false" />
-          <Property Name="IsPreReleased" Type="Boolean" Nullable="false" />
-          <Property Name="IsRequireLatestVersionToRun" Type="Boolean" Nullable="false" />
-          <Property Name="Downloads" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Tags" Relationship="CyberDragonDBModel.FK__Tag__PluginId__57A801BA" FromRole="Plugin" ToRole="Tag" />
-          <NavigationProperty Name="Votes" Relationship="CyberDragonDBModel.FK__Vote__PluginId__589C25F3" FromRole="Plugin" ToRole="Vote" />
-          <NavigationProperty Name="PluginVersions" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__5CD6CB2B" FromRole="Plugin" ToRole="PluginVersion" />
-        </EntityType>
-        <EntityType Name="Tool">
-          <Key>
-            <PropertyRef Name="ToolId" />
-          </Key>
-          <Property Name="ToolId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StringId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Author" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProjectURL" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IconSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsAuthenticated" Type="Boolean" Nullable="false" />
-          <Property Name="IsPreReleased" Type="Boolean" Nullable="false" />
-          <Property Name="IsRequireLatestVersionToRun" Type="Boolean" Nullable="false" />
-          <Property Name="Downloads" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ToolVersions" Relationship="CyberDragonDBModel.FK__ToolVersi__ToolI__49C3F6B7" FromRole="Tool" ToRole="ToolVersion" />
-        </EntityType>
-        <Association Name="FK__Tag__PluginId__57A801BA">
-          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
-          <End Type="CyberDragonDBModel.Tag" Role="Tag" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Plugin">
-              <PropertyRef Name="PluginId" />
-            </Principal>
-            <Dependent Role="Tag">
-              <PropertyRef Name="PluginId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Vote__PluginId__589C25F3">
-          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
-          <End Type="CyberDragonDBModel.Vote" Role="Vote" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Plugin">
-              <PropertyRef Name="PluginId" />
-            </Principal>
-            <Dependent Role="Vote">
-              <PropertyRef Name="PluginId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="ToolVersion">
           <Key>
             <PropertyRef Name="VersionId" />
@@ -308,20 +250,8 @@
           <Property Name="FileName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CompressLength" Type="Int64" Nullable="false" />
           <Property Name="RawLength" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="Tool" Relationship="CyberDragonDBModel.FK__ToolVersi__ToolI__49C3F6B7" FromRole="ToolVersion" ToRole="Tool" />
+          <NavigationProperty Name="Tool" Relationship="CyberDragonDBModel.FK__ToolVersi__ToolI__74AE54BC" FromRole="ToolVersion" ToRole="Tool" />
         </EntityType>
-        <Association Name="FK__ToolVersi__ToolI__49C3F6B7">
-          <End Type="CyberDragonDBModel.Tool" Role="Tool" Multiplicity="1" />
-          <End Type="CyberDragonDBModel.ToolVersion" Role="ToolVersion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tool">
-              <PropertyRef Name="ToolId" />
-            </Principal>
-            <Dependent Role="ToolVersion">
-              <PropertyRef Name="ToolId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="PluginVersion">
           <Key>
             <PropertyRef Name="VersionId" />
@@ -337,9 +267,47 @@
           <Property Name="FileName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CompressLength" Type="Int64" Nullable="false" />
           <Property Name="RawLength" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__5CD6CB2B" FromRole="PluginVersion" ToRole="Plugin" />
+          <NavigationProperty Name="Plugin" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__73BA3083" FromRole="PluginVersion" ToRole="Plugin" />
         </EntityType>
-        <Association Name="FK__PluginVer__Plugi__5CD6CB2B">
+        <EntityType Name="Plugin">
+          <Key>
+            <PropertyRef Name="PluginId" />
+          </Key>
+          <Property Name="PluginId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StringId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Author" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProjectURL" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IconSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IconFile" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="IsAuthenticated" Type="Boolean" Nullable="false" />
+          <Property Name="IsPreReleased" Type="Boolean" Nullable="false" />
+          <Property Name="IsRequireLatestVersionToRun" Type="Boolean" Nullable="false" />
+          <Property Name="Downloads" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PluginVersions" Relationship="CyberDragonDBModel.FK__PluginVer__Plugi__73BA3083" FromRole="Plugin" ToRole="PluginVersion" />
+          <NavigationProperty Name="Tags" Relationship="CyberDragonDBModel.FK__Tag__PluginId__71D1E811" FromRole="Plugin" ToRole="Tag" />
+          <NavigationProperty Name="Votes" Relationship="CyberDragonDBModel.FK__Vote__PluginId__72C60C4A" FromRole="Plugin" ToRole="Vote" />
+        </EntityType>
+        <EntityType Name="Tool">
+          <Key>
+            <PropertyRef Name="ToolId" />
+          </Key>
+          <Property Name="ToolId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StringId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Author" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProjectURL" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IconSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IconFile" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="IsAuthenticated" Type="Boolean" Nullable="false" />
+          <Property Name="IsPreReleased" Type="Boolean" Nullable="false" />
+          <Property Name="IsRequireLatestVersionToRun" Type="Boolean" Nullable="false" />
+          <Property Name="Downloads" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ToolVersions" Relationship="CyberDragonDBModel.FK__ToolVersi__ToolI__74AE54BC" FromRole="Tool" ToRole="ToolVersion" />
+        </EntityType>
+        <Association Name="FK__PluginVer__Plugi__73BA3083">
           <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
           <End Type="CyberDragonDBModel.PluginVersion" Role="PluginVersion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -348,6 +316,42 @@
             </Principal>
             <Dependent Role="PluginVersion">
               <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Tag__PluginId__71D1E811">
+          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
+          <End Type="CyberDragonDBModel.Tag" Role="Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="Tag">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Vote__PluginId__72C60C4A">
+          <End Type="CyberDragonDBModel.Plugin" Role="Plugin" Multiplicity="1" />
+          <End Type="CyberDragonDBModel.Vote" Role="Vote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plugin">
+              <PropertyRef Name="PluginId" />
+            </Principal>
+            <Dependent Role="Vote">
+              <PropertyRef Name="PluginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ToolVersi__ToolI__74AE54BC">
+          <End Type="CyberDragonDBModel.Tool" Role="Tool" Multiplicity="1" />
+          <End Type="CyberDragonDBModel.ToolVersion" Role="ToolVersion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tool">
+              <PropertyRef Name="ToolId" />
+            </Principal>
+            <Dependent Role="ToolVersion">
+              <PropertyRef Name="ToolId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -391,40 +395,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Plugins">
-            <EntityTypeMapping TypeName="CyberDragonDBModel.Plugin">
-              <MappingFragment StoreEntitySet="Plugin">
-                <ScalarProperty Name="Downloads" ColumnName="Downloads" />
-                <ScalarProperty Name="IsRequireLatestVersionToRun" ColumnName="IsRequireLatestVersionToRun" />
-                <ScalarProperty Name="IsPreReleased" ColumnName="IsPreReleased" />
-                <ScalarProperty Name="IsAuthenticated" ColumnName="IsAuthenticated" />
-                <ScalarProperty Name="IconSource" ColumnName="IconSource" />
-                <ScalarProperty Name="ProjectURL" ColumnName="ProjectURL" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Author" ColumnName="Author" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="StringId" ColumnName="StringId" />
-                <ScalarProperty Name="PluginId" ColumnName="PluginId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tools">
-            <EntityTypeMapping TypeName="CyberDragonDBModel.Tool">
-              <MappingFragment StoreEntitySet="Tool">
-                <ScalarProperty Name="Downloads" ColumnName="Downloads" />
-                <ScalarProperty Name="IsRequireLatestVersionToRun" ColumnName="IsRequireLatestVersionToRun" />
-                <ScalarProperty Name="IsPreReleased" ColumnName="IsPreReleased" />
-                <ScalarProperty Name="IsAuthenticated" ColumnName="IsAuthenticated" />
-                <ScalarProperty Name="IconSource" ColumnName="IconSource" />
-                <ScalarProperty Name="ProjectURL" ColumnName="ProjectURL" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Author" ColumnName="Author" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="StringId" ColumnName="StringId" />
-                <ScalarProperty Name="ToolId" ColumnName="ToolId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ToolVersions">
             <EntityTypeMapping TypeName="CyberDragonDBModel.ToolVersion">
               <MappingFragment StoreEntitySet="ToolVersion">
@@ -455,6 +425,42 @@
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Version" ColumnName="Version" />
                 <ScalarProperty Name="VersionId" ColumnName="VersionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Plugins">
+            <EntityTypeMapping TypeName="CyberDragonDBModel.Plugin">
+              <MappingFragment StoreEntitySet="Plugin">
+                <ScalarProperty Name="Downloads" ColumnName="Downloads" />
+                <ScalarProperty Name="IsRequireLatestVersionToRun" ColumnName="IsRequireLatestVersionToRun" />
+                <ScalarProperty Name="IsPreReleased" ColumnName="IsPreReleased" />
+                <ScalarProperty Name="IsAuthenticated" ColumnName="IsAuthenticated" />
+                <ScalarProperty Name="IconFile" ColumnName="IconFile" />
+                <ScalarProperty Name="IconSource" ColumnName="IconSource" />
+                <ScalarProperty Name="ProjectURL" ColumnName="ProjectURL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StringId" ColumnName="StringId" />
+                <ScalarProperty Name="PluginId" ColumnName="PluginId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tools">
+            <EntityTypeMapping TypeName="CyberDragonDBModel.Tool">
+              <MappingFragment StoreEntitySet="Tool">
+                <ScalarProperty Name="Downloads" ColumnName="Downloads" />
+                <ScalarProperty Name="IsRequireLatestVersionToRun" ColumnName="IsRequireLatestVersionToRun" />
+                <ScalarProperty Name="IsPreReleased" ColumnName="IsPreReleased" />
+                <ScalarProperty Name="IsAuthenticated" ColumnName="IsAuthenticated" />
+                <ScalarProperty Name="IconFile" ColumnName="IconFile" />
+                <ScalarProperty Name="IconSource" ColumnName="IconSource" />
+                <ScalarProperty Name="ProjectURL" ColumnName="ProjectURL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StringId" ColumnName="StringId" />
+                <ScalarProperty Name="ToolId" ColumnName="ToolId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

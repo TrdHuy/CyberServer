@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,7 @@ namespace cyber_server.models
         public bool IsRequireLatestVersionToRun { get; set; }
         public int Downloads { get; set; }
 
+        [JsonIgnore]
+        public byte[] IconFile { get; set; }
     }
 }

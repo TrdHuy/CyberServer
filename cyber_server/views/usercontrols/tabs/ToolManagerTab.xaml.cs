@@ -140,7 +140,7 @@ namespace cyber_server.views.usercontrols.tabs
 
         protected override BaseObjectVersionItemViewModel BuildSwVersionItemViewModelFromViewElement()
         {
-            return new ToolVersionItemViewModel()
+            return new ToolVersionItemViewModel(null)
             {
                 Version = PART_ToolVersionTb.Text,
                 FilePath = PART_PathToToolTextbox.Text,

@@ -1,5 +1,6 @@
 ﻿using cyber_server.@base;
 using cyber_server.definition;
+using cyber_server.implements.db_manager;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -72,12 +73,28 @@ namespace cyber_server.implements.http_server.handlers
         {
             response.Headers.Add("Content-Type", "image/png");
 
-            byte[] buffer;
-            using (FileStream stream = File.Open(_filePath, FileMode.Open))
+            byte[] buffer = null;
+           
+            if (File.Exists(_filePath))
             {
-                buffer = new byte[stream.Length];
-                await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                using (FileStream stream = File.Open(_filePath, FileMode.Open))
+                {
+                    buffer = new byte[stream.Length];
+                    await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                }
             }
+            else
+            {
+                await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                {
+                    var query = context.Plugins.Where(p => p.StringId == _key).FirstOrDefault();
+                    if (query != null)
+                    {
+                        buffer = query.IconFile;
+                    }
+                });
+            }
+
             response.ContentLength64 = buffer.Length;
             return buffer;
         }

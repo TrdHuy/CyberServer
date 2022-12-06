@@ -145,7 +145,7 @@ namespace cyber_server.view_models.tabs
             {
                 await Task.Delay(1000);
 
-                var toolVer = swVersionVM.BuildToolVersionFromViewModel(modifiedItemViewModel.StringId);
+                var toolVer = swVersionVM.RawModel;
 
                 toolVer.File = File.ReadAllBytes(swVersionVM.FilePath);
 
@@ -174,9 +174,9 @@ namespace cyber_server.view_models.tabs
                 var nVer = Version.Parse(modifiedVersionItemViewModel.Version);
                 await Task.Delay(100);
 
-                var localVersionFilePath = modifiedVersionItemViewModel.GetVersionSourceLocalFilePath();
+                var localVersionFilePath = modifiedVersionItemViewModel.FilePath;
                 var success = true;
-                var swVersionModel = modifiedVersionItemViewModel.BuildToolVersionFromViewModel(modifiedItemViewModel.StringId);
+                var swVersionModel = modifiedVersionItemViewModel.RawModel;
 
                 swVersionModel.File = File.ReadAllBytes(modifiedVersionItemViewModel.FilePath);
 
@@ -201,23 +201,13 @@ namespace cyber_server.view_models.tabs
             return false;
         }
 
-        public async Task<bool> AddNewSwToDb(string swKey, string swName, string swAuthor, string swDes
-            , string swUrl, string swIconSource, bool isPreReleased, bool isAuthenticated
-            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        public async Task<bool> AddNewSwToDb(BaseObjectSwItemViewModel newItemViewModel)
         {
             var success = false;
-            if (await IsMeetConditionToAddSwToDb(swKey, swName, swAuthor, versionSource))
+            if (await IsMeetConditionToAddSwToDb(newItemViewModel))
             {
                 await Task.Delay(1000);
-                var swModel = BuildSwModel(swKey
-                    , swName
-                    , swAuthor
-                    , swDes
-                    , swUrl
-                    , swIconSource
-                    , isPreReleased
-                    , isAuthenticated
-                    , versionSource);
+                var swModel = await BuildNewSwModelFromViewModel(newItemViewModel);
 
                 var vm = await AddNewSwToDatabase(swModel);
                 if (vm != null)
@@ -283,15 +273,7 @@ namespace cyber_server.view_models.tabs
 
         protected abstract Task<bool> AddSwVersionToDatabase(BaseObjectSwItemViewModel modifiedItemViewModel, BaseObjectVersionModel toolVer);
 
-        protected abstract BaseObjectSwModel BuildSwModel(string swKey
-            , string swName
-            , string swAuthor
-            , string swDes
-            , string swUrl
-            , string swIconSource
-            , bool isPreReleased
-            , bool isAuthenticated
-            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource);
+        protected abstract Task<BaseObjectSwModel> BuildNewSwModelFromViewModel(BaseObjectSwItemViewModel swItemViewModel);
 
         protected abstract Task<bool> IsSwKeyExistInDatabase(string swKey);
 
@@ -313,25 +295,24 @@ namespace cyber_server.view_models.tabs
             return true;
         }
 
-        protected async Task<bool> IsMeetConditionToAddSwToDb(string swKey, string swName, string swAuthor
-            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        protected async Task<bool> IsMeetConditionToAddSwToDb(BaseObjectSwItemViewModel newItemViewModel)
         {
 
-            if (string.IsNullOrEmpty(swName)
-                || string.IsNullOrEmpty(swKey)
-                || string.IsNullOrEmpty(swAuthor)
-                || versionSource.Count == 0) return false;
-            if (!string.IsNullOrEmpty(swKey))
+            if (string.IsNullOrEmpty(newItemViewModel.Name)
+                || string.IsNullOrEmpty(newItemViewModel.StringId)
+                || string.IsNullOrEmpty(newItemViewModel.Author)
+                || newItemViewModel.VersionSource.Count == 0) return false;
+            if (!string.IsNullOrEmpty(newItemViewModel.StringId))
             {
                 var regexItem = new Regex(@"^[a-zA-Z0-9_]*$");
-                if (!regexItem.IsMatch(swKey))
+                if (!regexItem.IsMatch(newItemViewModel.StringId))
                 {
                     MessageBox.Show("Tool key không được chứ ký tự đặc biệt");
                     return false;
                 }
             }
 
-            var isSwKeyExist = await IsSwKeyExistInDatabase(swKey);
+            var isSwKeyExist = await IsSwKeyExistInDatabase(newItemViewModel.StringId);
 
             if (isSwKeyExist)
             {

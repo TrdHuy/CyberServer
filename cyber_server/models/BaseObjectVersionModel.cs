@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace cyber_server.models
 {
-    public class BaseObjectVersionModel
+    public abstract class BaseObjectVersionModel: ICloneable
     {
         public int VersionId { get; set; } = -1;
         public string Version { get; set; }
@@ -21,5 +21,6 @@ namespace cyber_server.models
         public long CompressLength { get; set; }
         public long RawLength { get; set; }
 
+        public abstract object Clone();
     }
 }

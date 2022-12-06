@@ -9,22 +9,21 @@ using System.Threading.Tasks;
 
 namespace cyber_server.view_models.list_view_item
 {
-    public class BaseObjectVersionItemViewModel : BaseViewModel
+    public abstract class BaseObjectVersionItemViewModel : BaseViewModel
     {
-        protected BaseObjectVersionModel _vo;
         private string _localFilePath = "";
 
-        public virtual BaseObjectVersionModel RawModel => _vo;
+        public abstract BaseObjectVersionModel RawModel { get; }
 
         public byte[] File
         {
             get
             {
-                return _vo.File;
+                return RawModel.File;
             }
             set
             {
-                _vo.File = value;
+                RawModel.File = value;
             }
         }
 
@@ -33,11 +32,11 @@ namespace cyber_server.view_models.list_view_item
         {
             get
             {
-                return Math.Round(_vo.CompressLength / Math.Pow(2, 20), 2) + "MB";
+                return Math.Round(RawModel.CompressLength / Math.Pow(2, 20), 2) + "MB";
             }
             set
             {
-                _vo.CompressLength = Convert.ToInt64(value);
+                RawModel.CompressLength = Convert.ToInt64(value);
                 InvalidateOwn();
             }
         }
@@ -47,11 +46,11 @@ namespace cyber_server.view_models.list_view_item
         {
             get
             {
-                return Math.Round(_vo.RawLength / Math.Pow(2, 20), 2) + "MB";
+                return Math.Round(RawModel.RawLength / Math.Pow(2, 20), 2) + "MB";
             }
             set
             {
-                _vo.RawLength = Convert.ToInt64(value);
+                RawModel.RawLength = Convert.ToInt64(value);
                 InvalidateOwn();
             }
         }
@@ -62,11 +61,11 @@ namespace cyber_server.view_models.list_view_item
         {
             get
             {
-                return _vo.Version;
+                return RawModel.Version;
             }
             set
             {
-                _vo.Version = value;
+                RawModel.Version = value;
                 InvalidateOwn();
             }
         }
@@ -76,11 +75,11 @@ namespace cyber_server.view_models.list_view_item
         {
             get
             {
-                return _vo.DatePublished.ToString("dd-MM-yyyy");
+                return RawModel.DatePublished.ToString("dd-MM-yyyy");
             }
             set
             {
-                _vo.DatePublished = DateTime.Parse(value);
+                RawModel.DatePublished = DateTime.Parse(value);
                 InvalidateOwn();
             }
         }
@@ -90,11 +89,11 @@ namespace cyber_server.view_models.list_view_item
         {
             get
             {
-                return _vo.Description;
+                return RawModel.Description;
             }
             set
             {
-                _vo.Description = value;
+                RawModel.Description = value;
                 InvalidateOwn();
             }
         }
@@ -109,6 +108,7 @@ namespace cyber_server.view_models.list_view_item
             set
             {
                 _localFilePath = value;
+                RawModel.FileName = Path.GetFileName(_localFilePath);
                 InvalidateOwn();
             }
         }
@@ -118,46 +118,46 @@ namespace cyber_server.view_models.list_view_item
         {
             get
             {
-                return _vo.ExecutePath;
+                return RawModel.ExecutePath;
             }
             set
             {
-                _vo.ExecutePath = value;
+                RawModel.ExecutePath = value;
                 InvalidateOwn();
             }
         }
 
-        public BaseObjectVersionItemViewModel(BaseObjectVersionModel vo)
-        {
-            _vo = vo;
-        }
-
-        public BaseObjectVersionItemViewModel()
-        {
-            _vo = new BaseObjectVersionModel();
-        }
-
-        public BaseObjectVersionModel BuildToolVersionFromViewModel(string toolKey)
-        {
-            if (!string.IsNullOrEmpty(_localFilePath))
-            {
-                _vo.FileName = Path.GetFileName(_localFilePath);
-            }
-            return _vo;
-        }
-
         public bool IsThisVersionAddedNewly()
         {
-            if (_vo != null)
+            if (RawModel != null)
             {
-                return _vo.VersionId == -1;
+                return RawModel.VersionId == -1;
             }
             return true;
         }
 
-        public string GetVersionSourceLocalFilePath()
+        public async Task<BaseObjectVersionModel> BuildNewVersionModel()
         {
-            return _localFilePath;
+            if (RawModel.VersionId == -1)
+            {
+                if (System.IO.File.Exists(_localFilePath))
+                {
+                    using (FileStream stream = System.IO.File.Open(_localFilePath, FileMode.Open))
+                    {
+                        RawModel.File = new byte[stream.Length];
+                        await stream.ReadAsync(RawModel.File, 0, (int)stream.Length);
+                    }
+                    return RawModel;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return RawModel.Clone() as BaseObjectVersionModel;
+            }
         }
     }
 }
