@@ -16,7 +16,7 @@ namespace cyber_server.definition
         public static readonly string DB_FILE_PATH = AppDomain.CurrentDomain.BaseDirectory
            + DB_FILE_NAME;
 
-        public static readonly string SERVER_REMOTE_ADDRESS = "http://107.127.131.89:8080";
-        public static readonly string SSL_SERVER_REMOTE_ADDRESS = "http://107.127.131.89:8088";
+        public const string SERVER_REMOTE_ADDRESS = "http://107.98.32.108:8080/";
+        public const string SSL_SERVER_REMOTE_ADDRESS = "https://107.98.32.108:8088/";
     }
 }

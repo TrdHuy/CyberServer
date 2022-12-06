@@ -1,4 +1,5 @@
 ﻿using cyber_server.@base;
+using cyber_server.definition;
 using cyber_server.implements.db_manager;
 using cyber_server.implements.http_server.handlers;
 using cyber_server.implements.log_manager;
@@ -16,8 +17,8 @@ namespace cyber_server.implements.http_server
 {
     internal class CyberHttpServer : IServerModule
     {
-        public const string END_POINT1 = "http://107.127.131.89:8080/";
-        public const string END_POINT2 = "https://107.127.131.89:8088/";
+        public const string END_POINT1 = CyberServerDefinition.SERVER_REMOTE_ADDRESS;
+        public const string END_POINT2 = CyberServerDefinition.SSL_SERVER_REMOTE_ADDRESS;
         public const string REQUEST_PLUGIN_RESOURCE_PATH = "/pluginresource";
         public const string REQUEST_TOOL_RESOURCE_PATH = "/toolresource";
         public const string DOWNLOAD_PLUGIN_API_PATH = "/downloadplugin";
