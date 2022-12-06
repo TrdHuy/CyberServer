@@ -70,6 +70,7 @@ namespace cyber_server.implements.db_manager
             catch (Exception ex)
             {
                 isSucess = false;
+                MessageBox.Show(ex.Message, "Lỗi!");
                 ServerLogManager.Current.E(ex.ToString());
             }
             finally
@@ -330,7 +331,14 @@ namespace cyber_server.implements.db_manager
                                         case "System.Byte[]":
                                             {
                                                 var bytesString = fieldData[selectedCol[i]];
-                                                refactorData[selectedCol[i]] = GetBytesFromString(bytesString);
+                                                if (string.IsNullOrEmpty(bytesString))
+                                                {
+                                                    refactorData[selectedCol[i]] = null;
+                                                }
+                                                else
+                                                {
+                                                    refactorData[selectedCol[i]] = GetBytesFromString(bytesString);
+                                                }
                                                 break;
                                             }
                                         default:
