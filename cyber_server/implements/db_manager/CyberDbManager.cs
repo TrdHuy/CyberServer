@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -66,6 +67,21 @@ namespace cyber_server.implements.db_manager
             {
                 request.Invoke(_appDbContext);
                 isSucess = true;
+            }
+            catch (DbEntityValidationException e)
+            {
+                var message = e.Message + "\n";
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    message += string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors: \n",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        message += string.Format("- Property: \"{0}\", Error: \"{1}\"\n",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                MessageBox.Show(message, "Lỗi!");
             }
             catch (Exception ex)
             {

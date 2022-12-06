@@ -66,7 +66,7 @@ namespace cyber_server.view_models.list_view_item.plugin_item
             return _vo.PluginId == -1;
         }
 
-        protected override async Task<string> BuildSwIconSource()
+        protected override async Task BuildSwIconSource()
         {
             try
             {
@@ -80,7 +80,7 @@ namespace cyber_server.view_models.list_view_item.plugin_item
                             RawModel.IconFile = new byte[stream.Length];
                             await stream.ReadAsync(RawModel.IconFile, 0, (int)stream.Length);
                         }
-                        return CyberServerDefinition.SERVER_REMOTE_ADDRESS
+                        RawModel.IconSource = CyberServerDefinition.SERVER_REMOTE_ADDRESS
                             + "pluginresource/"
                             + StringId + "/" + System.IO.Path.GetFileName(IconSource);
                     }
@@ -89,7 +89,6 @@ namespace cyber_server.view_models.list_view_item.plugin_item
             catch
             {
             }
-            return IconSource;
         }
     }
 }

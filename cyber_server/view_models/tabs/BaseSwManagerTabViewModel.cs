@@ -228,21 +228,17 @@ namespace cyber_server.view_models.tabs
             return success;
         }
 
-        public async Task<bool> SaveModifyingSwToDb(string swKey, string swName, string swAuthor
-           , string swIconSource
-           , ObservableCollection<BaseObjectVersionItemViewModel> versionSource
-           , BaseObjectSwItemViewModel modifiedItemVM)
+        public async Task<bool> SaveModifyingSwToDb(BaseObjectSwItemViewModel modifiedItemVM)
         {
             var confirm = MessageBox.Show("Bạn có chắc thay đổi trên?", "", MessageBoxButton.YesNo);
             if (confirm == MessageBoxResult.Yes)
             {
-                if (IsMeetConditionToSaveEditedSwToDb(swName, swAuthor, versionSource))
+                if (IsMeetConditionToSaveEditedSwToDb(modifiedItemVM))
                 {
                     var success = true;
-                    await CyberDbManager.Current.RequestDbContextAsync((context) =>
+                    await modifiedItemVM.RebuildSwModel();
+                    success = await CyberDbManager.Current.RequestDbContextAsync((context) =>
                     {
-                        modifiedItemVM.RawModel.IconSource = BuildSwIconSource(swKey, swIconSource);
-
                         if (success)
                         {
                             context.SaveChanges();
@@ -279,18 +275,12 @@ namespace cyber_server.view_models.tabs
 
         protected abstract Task<bool> DeleteSwVersionInDatabase(BaseObjectVersionItemViewModel context, BaseObjectSwItemViewModel modifingContext);
 
-        protected virtual string BuildSwIconSource(string swKey, string swIconSource)
-        {
-            return swIconSource;
-        }
-
-        protected bool IsMeetConditionToSaveEditedSwToDb(string swName, string swAuthor
-            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        protected bool IsMeetConditionToSaveEditedSwToDb(BaseObjectSwItemViewModel modifiedItemViewModel)
         {
 
-            if (string.IsNullOrEmpty(swName)
-                || string.IsNullOrEmpty(swAuthor)
-                || versionSource.Count == 0) return false;
+            if (string.IsNullOrEmpty(modifiedItemViewModel.Name)
+                || string.IsNullOrEmpty(modifiedItemViewModel.Author)
+                || modifiedItemViewModel.VersionSource.Count == 0) return false;
 
             return true;
         }

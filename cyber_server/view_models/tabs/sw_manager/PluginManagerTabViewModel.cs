@@ -145,32 +145,6 @@ namespace cyber_server.view_models.tabs.sw_manager
 
         }
 
-        protected override string BuildSwIconSource(string swKey, string swIconSource)
-        {
-            //Build icon source
-            try
-            {
-                if (swIconSource != "")
-                {
-                    var isLocalFile = new Uri(swIconSource).IsFile;
-                    if (isLocalFile)
-                    {
-                        CyberPluginAndToolManager
-                            .Current
-                            .CopyPluginIconToServerLocation(swIconSource, swKey);
-                        return CyberServerDefinition.SERVER_REMOTE_ADDRESS
-                            + "pluginresource/"
-                            + swKey + "/" + System.IO.Path.GetFileName(swIconSource);
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            return base.BuildSwIconSource(swKey, swIconSource);
-        }
-
         protected override async Task<bool> DeleteSwVersionInDatabase(BaseObjectVersionItemViewModel context
             , BaseObjectSwItemViewModel modifingContext)
         {

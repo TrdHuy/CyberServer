@@ -331,17 +331,12 @@ namespace cyber_server.views.usercontrols.tabs
                            {
                                if (SwEditorMode == EditorMode.MODIFY_EDITOR_MODE && ModifingContext != null)
                                {
-                                   var success = await SwManagerTabViewModel.SaveModifyingSwToDb(
-                                   SwKeyTextbox.Text
-                                   , SwNameTextbox.Text
-                                   , SwAuthorTextbox.Text
-                                   , SwIconSourceTextBox.Text
-                                   , SwListVersionCombobox.ItemsSource as ObservableCollection<BaseObjectVersionItemViewModel>
-                                   , ModifingContext);
+                                   var success = await SwManagerTabViewModel.SaveModifyingSwToDb(ModifingContext);
                                    if (success)
                                    {
                                        ModifingContext = null;
                                        SwEditorMode = EditorMode.ADD_NEW_EDITOR_MODE;
+                                       MessageBox.Show("Cập nhật dữ liệu thành công!");
                                    }
                                }
 

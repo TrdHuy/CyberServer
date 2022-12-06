@@ -165,7 +165,14 @@ namespace cyber_server.view_models.list_view_item
             return RawModel;
         }
 
-        protected abstract Task<string> BuildSwIconSource();
+        public async Task<BaseObjectSwModel> RebuildSwModel()
+        {
+            if (IsNewModel()) return null;
+            await BuildSwIconSource();
+            return RawModel;
+        }
+
+        protected abstract Task BuildSwIconSource();
 
         protected abstract bool IsNewModel();
 
