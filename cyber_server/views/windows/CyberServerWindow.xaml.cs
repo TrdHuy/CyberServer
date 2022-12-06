@@ -57,6 +57,8 @@ namespace cyber_server.views.windows
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.CHECK_VALIDATION_CERTIFICATE_TYPE_KEY, "Checking validation", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.GET_DATABASE_TABLE_DATA, "Getting table data", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DROP_ALL_DATABASE_TABLE_DATA, "Dropping table data", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.SAVE_CHANGES_DATABASE_DATA, "Saving changed data", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.ROLLBACK_DATABASE_DATA, "Rollback data", 1, 1);
             TaskHandlerManager.Current.RegisterHandler(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY, PART_TaskHandlingPanel);
         }
 

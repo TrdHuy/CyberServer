@@ -11,9 +11,11 @@ namespace cyber_server
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Certificate
     {
+        [Editable(false)]
         public int CertificateId { get; set; }
         public string StringId { get; set; }
         public string Description { get; set; }

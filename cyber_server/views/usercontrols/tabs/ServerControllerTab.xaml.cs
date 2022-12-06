@@ -131,6 +131,34 @@ namespace cyber_server.views.usercontrols.tabs
                             bypassIfSemaphoreNotAvaild: true);
                             break;
                         }
+                    case "PART_RollbackDatabaseButton":
+                        {
+                            var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+                            if (handler == null) return;
+                            await handler.ExecuteTask(CurrentTaskManager.ROLLBACK_DATABASE_DATA,
+                            mainFunc: async () =>
+                            {
+                                await Task.Delay(100);
+                                CyberDbManager.Current.RollBack();
+                            },
+                            executeTime: 0,
+                            bypassIfSemaphoreNotAvaild: true);
+                            break;
+                        }
+                    case "PART_SaveAllChangeDatabaseButton":
+                        {
+                            var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+                            if (handler == null) return;
+                            await handler.ExecuteTask(CurrentTaskManager.SAVE_CHANGES_DATABASE_DATA,
+                            mainFunc: async () =>
+                            {
+                                int changes = await CyberDbManager.Current.SaveChanges();
+                                MessageBox.Show("Đã lưu "+ changes + " thay đổi");
+                            },
+                            executeTime: 0,
+                            bypassIfSemaphoreNotAvaild: true);
+                            break;
+                        }
                     case "PART_DropAllTableButton":
                         {
                             var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);

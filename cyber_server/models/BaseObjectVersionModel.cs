@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace cyber_server.models
 {
     public abstract class BaseObjectVersionModel: ICloneable
     {
+        [Editable(false)]
         public int VersionId { get; set; } = -1;
         public string Version { get; set; }
         public string Description { get; set; }

@@ -46,6 +46,14 @@
 					Click="HandleButtonClickEvent"
 					Content="Drop all database table"
 					Margin="5" />
+			<Button x:Name="PART_RollbackDatabaseButton"
+					Click="HandleButtonClickEvent"
+					Content="Rollback database"
+					Margin="5" />
+			<Button x:Name="PART_SaveAllChangeDatabaseButton"
+					Click="HandleButtonClickEvent"
+					Content="Save changed database"
+					Margin="5" />
 			
 			<Button Click="testRequest"
 					Content="Test request"

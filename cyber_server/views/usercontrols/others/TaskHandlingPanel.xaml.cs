@@ -41,6 +41,8 @@ namespace cyber_server.views.usercontrols.others
         public const string BACKUP_DATABASE_TYPE_KEY = "BACKUP_DATABASE_TYPE_KEY";
         public const string IMPORT_CSV_TO_DATABASE_TYPE_KEY = "IMPORT_CSV_TO_DATABASE_TYPE_KEY";
         public const string GET_DATABASE_TABLE_DATA = "GET_DATABASE_TABLE_DATA";
+        public const string ROLLBACK_DATABASE_DATA = "ROLLBACK_DATABASE_DATA";
+        public const string SAVE_CHANGES_DATABASE_DATA = "SAVE_CHANGES_DATABASE_DATA";
         public const string DROP_ALL_DATABASE_TABLE_DATA = "DROP_ALL_DATABASE_TABLE_DATA";
 
         private TextBlock _currentTaskNameTb;

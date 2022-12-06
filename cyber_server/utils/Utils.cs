@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace cyber_server.utils
 {
-    internal class Utils
+    public static class Utils
     {
         public static DataTable ToDataTable<T>(IEnumerable<T> data)
         {
@@ -25,6 +27,13 @@ namespace cyber_server.utils
                 table.Rows.Add(row);
             }
             return table;
+        }
+
+        public static async void DelayLoadAsync<T>(this DbSet<T> source, int delay = 100)
+            where T : class
+        {
+            await Task.Delay(delay);
+            source.LoadAsync();
         }
     }
 }

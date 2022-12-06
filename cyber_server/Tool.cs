@@ -13,7 +13,8 @@ namespace cyber_server
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Tool : BaseObjectSwModel
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,7 +22,8 @@ namespace cyber_server
         {
             this.ToolVersions = new HashSet<ToolVersion>();
         }
-    
+
+        [Editable(false)]
         public int ToolId { get; set; } = -1;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -115,6 +115,11 @@ namespace cyber_server.implements.db_manager
             return true;
         }
 
+        public async Task<int> SaveChanges()
+        {
+            return await _appDbContext.SaveChangesAsync();
+        }
+
         public async Task<List<string>> Backup(string savingLocationPath)
         {
             using (SqlConnection cnn = new SqlConnection(_connectionString))
@@ -439,7 +444,7 @@ namespace cyber_server.implements.db_manager
 
             foreach (var tableName in optionLst)
             {
-                DatabaseTableWindow window = new DatabaseTableWindow(await _appDbContext.GetTableEnumerableByName(tableName))
+                DatabaseTableWindow window = new DatabaseTableWindow(_appDbContext.GetTableEnumerableByName2(tableName))
                 {
                     Title = tableName,
                 };

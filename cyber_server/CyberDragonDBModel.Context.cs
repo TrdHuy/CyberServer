@@ -15,7 +15,7 @@ namespace cyber_server
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Threading.Tasks;
-
+    using cyber_server.utils;
     public partial class CyberDragonDbContext : DbContext
     {
         private const string PLUGIN_VERSION_TABLE_NAME = "PluginVersion";
@@ -67,6 +67,36 @@ namespace cyber_server
                     return await Votes.ToListAsync<Vote>();
                 case CERTIFICATE_TABLE_NAME:
                     return await Certificates.ToListAsync<Certificate>();
+                default:
+                    return null;
+            }
+        }
+
+        public IEnumerable GetTableEnumerableByName2(string tableName)
+        {
+            switch (tableName)
+            {
+                case PLUGIN_VERSION_TABLE_NAME:
+                    PluginVersions.DelayLoadAsync(1000);
+                    return PluginVersions.Local;
+                case PLUGIN_TABLE_NAME:
+                    Plugins.DelayLoadAsync();
+                    return Plugins.Local;
+                case TOOL_VERSION_TABLE_NAME:
+                    ToolVersions.DelayLoadAsync(1000);
+                    return ToolVersions.Local;
+                case TOOL_TABLE_NAME:
+                    Tools.DelayLoadAsync(1000);
+                    return Tools.Local;
+                case TAG_TABLE_NAME:
+                    Tags.DelayLoadAsync();
+                    return Tags.Local;
+                case VOTE_TABLE_NAME:
+                    Votes.DelayLoadAsync();
+                    return Votes.Local;
+                case CERTIFICATE_TABLE_NAME:
+                    Certificates.DelayLoadAsync();
+                    return Certificates.Local;
                 default:
                     return null;
             }

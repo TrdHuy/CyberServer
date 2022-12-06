@@ -12,10 +12,13 @@ namespace cyber_server
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Tag
     {
         public string Content { get; set; }
+
+        [Editable(false)]
         public int TagId { get; set; }
         public int PluginId { get; set; }
     
