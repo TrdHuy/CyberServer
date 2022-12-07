@@ -23,6 +23,16 @@ namespace cyber_server.view_models.list_view_item.tool_item
             _vo = baseModel ?? new Tool();
         }
 
+        [Bindable(true)]
+        public bool IsShowOnCyberInstaller
+        {
+            get => _vo.IsShowOnCyberInstaller;
+            set
+            {
+                _vo.IsShowOnCyberInstaller = value;
+                InvalidateOwn();
+            }
+        }
 
         protected override async Task DoInitOtherPropertiesTask(BaseObjectSwModel model)
         {

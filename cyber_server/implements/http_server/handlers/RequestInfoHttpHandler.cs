@@ -101,12 +101,15 @@ namespace cyber_server.implements.http_server.handlers
                             {
                                 if (maximumElement == -1)
                                 {
-                                    queryResult = dbContext.Tools;
+                                    queryResult = dbContext
+                                            .Tools
+                                            .Where(t => t.IsShowOnCyberInstaller);
                                     isEndOfDbset = 1;
                                 }
                                 else
                                 {
                                     var tempQuery = dbContext.Tools
+                                            .Where(t => t.IsShowOnCyberInstaller)
                                             .OrderBy(p => p.ToolId)
                                             .Skip(currentStartIndex)
                                             .Take(maximumElement);

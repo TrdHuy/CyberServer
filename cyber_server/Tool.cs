@@ -25,6 +25,7 @@ namespace cyber_server
 
         [Editable(false)]
         public int ToolId { get; set; } = -1;
+        public bool IsShowOnCyberInstaller { get; set; } = true;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ToolVersion> ToolVersions { get; set; }

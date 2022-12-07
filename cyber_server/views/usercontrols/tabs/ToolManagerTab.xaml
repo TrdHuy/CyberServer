@@ -298,6 +298,7 @@
 							<RowDefinition Height="34" />
 							<RowDefinition Height="34" />
 							<RowDefinition Height="34" />
+							<RowDefinition Height="34" />
 						</Grid.RowDefinitions>
 
 						<TextBlock Grid.Row="0"
@@ -650,6 +651,17 @@
 								  Grid.Row="13"
 								  Grid.Column="2"
 								  VerticalAlignment="Center" />
+
+						<TextBlock Text="Show on CI:"
+								   Grid.Row="14"
+								   VerticalAlignment="Center"
+								   Grid.Column="1" />
+						<CheckBox x:Name="PART_ToolIsShowOnInstallerCb"
+								  IsChecked="{Binding IsShowOnCyberInstaller, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+								  Grid.Row="14"
+								  Grid.Column="2"
+								  VerticalAlignment="Center" 
+								  ToolTip="Show the tool on cyber installer"/>
 
 					</Grid>
 
