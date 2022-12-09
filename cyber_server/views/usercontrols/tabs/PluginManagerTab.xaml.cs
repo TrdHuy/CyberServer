@@ -239,5 +239,17 @@ namespace cyber_server.views.usercontrols.tabs
         protected override void OnSwManagerTabLoaded()
         {
         }
+
+        protected override void RefreshTab()
+        {
+            base.RefreshTab();
+            PART_PathMainClassNameTextbox.Text = "";
+        }
+
+        protected override void RefreshVersionField()
+        {
+            base.RefreshVersionField();
+            PART_PathMainClassNameTextbox.Text = "";
+        }
     }
 }

@@ -602,7 +602,7 @@ namespace cyber_server.views.usercontrols.tabs
             HandleSwVersionItemEditorModeChanged(SwVersionEditorMode);
         }
 
-        private void RefreshTab()
+        protected virtual void RefreshTab()
         {
             _compressToolSizeCache = 0;
             _rawToolSizeCache = 0;
@@ -624,7 +624,7 @@ namespace cyber_server.views.usercontrols.tabs
             SwIsPrereleasedCheckBox.IsChecked = false;
         }
 
-        private void RefreshVersionField()
+        protected virtual void RefreshVersionField()
         {
             _compressToolSizeCache = 0;
             _rawToolSizeCache = 0;

@@ -409,6 +409,7 @@
 															</Grid.ColumnDefinitions>
 															<Button x:Name="SUB_ModifyVersionItem"
 																	Content="/"
+																	Tag="{x:Static local:SwManagerViewElementTagId.ModifyVersionItem}"
 																	Margin="1,0"
 																	FontSize="8"
 																	ToolTip="Sửa"
@@ -417,6 +418,7 @@
 																	Click="HandleButtonClickEvent" />
 															<Button x:Name="SUB_DeleteVersionItem"
 																	Content="X"
+																	Tag="{x:Static local:SwManagerViewElementTagId.DeleteVersionItem}"
 																	FontSize="8"
 																	ToolTip="Xoá"
 																	Margin="1,0"
@@ -501,6 +503,7 @@
 
 							<TextBox x:Name="PART_PathMainClassNameTextbox"
 									 Width="180"
+									 Text="{Binding SelectedSwVersionItemForEditting.MainClassName}"
 									 Tag="Main class name *"
 									 Margin="10,0,0,0" />
 

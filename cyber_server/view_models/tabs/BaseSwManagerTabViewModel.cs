@@ -178,7 +178,8 @@ namespace cyber_server.view_models.tabs
                 var success = true;
                 var swVersionModel = modifiedVersionItemViewModel.RawModel;
 
-                swVersionModel.File = File.ReadAllBytes(modifiedVersionItemViewModel.FilePath);
+                if (!string.IsNullOrEmpty(localVersionFilePath))
+                    swVersionModel.File = File.ReadAllBytes(localVersionFilePath);
 
                 modifiedItemViewModel.VersionSource.Insert(newIndex, modifiedVersionItemViewModel);
                 await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
@@ -312,7 +313,8 @@ namespace cyber_server.view_models.tabs
             return true;
         }
 
-        protected virtual int GetIndexOfNewVersion(BaseObjectVersionItemViewModel swVersionVM, ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
+        protected virtual int GetIndexOfNewVersion(BaseObjectVersionItemViewModel swVersionVM
+            , ObservableCollection<BaseObjectVersionItemViewModel> versionSource)
         {
             Version newVersion = new Version();
             try
@@ -378,7 +380,7 @@ namespace cyber_server.view_models.tabs
                     return -1;
                 }
             }
-            else if (!CyberPluginAndToolManager.Current.CheckToolPathExistOnServer(swVersionVM.ExecutePath))
+            else if (!CyberPluginAndToolManager.Current.CheckToolPathExistOnServer(swVersionVM))
             {
                 MessageBox.Show("File tool không tồn tại!");
                 return -1;

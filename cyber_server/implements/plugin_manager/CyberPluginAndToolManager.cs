@@ -1,6 +1,7 @@
 ﻿using cyber_server.@base;
 using cyber_server.definition;
 using cyber_server.implements.log_manager;
+using cyber_server.view_models.list_view_item;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,9 +69,9 @@ namespace cyber_server.implements.plugin_manager
             }
         }
 
-        public bool CheckToolPathExistOnServer(string toolPath)
+        public bool CheckToolPathExistOnServer(BaseObjectVersionItemViewModel swVersionViewModel)
         {
-            return File.Exists(toolFolderLocation + "\\" + toolPath);
+            return swVersionViewModel.RawModel.File != null && swVersionViewModel.RawModel.File.Length > 0;
         }
 
         public bool RenamePluginFolder(string oldPluginKey, string newPluginKey)
