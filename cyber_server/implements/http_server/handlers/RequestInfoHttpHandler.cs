@@ -12,15 +12,18 @@ namespace cyber_server.implements.http_server.handlers
 {
     internal class RequestInfoHttpHandler : ICyberHttpRequestHandler
     {
-        public const string REQUEST_PLUGIN_INFO_HEADER_ID = "GET_ALL_PLUGIN_DATA";
-        public const string REQUEST_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID = "GET_ALL_PLUGIN_DATA__MAXIMUM_AMOUNT";
-        public const string REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID = "GET_ALL_PLUGIN_DATA__START_INDEX";
-        public const string RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID = "GET_ALL_PLUGIN_DATA__IS_END_OF_DBSET";
+        public const string REQUEST_ALL_PLUGIN_INFO_HEADER_ID = "GET_ALL_PLUGIN_DATA";
+        public const string REQUEST_ALL_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID = "GET_ALL_PLUGIN_DATA__MAXIMUM_AMOUNT";
+        public const string REQUEST_ALL_PLUGIN_INFO_START_INDEX_HEADER_ID = "GET_ALL_PLUGIN_DATA__START_INDEX";
+        public const string RESPONSE_GET_ALL_PLUGIN_INFO_END_OF_DBSET_HEADER_ID = "GET_ALL_PLUGIN_DATA__IS_END_OF_DBSET";
 
-        public const string REQUEST_SOFTWARE_INFO_HEADER_ID = "GET_ALL_SOFTWARE_DATA";
+        public const string REQUEST_ALL_SOFTWARE_INFO_HEADER_ID = "GET_ALL_SOFTWARE_DATA";
         public const string REQUEST_SOFTWARE_INFO_MAXIMUM_AMOUNT_HEADER_ID = "GET_ALL_SOFTWARE_DATA__MAXIMUM_AMOUNT";
         public const string REQUEST_SOFTWARE_INFO_START_INDEX_HEADER_ID = "GET_ALL_SOFTWARE_DATA__START_INDEX";
         public const string RESPONSE_SOFTWARE_INFO_END_OF_DBSET_HEADER_ID = "GET_ALL_SOFTWARE_DATA__IS_END_OF_DBSET";
+
+        public const string REQUEST_SOFTWARE_INFO_HEADER_ID = "GET_SOFTWARE_DATA";
+        public const string REQUEST_SOFTWARE_KEY_HEADER_ID = "GET_SOFTWARE_DATA__SOFTWARE_KEY";
 
         public RequestInfoHttpHandler()
         {
@@ -32,7 +35,7 @@ namespace cyber_server.implements.http_server.handlers
             {
                 switch (request.Headers[CyberHttpServer.REQUEST_INFO_HEADER_KEY])
                 {
-                    case REQUEST_PLUGIN_INFO_HEADER_ID:
+                    case REQUEST_ALL_PLUGIN_INFO_HEADER_ID:
                         {
                             response.Headers.Add("Content-Type", "application/json");
                             response.StatusCode = (int)HttpStatusCode.OK;
@@ -41,11 +44,11 @@ namespace cyber_server.implements.http_server.handlers
                             var currentStartIndex = 0;
                             var isEndOfDbset = 0;
 
-                            if (!string.IsNullOrEmpty(request.Headers[REQUEST_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID])
-                                && !string.IsNullOrEmpty(request.Headers[REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID]))
+                            if (!string.IsNullOrEmpty(request.Headers[REQUEST_ALL_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID])
+                                && !string.IsNullOrEmpty(request.Headers[REQUEST_ALL_PLUGIN_INFO_START_INDEX_HEADER_ID]))
                             {
-                                maximumElement = Convert.ToInt32(request.Headers[REQUEST_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID]);
-                                currentStartIndex = Convert.ToInt32(request.Headers[REQUEST_PLUGIN_INFO_START_INDEX_HEADER_ID]);
+                                maximumElement = Convert.ToInt32(request.Headers[REQUEST_ALL_PLUGIN_INFO_MAXIMUM_AMOUNT_HEADER_ID]);
+                                currentStartIndex = Convert.ToInt32(request.Headers[REQUEST_ALL_PLUGIN_INFO_START_INDEX_HEADER_ID]);
                             }
 
                             await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
@@ -77,10 +80,10 @@ namespace cyber_server.implements.http_server.handlers
                             // Gửi thông tin về cho Client
                             byte[] buf = System.Text.Encoding.UTF8.GetBytes(jsonstring);
                             response.ContentLength64 = buf.Length;
-                            response.Headers.Add(RESPONSE_PLUGIN_INFO_END_OF_DBSET_HEADER_ID, isEndOfDbset + "");
+                            response.Headers.Add(RESPONSE_GET_ALL_PLUGIN_INFO_END_OF_DBSET_HEADER_ID, isEndOfDbset + "");
                             return buf;
                         }
-                    case REQUEST_SOFTWARE_INFO_HEADER_ID:
+                    case REQUEST_ALL_SOFTWARE_INFO_HEADER_ID:
                         {
                             response.Headers.Add("Content-Type", "application/json");
                             response.StatusCode = (int)HttpStatusCode.OK;
@@ -131,6 +134,39 @@ namespace cyber_server.implements.http_server.handlers
                             byte[] buf = System.Text.Encoding.UTF8.GetBytes(jsonstring);
                             response.ContentLength64 = buf.Length;
                             response.Headers.Add(RESPONSE_SOFTWARE_INFO_END_OF_DBSET_HEADER_ID, isEndOfDbset + "");
+                            return buf;
+                        }
+                    case REQUEST_SOFTWARE_INFO_HEADER_ID:
+                        {
+                            response.Headers.Add("Content-Type", "application/json");
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                            string jsonstring = "";
+                            var swKey = "";
+
+                            if (!string.IsNullOrEmpty(request.Headers[REQUEST_SOFTWARE_KEY_HEADER_ID]))
+                            {
+                                swKey = request.Headers[REQUEST_SOFTWARE_KEY_HEADER_ID].ToString();
+                            }
+
+                            object queryResult = null;
+
+                            await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
+                            {
+                                queryResult = dbContext
+                                        .Tools
+                                        .Where(t => t.StringId.Equals(swKey))
+                                        .FirstOrDefault();
+                            });
+
+                            var setting = new JsonSerializerSettings
+                            {
+                                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+                            };
+                            jsonstring = JsonConvert.SerializeObject(queryResult, Formatting.Indented, setting);
+
+                            // Gửi thông tin về cho Client
+                            byte[] buf = System.Text.Encoding.UTF8.GetBytes(jsonstring);
+                            response.ContentLength64 = buf.Length;
                             return buf;
                         }
                 }
