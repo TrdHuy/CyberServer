@@ -1,6 +1,7 @@
 ﻿using cyber_server.@base;
 using cyber_server.definition;
 using cyber_server.implements.db_manager;
+using cyber_server.models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,9 +24,11 @@ namespace cyber_server.implements.http_server.handlers
         private string _key = "";
         private string _fileName = "";
         private string _filePath = "";
-
+        private ResourceMode _resMode;
         public RequestResourceHttpHandler(string uriRequestPath, ResourceMode resMode = ResourceMode.Plugin)
         {
+            _resMode = resMode;
+
             var split = uriRequestPath.Split('/');
             int starDuet = 0;
             foreach (var pram in split)
@@ -62,10 +65,6 @@ namespace cyber_server.implements.http_server.handlers
                 {
                     _filePath = CyberServerDefinition.TOOL_BASE_FOLDER_PATH + "\\" + _key + "\\resources\\" + _fileName;
                 }
-                if (!File.Exists(_filePath))
-                {
-                    throw new ArgumentException("Invaild request plugin resource!~");
-                }
             }
         }
 
@@ -74,7 +73,7 @@ namespace cyber_server.implements.http_server.handlers
             response.Headers.Add("Content-Type", "image/png");
 
             byte[] buffer = null;
-           
+
             if (File.Exists(_filePath))
             {
                 using (FileStream stream = File.Open(_filePath, FileMode.Open))
@@ -87,7 +86,16 @@ namespace cyber_server.implements.http_server.handlers
             {
                 await CyberDbManager.Current.RequestDbContextAsync((context) =>
                 {
-                    var query = context.Plugins.Where(p => p.StringId == _key).FirstOrDefault();
+                    BaseObjectSwModel query = null;
+                    if (_resMode == ResourceMode.Plugin)
+                    {
+                        query = context.Plugins.Where(p => p.StringId == _key).FirstOrDefault();
+                    }
+                    else if (_resMode == ResourceMode.Tool)
+                    {
+                        query = context.Tools.Where(p => p.StringId == _key).FirstOrDefault();
+                    }
+
                     if (query != null)
                     {
                         buffer = query.IconFile;
