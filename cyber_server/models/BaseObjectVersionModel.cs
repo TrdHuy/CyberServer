@@ -22,6 +22,7 @@ namespace cyber_server.models
         public string FileName { get; set; }
         public long CompressLength { get; set; }
         public long RawLength { get; set; }
+        public string AssemblyName { get; set; }
 
         public abstract object Clone();
     }

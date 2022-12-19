@@ -34,6 +34,7 @@ namespace cyber_server
                 RawLength = RawLength,
                 CompressLength = CompressLength,
                 DatePublished = DatePublished,
+                AssemblyName = AssemblyName,
                 Description = Description,
                 ExecutePath = ExecutePath,
                 FileName = FileName,
