@@ -2,6 +2,7 @@
 using cyber_server.implements.db_manager;
 using cyber_server.implements.log_manager;
 using cyber_server.implements.plugin_manager;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,6 +66,11 @@ namespace cyber_server.implements.http_server.handlers
 
                                     if (query != null)
                                     {
+                                        var setting = new JsonSerializerSettings
+                                        {
+                                            ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+                                        };
+                                        responseString = JsonConvert.SerializeObject(query, Formatting.Indented, setting);
                                         response.StatusCode = (int)HttpStatusCode.OK;
                                         response.Headers.Add(RESPONSE_IS_PLUGIN_DOWNLOADABLE_HEADER_ID, "1");
                                         response.Headers.Add(RESPONSE_PLUGIN_FILE_NAME_HEADER_ID, query.FileName);
