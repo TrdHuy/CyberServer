@@ -127,6 +127,20 @@ namespace cyber_server.view_models.list_view_item
             }
         }
 
+        [Bindable(true)]
+        public string AssemblyName
+        {
+            get
+            {
+                return RawModel.AssemblyName;
+            }
+            set
+            {
+                RawModel.AssemblyName = value;
+                InvalidateOwn();
+            }
+        }
+
         public bool IsThisVersionAddedNewly()
         {
             if (RawModel != null)

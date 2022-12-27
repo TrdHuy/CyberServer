@@ -102,6 +102,8 @@ namespace cyber_server.views.usercontrols.tabs
 
         protected override CheckBox SwIsPrereleasedCheckBox => PART_PluginIsPrereleasedCb;
 
+        protected override TextBox SwToolVersionAssemblyNameTextBox => PART_ToolVersionAssemblyNameTb;
+
         protected override string BuildTaskTypeKey(object tag)
         {
             switch (tag)
@@ -140,6 +142,7 @@ namespace cyber_server.views.usercontrols.tabs
                 DatePublished = PART_DatePublisedDP.Text,
                 Description = PART_VersionDesTb.Text,
                 ExecutePath = PART_ExecutePathTextbox.Text,
+                AssemblyName = PART_ToolVersionAssemblyNameTb.Text,
                 CompressLength = _compressToolSizeCache + "",
                 RawLength = _rawToolSizeCache + "",
                 MainClassName = PART_PathMainClassNameTextbox.Text

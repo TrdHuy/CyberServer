@@ -485,6 +485,12 @@
 									 Tag="Version *"
 									 Margin="0" />
 
+							<TextBox x:Name="PART_ToolVersionAssemblyNameTb"
+									 Width="150"
+									 Text="{Binding SelectedSwVersionItemForEditting.AssemblyName}"
+									 Tag="Main assembly name *"
+									 Margin="10,0,0,0"/>
+							
 							<TextBox x:Name="PART_PathToToolTextbox"
 									 Width="100"
 									 Text="{Binding SelectedSwVersionItemForEditting.FilePath}"

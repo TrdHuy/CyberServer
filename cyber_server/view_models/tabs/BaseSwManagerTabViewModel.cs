@@ -353,6 +353,7 @@ namespace cyber_server.view_models.tabs
             if (string.IsNullOrEmpty(swVersionVM.Version)
                 || string.IsNullOrEmpty(swVersionVM.DatePublished)
                 || string.IsNullOrEmpty(swVersionVM.Description)
+                || string.IsNullOrEmpty(swVersionVM.AssemblyName)
                 || string.IsNullOrEmpty(swVersionVM.ExecutePath))
             {
                 MessageBox.Show("Điền các trường còn thiếu!");

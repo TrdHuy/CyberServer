@@ -554,15 +554,22 @@
 						<StackPanel Grid.Row="6"
 									Grid.Column="2"
 									Orientation="Horizontal">
+							<TextBox x:Name="PART_ToolVersionAssemblyNameTb"
+									 Width="150"
+									 Text="{Binding SelectedSwVersionItemForEditting.AssemblyName}"
+									 Tag="Main assembly name *" />
+
 							<TextBox x:Name="PART_ExecutePathTextbox"
 									 Text="{Binding SelectedSwVersionItemForEditting.ExecutePath}"
+									 Margin="10,0,0,0"
 									 Width="200"
 									 Tag="Path to main dll" />
+							
 							<Button x:Name="PART_QuickFillExecutePathButton"
 									Margin="5,0,0,0"
 									Click="HandleButtonClickEvent"
 									Content="QF" />
-							
+
 
 						</StackPanel>
 						<StackPanel Grid.Row="7"
@@ -633,8 +640,8 @@
 								</TextBlock>
 
 							</WrapPanel>
-							
-							
+
+
 						</StackPanel>
 
 

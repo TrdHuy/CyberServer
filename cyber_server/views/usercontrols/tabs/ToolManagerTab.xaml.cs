@@ -62,6 +62,7 @@ namespace cyber_server.views.usercontrols.tabs
         protected override Button OpenIconFileChooserButton => PART_OpenIconFileChooser;
         protected override Button SyncSwFolderWithDbButton => PART_SyncToolFolderWithDbButton;
         protected override Button AccessBaseFolderTabButton => PART_AccessBaseFolderTab;
+        protected override TextBox SwToolVersionAssemblyNameTextBox => PART_ToolVersionAssemblyNameTb;
 
         protected override string BuildTaskTypeKey(object tag)
         {
@@ -117,7 +118,6 @@ namespace cyber_server.views.usercontrols.tabs
             }
         }
 
-
         public ToolManagerTab()
         {
             InitializeComponent();
@@ -148,6 +148,7 @@ namespace cyber_server.views.usercontrols.tabs
                 Description = PART_VersionDesTb.Text,
                 ExecutePath = PART_ExecutePathTextbox.Text,
                 CompressLength = _compressToolSizeCache + "",
+                AssemblyName = PART_ToolVersionAssemblyNameTb.Text,
                 RawLength = _rawToolSizeCache + "",
             };
         }

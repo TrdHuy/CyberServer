@@ -146,6 +146,8 @@ namespace cyber_server.views.usercontrols.tabs
         protected abstract TextBox SwVersionDescriptionTextBox { get; }
         protected abstract TextBox SwURLTextBox { get; }
         protected abstract TextBox SwIconSourceTextBox { get; }
+        protected abstract TextBox SwToolVersionAssemblyNameTextBox { get; }
+
         protected abstract CheckBox SwIsAuthenticatedCheckBox { get; }
         protected abstract CheckBox SwIsPrereleasedCheckBox { get; }
 
@@ -620,6 +622,7 @@ namespace cyber_server.views.usercontrols.tabs
             SwVersionDescriptionTextBox.Text = "";
             SwURLTextBox.Text = "";
             SwIconSourceTextBox.Text = "";
+            SwToolVersionAssemblyNameTextBox.Text = "";
             SwIsAuthenticatedCheckBox.IsChecked = false;
             SwIsPrereleasedCheckBox.IsChecked = false;
         }
@@ -632,6 +635,7 @@ namespace cyber_server.views.usercontrols.tabs
             SwPathTextBox.Text = "";
             SwExecutePathTextBox.Text = "";
             SwatePublisedDatePicker.SelectedDate = null;
+            SwToolVersionAssemblyNameTextBox.Text = "";
             SwVersionDescriptionTextBox.Text = "";
         }
 
