@@ -9,11 +9,13 @@
 
 namespace cyber_server
 {
+    using cyber_server.implements.attributes;
     using cyber_server.models;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class ToolVersion : BaseObjectVersionModel
     {
         public ToolVersion()
@@ -21,30 +23,16 @@ namespace cyber_server
 
         }
 
+        [Cloneable(false, -1)]
         public int ToolId { get; set; }
 
-        public override object Clone()
-        {
-            byte[] newFile = new byte[File.Length];
-            Array.Copy(this.File, newFile, File.Length);
-            return new ToolVersion()
-            {
-                ToolId = -1,
-                Version = Version,
-                RawLength = RawLength,
-                CompressLength = CompressLength,
-                DatePublished = DatePublished,
-                AssemblyName = AssemblyName,
-                Description = Description,
-                ExecutePath = ExecutePath,
-                FileName = FileName,
-                File = newFile,
-                VersionId = -1,
-                Tool = null,
-            };
-        }
-
+        [Cloneable(false, null)]
         [JsonIgnore]
         public virtual Tool Tool { get; set; }
+
+        protected override object GenerateNewCloneObjectInstance()
+        {
+            return new ToolVersion();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using cyber_server.models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -33,7 +34,29 @@ namespace cyber_server.utils
             where T : class
         {
             await Task.Delay(delay);
-            source.LoadAsync();
+            await source.LoadAsync();
+        }
+
+        public static List<TSource> Clone<TSource>(this IQueryable<TSource> source) where TSource : ICloneable
+        {
+            var cloneRes = new List<TSource>(); 
+            foreach(var item in source)
+            {
+                var cloneItem = (TSource)item.Clone();
+                cloneRes.Add(cloneItem);
+            }
+            return cloneRes;
+        }
+
+        public static List<TSource> JsonClone<TSource>(this IQueryable<TSource> source) where TSource : IJsonCloneable
+        {
+            var cloneRes = new List<TSource>();
+            foreach (var item in source)
+            {
+                var cloneItem = (TSource)item.JsonClone();
+                cloneRes.Add(cloneItem);
+            }
+            return cloneRes;
         }
     }
 }

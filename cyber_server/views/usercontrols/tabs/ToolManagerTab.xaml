@@ -386,6 +386,10 @@
 															Margin="0,5"
 															Padding="5">
 														<Grid>
+															<Grid.RowDefinitions>
+																<RowDefinition Height="auto" />
+																<RowDefinition Height="auto" />
+															</Grid.RowDefinitions>
 															<Grid.ColumnDefinitions>
 																<ColumnDefinition />
 																<ColumnDefinition Width="auto" />
@@ -410,6 +414,7 @@
 																	Grid.Column="2"
 																	Click="HandleButtonClickEvent" />
 															<TextBlock IsHitTestVisible="False"
+																	   Grid.Row="0"
 																	   Grid.ColumnSpan="3">
 																<Run Text="VERSION: "
 																	 FontWeight="Bold" />
@@ -426,16 +431,27 @@
 																<Run Text="{Binding DatePublished}"
 																	 Foreground="Red" />
 																<LineBreak />
-																<Run Text="PATH: "
-																	 FontWeight="Bold" />
-																<Run Text="{Binding FilePath}"
-																	 Foreground="Aqua" />
-																<LineBreak />
 																<Run Text="EXECUTE PATH: "
 																	 FontWeight="Bold" />
 																<Run Text="{Binding ExecutePath}"
 																	 Foreground="Black" />
+																<LineBreak />
+																<Run Text="ASSEMBLY NAME: "
+																	 FontWeight="Bold" />
+																<Run Text="{Binding AssemblyName}"
+																	 Foreground="Black" />
 															</TextBlock>
+
+															<StackPanel Orientation="Horizontal"
+																		Grid.Row="1">
+																<TextBlock>
+																	<Run Text="DISABLE VERSION: "
+																		 FontWeight="Bold" />
+																</TextBlock>
+																<CheckBox x:Name="SUB_DisableVersionCheckbox"
+																		  IsChecked="{Binding IsDisable}"
+																		  Grid.Row="1" />
+															</StackPanel>
 														</Grid>
 
 													</Border>

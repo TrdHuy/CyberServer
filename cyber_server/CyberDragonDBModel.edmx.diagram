@@ -14,8 +14,8 @@
         <EntityTypeShape EntityType="CyberDragonDBModel.Tool" Width="1.5" PointX="5.75" PointY="0.875" />
         <EntityTypeShape EntityType="CyberDragonDBModel.PluginVersion" Width="1.5" PointX="3" PointY="0.75" />
         <EntityTypeShape EntityType="CyberDragonDBModel.ToolVersion" Width="1.5" PointX="8" PointY="1.5" />
-        <AssociationConnector Association="CyberDragonDBModel.FK__PluginVer__Plugi__29221CFB" />
-        <AssociationConnector Association="CyberDragonDBModel.FK__ToolVersi__ToolI__160F4887" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__PluginVer__Plugi__3E1D39E1" />
+        <AssociationConnector Association="CyberDragonDBModel.FK__ToolVersi__ToolI__3F115E1A" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

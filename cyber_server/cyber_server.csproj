@@ -119,6 +119,7 @@
       <DependentUpon>CyberDragonDBModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="definition\CyberServerDefinition.cs" />
+    <Compile Include="implements\attributes\CloneableAttribute.cs" />
     <Compile Include="implements\cert_manager\DESCryptoManager.cs" />
     <Compile Include="implements\db_manager\CyberDbManager.cs" />
     <Compile Include="implements\http_server\CyberHttpServer.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="implements\log_manager\ServerLogManager.cs" />
     <Compile Include="implements\plugin_manager\CyberPluginAndToolManager.cs" />
     <Compile Include="implements\task_handler\TaskHandlerManager.cs" />
+    <Compile Include="models\BaseCloneableObject.cs" />
     <Compile Include="models\BaseObjectSwModel.cs" />
     <Compile Include="models\BaseObjectVersionModel.cs" />
     <Compile Include="Plugin.cs">

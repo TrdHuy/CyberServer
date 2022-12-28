@@ -9,10 +9,12 @@
 
 namespace cyber_server
 {
+    using cyber_server.implements.attributes;
     using cyber_server.models;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     public partial class PluginVersion : BaseObjectVersionModel
     {
@@ -21,37 +23,24 @@ namespace cyber_server
 
         }
 
+        [Cloneable(false, -1)]
         public int PluginId { get; set; }
+
+        [Cloneable(true)]
         public string MainClassName { get; set; }
 
+        [Cloneable(false, null)]
         [JsonIgnore]
         public virtual Plugin Plugin { get; set; }
-
-        public override object Clone()
-        {
-            byte[] newFile = new byte[File.Length];
-            Array.Copy(this.File, newFile, File.Length);
-            return new PluginVersion()
-            {
-                PluginId = -1,
-                MainClassName = MainClassName,
-                Version = Version,
-                RawLength = RawLength,
-                CompressLength = CompressLength,
-                AssemblyName = AssemblyName,
-                DatePublished = DatePublished,
-                Description = Description,
-                ExecutePath = ExecutePath,
-                FileName = FileName,
-                File = newFile,
-                VersionId = -1,
-                Plugin = null,
-            };
-        }
 
         public void SetMainClassName(string mainClassName)
         {
             MainClassName = mainClassName;
+        }
+
+        protected override object GenerateNewCloneObjectInstance()
+        {
+            return new PluginVersion();
         }
     }
 }

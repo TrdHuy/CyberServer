@@ -402,6 +402,10 @@
 															Margin="0,5"
 															Padding="5">
 														<Grid>
+															<Grid.RowDefinitions>
+																<RowDefinition Height="auto" />
+																<RowDefinition Height="auto" />
+															</Grid.RowDefinitions>
 															<Grid.ColumnDefinitions>
 																<ColumnDefinition />
 																<ColumnDefinition Width="auto" />
@@ -452,6 +456,17 @@
 																<Run Text="{Binding ExecutePath}"
 																	 Foreground="Black" />
 															</TextBlock>
+
+															<StackPanel Orientation="Horizontal"
+																		Grid.Row="1">
+																<TextBlock>
+																	<Run Text="DISABLE VERSION: "
+																		 FontWeight="Bold" />
+																</TextBlock>
+																<CheckBox x:Name="SUB_DisableVersionCheckbox"
+																		  IsChecked="{Binding IsDisable}"
+																		  Grid.Row="1" />
+															</StackPanel>
 														</Grid>
 
 													</Border>

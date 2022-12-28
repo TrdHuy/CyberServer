@@ -9,8 +9,8 @@
 
 namespace cyber_server
 {
+    using cyber_server.implements.attributes;
     using cyber_server.models;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -23,12 +23,22 @@ namespace cyber_server
             this.ToolVersions = new HashSet<ToolVersion>();
         }
 
+        [Cloneable(false, -1)]
         [Editable(false)]
         public int ToolId { get; set; } = -1;
+
+        [Cloneable(true)]
         public bool IsShowOnCyberInstaller { get; set; } = true;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [Cloneable(true
+            , cloneOption: CloneOption.Collection
+            , collectionType: typeof(ToolVersion))]
         public virtual ICollection<ToolVersion> ToolVersions { get; set; }
 
+        protected override object GenerateNewCloneObjectInstance()
+        {
+            return new Tool();
+        }
     }
 }

@@ -141,6 +141,20 @@ namespace cyber_server.view_models.list_view_item
             }
         }
 
+        [Bindable(true)]
+        public bool IsDisable
+        {
+            get
+            {
+                return RawModel.IsDisable ?? false;
+            }
+            set
+            {
+                RawModel.IsDisable = value;
+                InvalidateOwn();
+            }
+        }
+
         public bool IsThisVersionAddedNewly()
         {
             if (RawModel != null)
