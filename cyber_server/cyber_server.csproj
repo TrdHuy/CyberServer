@@ -151,6 +151,7 @@
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="utils\Utils.cs" />
+    <Compile Include="views\extension\ShowVersionHistoryButton.cs" />
     <Compile Include="views\usercontrols\others\TaskHandlingPanel.xaml.cs">
       <DependentUpon>TaskHandlingPanel.xaml</DependentUpon>
     </Compile>
@@ -181,6 +182,9 @@
     </Compile>
     <Compile Include="views\windows\others\TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\windows\others\VersionHistoryWindow.xaml.cs">
+      <DependentUpon>VersionHistoryWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="view_models\BaseViewModel.cs" />
     <Compile Include="view_models\list_view_item\BaseObjectSwItemViewModel.cs" />
@@ -242,6 +246,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\windows\others\TextWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\windows\others\VersionHistoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,6 +5,7 @@
 								   xmlns:sys="clr-namespace:System;assembly=mscorlib"
 								   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 								   xmlns:tvivm="clr-namespace:cyber_server.view_models.list_view_item.tool_item"
+								   xmlns:ev="clr-namespace:cyber_server.views.extension"
 								   xmlns:vm="clr-namespace:cyber_server.view_models.tabs.sw_manager"
 								   xmlns:local="clr-namespace:cyber_server.views.usercontrols.tabs"
 								   mc:Ignorable="d"
@@ -195,26 +196,21 @@
 													  HorizontalContentAlignment="Left" />
 								<GridViewColumn.CellTemplate>
 									<DataTemplate>
-
 										<Border BorderThickness="0,0,1,0"
 												Margin="0,0,-9,0"
 												BorderBrush="Black">
-											<ListView ItemsSource="{Binding VersionSource}">
-												<ListView.View>
-													<GridView>
-														<GridViewColumn DisplayMemberBinding="{Binding Version}">
-															<GridViewColumnHeader Content="Phiên bản" />
-														</GridViewColumn>
-														<GridViewColumn DisplayMemberBinding="{Binding Description}">
-															<GridViewColumnHeader Content="Mô tả" />
-														</GridViewColumn>
-														<GridViewColumn DisplayMemberBinding="{Binding FilePath}">
-															<GridViewColumnHeader Content="Đường dẫn" />
-														</GridViewColumn>
-													</GridView>
-												</ListView.View>
-											</ListView>
+											<ev:ShowVersionHistoryButton x:Name="ShowVersionHistoryButton"
+																		 Content="Show"
+																		 FontSize="8"
+																		 VersionHistorySource="{Binding VersionSource}"
+																		 Height="30"
+																		 Width="30"
+																		 BorderThickness="2"
+																		 BorderBrush="Black"
+																		 Background="Transparent" />
 										</Border>
+
+
 									</DataTemplate>
 								</GridViewColumn.CellTemplate>
 							</GridViewColumn>
@@ -505,8 +501,8 @@
 									 Width="150"
 									 Text="{Binding SelectedSwVersionItemForEditting.AssemblyName}"
 									 Tag="Main assembly name *"
-									 Margin="10,0,0,0"/>
-							
+									 Margin="10,0,0,0" />
+
 							<TextBox x:Name="PART_PathToToolTextbox"
 									 Width="100"
 									 Text="{Binding SelectedSwVersionItemForEditting.FilePath}"
@@ -682,8 +678,8 @@
 								  IsChecked="{Binding IsShowOnCyberInstaller, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
 								  Grid.Row="14"
 								  Grid.Column="2"
-								  VerticalAlignment="Center" 
-								  ToolTip="Show the tool on cyber installer"/>
+								  VerticalAlignment="Center"
+								  ToolTip="Show the tool on cyber installer" />
 
 					</Grid>
 
