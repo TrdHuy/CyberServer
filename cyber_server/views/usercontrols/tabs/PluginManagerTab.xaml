@@ -569,7 +569,7 @@
 						<StackPanel Grid.Row="6"
 									Grid.Column="2"
 									Orientation="Horizontal">
-							<TextBox x:Name="PART_ToolVersionAssemblyNameTb"
+							<TextBox x:Name="PART_PluginVersionAssemblyNameTb"
 									 Width="150"
 									 Text="{Binding SelectedSwVersionItemForEditting.AssemblyName}"
 									 Tag="Main assembly name *" />

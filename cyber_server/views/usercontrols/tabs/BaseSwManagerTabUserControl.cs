@@ -1,24 +1,24 @@
 ﻿using cyber_server.definition;
 using cyber_server.implements.db_manager;
 using cyber_server.implements.task_handler;
+using cyber_server.models;
 using cyber_server.view_models.list_view_item;
 using cyber_server.view_models.tabs;
-using cyber_server.views.usercontrols.others;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Markup;
 
 namespace cyber_server.views.usercontrols.tabs
 {
@@ -43,6 +43,7 @@ namespace cyber_server.views.usercontrols.tabs
         ModifyVersionItem = 17,
         DeleteVersionItem = 18,
         MarkRequireLatestVersionCheckBox = 19,
+        ExtractVersionItemToFile = 20
     }
 
     public enum EditorMode
@@ -94,6 +95,8 @@ namespace cyber_server.views.usercontrols.tabs
         public abstract BaseObjectSwItemViewModel ModifingContext { get; set; }
         public abstract BaseObjectSwItemViewModel AddingContext { get; set; }
 
+        protected SwVersionBuildInfo _newBuildConceptSwVersionBuildInfo { get; private set; }
+        protected bool _isNewConceptSwVersionBuild { get; private set; } = false;
         protected long _compressToolSizeCache { get; private set; } = 0;
         protected long _rawToolSizeCache { get; private set; } = 0;
         private string _oldToolKeyCache = "";
@@ -146,7 +149,7 @@ namespace cyber_server.views.usercontrols.tabs
         protected abstract TextBox SwVersionDescriptionTextBox { get; }
         protected abstract TextBox SwURLTextBox { get; }
         protected abstract TextBox SwIconSourceTextBox { get; }
-        protected abstract TextBox SwToolVersionAssemblyNameTextBox { get; }
+        protected abstract TextBox SwVersionAssemblyNameTextBox { get; }
 
         protected abstract CheckBox SwIsAuthenticatedCheckBox { get; }
         protected abstract CheckBox SwIsPrereleasedCheckBox { get; }
@@ -202,6 +205,8 @@ namespace cyber_server.views.usercontrols.tabs
                                 if (ofd.ShowDialog() == true)
                                 {
                                     await Task.Delay(10);
+                                    _newBuildConceptSwVersionBuildInfo = null;
+                                    _isNewConceptSwVersionBuild = false;
                                     _compressToolSizeCache = 0;
                                     _rawToolSizeCache = 0;
                                     using (ZipArchive archive = ZipFile.OpenRead(ofd.FileName))
@@ -210,6 +215,22 @@ namespace cyber_server.views.usercontrols.tabs
                                         {
                                             _compressToolSizeCache += entry.CompressedLength;
                                             _rawToolSizeCache += entry.Length;
+                                            if (entry.Name == CyberServerDefinition.NEW_BUILD_CONCEPT_SOFTWARE_VERSION_BUILD_INFO_FILE_NAME)
+                                            {
+                                                using (var stream = entry.Open())
+                                                {
+                                                    using (var reader = new StreamReader(stream))
+                                                    {
+                                                        var data = await reader.ReadToEndAsync();
+                                                        _newBuildConceptSwVersionBuildInfo = JsonConvert.DeserializeObject<SwVersionBuildInfo>(data);
+                                                        SwVersionDescriptionTextBox.Text = _newBuildConceptSwVersionBuildInfo.Description;
+                                                        SwVersionTextBox.Text = _newBuildConceptSwVersionBuildInfo.Version;
+                                                        SwExecutePathTextBox.Text = _newBuildConceptSwVersionBuildInfo.PathToMainExe;
+                                                        SwVersionAssemblyNameTextBox.Text = _newBuildConceptSwVersionBuildInfo.MainAssemblyName;
+                                                    }
+                                                }
+                                                _isNewConceptSwVersionBuild = true;
+                                            }
                                         }
                                     }
                                     SwPathTextBox.Text = ofd.FileName;
@@ -426,6 +447,36 @@ namespace cyber_server.views.usercontrols.tabs
                         SwEditorMode = EditorMode.MODIFY_EDITOR_MODE;
                         break;
                     }
+                case SwManagerViewElementTagId.ExtractVersionItemToFile:
+                    {
+                        var tcontext = btn.DataContext as BaseObjectVersionItemViewModel;
+                        var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
+                        if (handler == null || tcontext == null) return;
+
+                        await handler.ExecuteTask(taskKey,
+                            mainFunc: async () =>
+                            {
+                                using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+                                {
+                                    dialog.Description = "Hãy chọn thư mục lưu!";
+                                    System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                                    if (result == System.Windows.Forms.DialogResult.OK
+                                        && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                                    {
+                                        var path = dialog.SelectedPath + "\\" + tcontext.RawModel.FileName;
+                                        using (var stream = File.Create(path))
+                                        {
+                                            await stream.WriteAsync(tcontext.RawModel.File, 0, tcontext.RawModel.File.Length);
+                                            Process.Start(dialog.SelectedPath);
+                                        }
+                                    }
+
+                                }
+                            },
+                            executeTime: 0,
+                            bypassIfSemaphoreNotAvaild: true);
+                        break;
+                    }
                 case SwManagerViewElementTagId.DeleteSwItemButton:
                     {
                         var handler = TaskHandlerManager.Current.GetHandlerByKey(TaskHandlerManager.SERVER_WINDOW_HANDLER_KEY);
@@ -606,8 +657,10 @@ namespace cyber_server.views.usercontrols.tabs
 
         protected virtual void RefreshTab()
         {
+            _newBuildConceptSwVersionBuildInfo = null;
             _compressToolSizeCache = 0;
             _rawToolSizeCache = 0;
+            _isNewConceptSwVersionBuild = false;
             (SwListVersionCombobox.ItemsSource as IList)?.Clear();
             CompressLengthRun.Text = "";
             RawLengthRun.Text = "";
@@ -622,7 +675,7 @@ namespace cyber_server.views.usercontrols.tabs
             SwVersionDescriptionTextBox.Text = "";
             SwURLTextBox.Text = "";
             SwIconSourceTextBox.Text = "";
-            SwToolVersionAssemblyNameTextBox.Text = "";
+            SwVersionAssemblyNameTextBox.Text = "";
             SwIsAuthenticatedCheckBox.IsChecked = false;
             SwIsPrereleasedCheckBox.IsChecked = false;
         }
@@ -635,7 +688,7 @@ namespace cyber_server.views.usercontrols.tabs
             SwPathTextBox.Text = "";
             SwExecutePathTextBox.Text = "";
             SwatePublisedDatePicker.SelectedDate = null;
-            SwToolVersionAssemblyNameTextBox.Text = "";
+            SwVersionAssemblyNameTextBox.Text = "";
             SwVersionDescriptionTextBox.Text = "";
         }
 

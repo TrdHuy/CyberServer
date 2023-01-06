@@ -46,6 +46,7 @@ namespace cyber_server.views.windows
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_TOOL_TASK_TYPE_KEY, "Reloading tools", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY, "Reloading plugins", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_PLUGIN_TASK_TYPE_KEY, "Deleting plugin", 1, 1);
+            PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.OTHER_TOOL_TASK_TYPE_KEY, "Waiting", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_TOOL_TASK_TYPE_KEY, "Deleting tool", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.DELETE_VERSION_TASK_TYPE_KEY, "Deleting version", 1, 1);
             PART_TaskHandlingPanel.GenerateTaskSemaphore(CurrentTaskManager.IMPORT_TOOL_TASK_TYPE_KEY, "Importing tool", 1, 1);

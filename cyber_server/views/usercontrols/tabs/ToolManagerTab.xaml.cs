@@ -62,7 +62,7 @@ namespace cyber_server.views.usercontrols.tabs
         protected override Button OpenIconFileChooserButton => PART_OpenIconFileChooser;
         protected override Button SyncSwFolderWithDbButton => PART_SyncToolFolderWithDbButton;
         protected override Button AccessBaseFolderTabButton => PART_AccessBaseFolderTab;
-        protected override TextBox SwToolVersionAssemblyNameTextBox => PART_ToolVersionAssemblyNameTb;
+        protected override TextBox SwVersionAssemblyNameTextBox => PART_ToolVersionAssemblyNameTb;
 
         protected override string BuildTaskTypeKey(object tag)
         {
@@ -89,6 +89,8 @@ namespace cyber_server.views.usercontrols.tabs
                     return CurrentTaskManager.ADD_TOOL_TASK_TYPE_KEY;
                 case SwManagerViewElementTagId.ExitModifingSwButton:
                     return CurrentTaskManager.RELOAD_TOOL_TASK_TYPE_KEY;
+                case SwManagerViewElementTagId.ExtractVersionItemToFile:
+                    return CurrentTaskManager.OTHER_TOOL_TASK_TYPE_KEY;
                 default: return "";
             }
         }
@@ -142,6 +144,8 @@ namespace cyber_server.views.usercontrols.tabs
         {
             return new ToolVersionItemViewModel(null)
             {
+                IsNewConceptSwVersionBuild = _isNewConceptSwVersionBuild,
+                NewConceptBuildInfo = _newBuildConceptSwVersionBuildInfo,
                 Version = PART_ToolVersionTb.Text,
                 FilePath = PART_PathToToolTextbox.Text,
                 DatePublished = PART_DatePublisedDP.Text,

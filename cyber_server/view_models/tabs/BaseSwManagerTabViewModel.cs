@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -144,10 +145,7 @@ namespace cyber_server.view_models.tabs
             if (newIndex != -1)
             {
                 await Task.Delay(1000);
-
-                var toolVer = swVersionVM.RawModel;
-
-                toolVer.File = File.ReadAllBytes(swVersionVM.FilePath);
+                var toolVer = await swVersionVM.BuildNewVersionModel();
 
                 var success = await AddSwVersionToDatabase(modifiedItemViewModel, toolVer);
                 if (success)
@@ -174,12 +172,9 @@ namespace cyber_server.view_models.tabs
                 var nVer = Version.Parse(modifiedVersionItemViewModel.Version);
                 await Task.Delay(100);
 
-                var localVersionFilePath = modifiedVersionItemViewModel.FilePath;
                 var success = true;
+                await modifiedVersionItemViewModel.BuildVersionModelFile();
                 var swVersionModel = modifiedVersionItemViewModel.RawModel;
-
-                if (!string.IsNullOrEmpty(localVersionFilePath))
-                    swVersionModel.File = File.ReadAllBytes(localVersionFilePath);
 
                 modifiedItemViewModel.VersionSource.Insert(newIndex, modifiedVersionItemViewModel);
                 await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
@@ -363,17 +358,42 @@ namespace cyber_server.view_models.tabs
             var isExistExePath = false;
             if (File.Exists(swVersionVM.FilePath))
             {
-                using (ZipArchive archive = ZipFile.OpenRead(swVersionVM.FilePath))
+                if (swVersionVM.IsNewConceptSwVersionBuild)
                 {
-                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    using (ZipArchive archive = ZipFile.OpenRead(swVersionVM.FilePath))
                     {
-                        if (entry.FullName == swVersionVM.ExecutePath)
+                        var entry = archive.Entries
+                            .Where(e => e.Name == CyberServerDefinition.NEW_BUILD_CONCEPT_SOFTWARE_VERSION_BUILD_FILE_NAME)
+                            .FirstOrDefault();
+                        if (entry != null)
                         {
-                            isExistExePath = true;
-                            break;
+                            using (var stream = entry.Open())
+                            using (FileStream fileStream = System.IO.File.Create("C:\\Users\\huy.td1\\Desktop\\New folder" + "\\" + entry.FullName.Replace("/", "\\")))
+                            {
+                                stream.CopyTo(fileStream);
+                            }
+
+                            using (ZipArchive buildArchive = new ZipArchive(entry.Open()))
+                            {
+                                isExistExePath = buildArchive.Entries
+                                    .Where(e => e.FullName == swVersionVM.ExecutePath)
+                                    .FirstOrDefault() != null;
+                            }
                         }
+                        
                     }
                 }
+                else
+                {
+                    using (ZipArchive archive = ZipFile.OpenRead(swVersionVM.FilePath))
+                    {
+                        isExistExePath = archive.Entries
+                                    .Where(e => e.FullName == swVersionVM.ExecutePath)
+                                    .FirstOrDefault() != null;
+
+                    }
+                }
+
 
                 if (!isExistExePath)
                 {

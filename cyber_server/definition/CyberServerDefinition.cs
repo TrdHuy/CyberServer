@@ -18,5 +18,8 @@ namespace cyber_server.definition
 
         public const string SERVER_REMOTE_ADDRESS = "http://107.98.32.108:8080/";
         public const string SSL_SERVER_REMOTE_ADDRESS = "https://107.98.32.108:8088/";
+
+        public const string NEW_BUILD_CONCEPT_SOFTWARE_VERSION_BUILD_INFO_FILE_NAME = "build.info.json";
+        public const string NEW_BUILD_CONCEPT_SOFTWARE_VERSION_BUILD_FILE_NAME = "build.zip";
     }
 }

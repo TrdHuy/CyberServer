@@ -134,6 +134,7 @@
     <Compile Include="models\BaseCloneableObject.cs" />
     <Compile Include="models\BaseObjectSwModel.cs" />
     <Compile Include="models\BaseObjectVersionModel.cs" />
+    <Compile Include="models\SwVersionBuildInfo.cs" />
     <Compile Include="Plugin.cs">
       <DependentUpon>CyberDragonDBModel.tt</DependentUpon>
     </Compile>

@@ -102,7 +102,7 @@ namespace cyber_server.views.usercontrols.tabs
 
         protected override CheckBox SwIsPrereleasedCheckBox => PART_PluginIsPrereleasedCb;
 
-        protected override TextBox SwToolVersionAssemblyNameTextBox => PART_ToolVersionAssemblyNameTb;
+        protected override TextBox SwVersionAssemblyNameTextBox => PART_PluginVersionAssemblyNameTb;
 
         protected override string BuildTaskTypeKey(object tag)
         {
@@ -135,14 +135,17 @@ namespace cyber_server.views.usercontrols.tabs
 
         protected override BaseObjectVersionItemViewModel BuildSwVersionItemViewModelFromViewElement()
         {
+
             return new PluginVersionItemViewModel(null)
             {
+                IsNewConceptSwVersionBuild = _isNewConceptSwVersionBuild,
+                NewConceptBuildInfo = _newBuildConceptSwVersionBuildInfo,
                 Version = PART_PluginVersionTb.Text,
                 FilePath = PART_PathToPLuginTextbox.Text,
                 DatePublished = PART_DatePublisedDP.Text,
                 Description = PART_VersionDesTb.Text,
                 ExecutePath = PART_ExecutePathTextbox.Text,
-                AssemblyName = PART_ToolVersionAssemblyNameTb.Text,
+                AssemblyName = PART_PluginVersionAssemblyNameTb.Text,
                 CompressLength = _compressToolSizeCache + "",
                 RawLength = _rawToolSizeCache + "",
                 MainClassName = PART_PathMainClassNameTextbox.Text

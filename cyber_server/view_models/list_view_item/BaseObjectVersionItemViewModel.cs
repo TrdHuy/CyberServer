@@ -1,10 +1,10 @@
-﻿using cyber_server.models;
+﻿using cyber_server.definition;
+using cyber_server.models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace cyber_server.view_models.list_view_item
@@ -12,8 +12,11 @@ namespace cyber_server.view_models.list_view_item
     public abstract class BaseObjectVersionItemViewModel : BaseViewModel
     {
         private string _localFilePath = "";
-
+        private bool _isNewConceptSwVersionBuild = false;
+        private SwVersionBuildInfo _newConceptBuildInfo;
         public abstract BaseObjectVersionModel RawModel { get; }
+        public bool IsNewConceptSwVersionBuild { get => _isNewConceptSwVersionBuild; set => _isNewConceptSwVersionBuild = value; }
+        public SwVersionBuildInfo NewConceptBuildInfo { get => _newConceptBuildInfo; set => _newConceptBuildInfo = value; }
 
         public byte[] File
         {
@@ -170,11 +173,7 @@ namespace cyber_server.view_models.list_view_item
             {
                 if (System.IO.File.Exists(_localFilePath))
                 {
-                    using (FileStream stream = System.IO.File.Open(_localFilePath, FileMode.Open))
-                    {
-                        RawModel.File = new byte[stream.Length];
-                        await stream.ReadAsync(RawModel.File, 0, (int)stream.Length);
-                    }
+                    await BuildVersionModelFile();
                     return RawModel;
                 }
                 else
@@ -185,6 +184,42 @@ namespace cyber_server.view_models.list_view_item
             else
             {
                 return RawModel.Clone() as BaseObjectVersionModel;
+            }
+        }
+
+        public async Task BuildVersionModelFile()
+        {
+            if (System.IO.File.Exists(_localFilePath))
+            {
+                if (!_isNewConceptSwVersionBuild)
+                {
+                    using (FileStream stream = System.IO.File.Open(_localFilePath, FileMode.Open))
+                    {
+                        RawModel.File = new byte[stream.Length];
+                        await stream.ReadAsync(RawModel.File, 0, (int)stream.Length);
+                    }
+                }
+                else if (_isNewConceptSwVersionBuild && _newConceptBuildInfo != null)
+                {
+                    RawModel.FileName = _newConceptBuildInfo.CompressedBuildFileName;
+                    using (ZipArchive archive = ZipFile.OpenRead(_localFilePath))
+                    {
+                        var entry = archive.Entries
+                            .Where(e => e.Name == CyberServerDefinition.NEW_BUILD_CONCEPT_SOFTWARE_VERSION_BUILD_FILE_NAME)
+                            .FirstOrDefault();
+                        if (entry != null)
+                        {
+                            using (var stream = entry.Open())
+                            {
+                                using (var memSteam = new MemoryStream())
+                                {
+                                    await stream.CopyToAsync(memSteam);
+                                    RawModel.File = memSteam.ToArray();
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
