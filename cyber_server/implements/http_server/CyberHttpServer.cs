@@ -19,6 +19,7 @@ namespace cyber_server.implements.http_server
     {
         public const string END_POINT1 = CyberServerDefinition.SERVER_REMOTE_ADDRESS;
         public const string END_POINT2 = CyberServerDefinition.SSL_SERVER_REMOTE_ADDRESS;
+        public const string REQUEST_CYBER_SW_PACKAGE_BUILD_PARAM_PATH = "/cyberswpackbuildparam";
         public const string REQUEST_PLUGIN_RESOURCE_PATH = "/pluginresource";
         public const string REQUEST_TOOL_RESOURCE_PATH = "/toolresource";
         public const string DOWNLOAD_PLUGIN_API_PATH = "/downloadplugin";
@@ -128,6 +129,7 @@ namespace cyber_server.implements.http_server
                 {
                     switch (request.Url.AbsolutePath)
                     {
+                        case REQUEST_CYBER_SW_PACKAGE_BUILD_PARAM_PATH:
                         case REQUEST_INFO_API_PATH:
                             {
                                 byte[] buffer = await new RequestInfoHttpHandler().Handle(request, response);
@@ -223,6 +225,14 @@ namespace cyber_server.implements.http_server
                                                     response.ContentLength64 = buffer.Length;
                                                     await outputstream.WriteAsync(buffer, 0, buffer.Length);
                                                 }
+                                                break;
+                                            }
+                                        default:
+                                            {
+                                                response.StatusCode = (int)HttpStatusCode.NotFound;
+                                                byte[] buffer = System.Text.Encoding.UTF8.GetBytes("NOT FOUND!");
+                                                response.ContentLength64 = buffer.Length;
+                                                await outputstream.WriteAsync(buffer, 0, buffer.Length);
                                                 break;
                                             }
                                     }

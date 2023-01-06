@@ -1,4 +1,5 @@
 ﻿using cyber_server.@base;
+using cyber_server.definition;
 using cyber_server.implements.db_manager;
 using cyber_server.utils;
 using Newtonsoft.Json;
@@ -26,6 +27,8 @@ namespace cyber_server.implements.http_server.handlers
 
         public const string REQUEST_SOFTWARE_INFO_HEADER_ID = "GET_SOFTWARE_DATA";
         public const string REQUEST_SOFTWARE_KEY_HEADER_ID = "GET_SOFTWARE_DATA__SOFTWARE_KEY";
+
+        public const string REQUEST_CYBER_SW_PACKAGE_BUILD_PARAM_HEADER_ID = "GET_CYBER_SW_PACKAGE_BUILD_PARAM";
 
         public RequestInfoHttpHandler()
         {
@@ -188,6 +191,23 @@ namespace cyber_server.implements.http_server.handlers
 
                             // Gửi thông tin về cho Client
                             byte[] buf = System.Text.Encoding.UTF8.GetBytes(jsonstring);
+                            response.ContentLength64 = buf.Length;
+                            return buf;
+                        }
+                    case REQUEST_CYBER_SW_PACKAGE_BUILD_PARAM_HEADER_ID:
+                        {
+                            response.Headers.Add("Content-Type", "application/json");
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                            string jsonstring = "";
+                            object result = new
+                            {
+                                InfoFileName = CyberServerDefinition.NEW_BUILD_CONCEPT_SOFTWARE_VERSION_BUILD_INFO_FILE_NAME,
+                                MainBuildFileName = CyberServerDefinition.NEW_BUILD_CONCEPT_SOFTWARE_VERSION_BUILD_FILE_NAME,
+                            };
+
+
+                            jsonstring = JsonConvert.SerializeObject(result, Formatting.Indented);
+                            byte[] buf = Encoding.UTF8.GetBytes(jsonstring);
                             response.ContentLength64 = buf.Length;
                             return buf;
                         }

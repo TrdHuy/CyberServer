@@ -1,4 +1,5 @@
-﻿using cyber_server.implements.db_manager;
+﻿using cyber_server.definition;
+using cyber_server.implements.db_manager;
 using cyber_server.implements.plugin_manager;
 using cyber_server.models;
 using cyber_server.view_models.list_view_item;
