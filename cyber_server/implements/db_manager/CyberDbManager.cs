@@ -203,7 +203,7 @@ namespace cyber_server.implements.db_manager
                                             else
                                             {
                                                 //Add the Data rows.
-                                                csv += row[column.ColumnName].ToString().Replace(",", ";") + ',';
+                                                csv += row[column.ColumnName].ToString().Replace(",", ";").Replace("\r\n", "\\r\\n") + ',';
                                             }
                                         }
                                         //Add new line.
@@ -357,12 +357,19 @@ namespace cyber_server.implements.db_manager
                                                 }
                                                 break;
                                             }
+                                        case "System.String":
+                                            {
+                                                refactorData[selectedCol[i]]
+                                                    = fieldData[selectedCol[i]] == "" ? null : fieldData[selectedCol[i]].Replace("\\r\\n","\r\n");
+                                                break;
+                                            }
                                         default:
                                             {
                                                 refactorData[selectedCol[i]]
                                                     = fieldData[selectedCol[i]] == "" ? null : fieldData[selectedCol[i]];
                                                 break;
                                             }
+
                                     }
                                 }
                                 csvData.Rows.Add(refactorData);
