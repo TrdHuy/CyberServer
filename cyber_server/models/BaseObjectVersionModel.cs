@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace cyber_server.models
 {
-    public abstract class BaseObjectVersionModel: BaseCloneableObject
+    public abstract class BaseObjectVersionModel : BaseCloneableObject, IComparable<BaseObjectVersionModel>
     {
-        [Cloneable(false,-1)]
+        [Cloneable(false, -1)]
         [Editable(false)]
         public int VersionId { get; set; } = -1;
 
@@ -26,7 +26,7 @@ namespace cyber_server.models
 
         [Cloneable(true)]
         public System.DateTime DatePublished { get; set; }
-        
+
         [Cloneable(true)]
         [JsonIgnore]
         public byte[] File { get; set; }
@@ -46,5 +46,18 @@ namespace cyber_server.models
 
         [Cloneable(true)]
         public Nullable<bool> IsDisable { get; set; } = false;
+
+        public int CompareTo(BaseObjectVersionModel other)
+        {
+            if (System.Version.Parse(this.Version) > System.Version.Parse(other.Version))
+            {
+                return 1;
+            }
+            if (System.Version.Parse(this.Version) < System.Version.Parse(other.Version))
+            {
+                return -1;
+            }
+            return 0;
+        }
     }
 }

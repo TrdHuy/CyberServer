@@ -115,12 +115,19 @@ namespace cyber_server.implements.http_server.handlers
                                 ToolVersion query = null;
                                 await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
                                 {
-                                    query = dbContext.Tools
+                                    var tool = dbContext.Tools
                                             .Where(p => p.StringId == requestToolKey)
-                                            .FirstOrDefault()?
-                                            .ToolVersions
-                                            .Where(v => Version.Parse(v.Version) == requestToolVersion)
                                             .FirstOrDefault();
+                                    if (tool.IsRequireLatestVersionToRun)
+                                    {
+                                        query = tool?.ToolVersions.Max();
+                                    }
+                                    else
+                                    {
+                                        query = tool?.ToolVersions
+                                                    .Where(v => Version.Parse(v.Version) == requestToolVersion)
+                                                    .FirstOrDefault();
+                                    }
                                 });
 
                                 if (query != null)
