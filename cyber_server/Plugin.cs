@@ -9,6 +9,7 @@
 
 namespace cyber_server
 {
+    using cyber_server.implements.attributes;
     using cyber_server.models;
     using Newtonsoft.Json;
     using System;
@@ -25,14 +26,26 @@ namespace cyber_server
             this.Votes = new HashSet<Vote>();
         }
 
+        [Cloneable(false, -1)]
         [Editable(false)]
         public int PluginId { get; set; } = -1;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [Cloneable(true
+            , cloneOption: CloneOption.Collection
+            , collectionType: typeof(PluginVersion))]
         public virtual ICollection<PluginVersion> PluginVersions { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [Cloneable(true
+            , cloneOption: CloneOption.Collection
+            , collectionType: typeof(Tag))]
         public virtual ICollection<Tag> Tags { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [Cloneable(true
+            , cloneOption: CloneOption.Collection
+            , collectionType: typeof(Vote))]
         public virtual ICollection<Vote> Votes { get; set; }
 
         protected override object GenerateNewCloneObjectInstance()
