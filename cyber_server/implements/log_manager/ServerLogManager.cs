@@ -9,11 +9,19 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace cyber_server.implements.log_manager
 {
+
     internal class ServerLogManager : IServerModule
     {
+        public enum ConsoleLogActionChanged
+        {
+            ADDED, CLEAR
+        }
+        private static readonly Brush DEFAULT_CONSOLE_LOG_COLOR = Brushes.White;
+
         private string _consoleLogCache;
 
         private StringBuilder _rawLogBuilder;
@@ -21,9 +29,11 @@ namespace cyber_server.implements.log_manager
         private ObservableQueue<Func<bool>> _taskQueue;
         private SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
 
-        public delegate void ServerLogChangedHandler(object sender, string newLog);
+        public delegate void ServerLogChangedHandler(object sender, ConsoleLogActionChanged action, string newLog, string newLine);
 
         public event ServerLogChangedHandler ServerLogChanged;
+
+        public Brush ConsoleLogColor { get; private set; } = DEFAULT_CONSOLE_LOG_COLOR;
 
         public static ServerLogManager Current
         {
@@ -65,16 +75,62 @@ namespace cyber_server.implements.log_manager
 
         }
 
-        public void AppendConsoleLogLine(string newLine)
+        public void AppendConsoleErrorLine(string newLine, int tab = 0)
         {
-            _consoleLogCache = _consoleLogCache + newLine + "\n";
-            ServerLogChanged?.Invoke(this, _consoleLogCache);
+            ConsoleLogColor = Brushes.Red;
+            AppendConsoleLogLine(newLine, tab);
+            ConsoleLogColor = DEFAULT_CONSOLE_LOG_COLOR;
+        }
+
+        public void AppendConsoleWarningLine(string newLine, int tab = 0)
+        {
+            ConsoleLogColor = Brushes.OrangeRed;
+            AppendConsoleLogLine(newLine, tab);
+            ConsoleLogColor = DEFAULT_CONSOLE_LOG_COLOR;
+        }
+
+        public void AppendConsoleDebugLine(string newLine, int tab = 0)
+        {
+            ConsoleLogColor = Brushes.GreenYellow;
+            AppendConsoleLogLine(newLine, tab);
+            ConsoleLogColor = DEFAULT_CONSOLE_LOG_COLOR;
+        }
+
+        public void AppendConsoleHyperLine(string newLine, int tab = 0)
+        {
+            ConsoleLogColor = Brushes.DeepSkyBlue;
+            AppendConsoleLogLine(newLine, tab);
+            ConsoleLogColor = DEFAULT_CONSOLE_LOG_COLOR;
+        }
+
+        public void AppendConsoleLogLine(string newLine, Brush logColor, int tab = 0)
+        {
+            ConsoleLogColor = logColor;
+            AppendConsoleLogLine(newLine, tab);
+            ConsoleLogColor = DEFAULT_CONSOLE_LOG_COLOR;
+        }
+
+        public void AppendConsoleLogLine(string newLine, int tab = 0)
+        {
+            var newLogLine = "";
+            if (tab > 0)
+            {
+                newLogLine += "|";
+                for (int i = 0; i < tab; i++)
+                {
+                    newLogLine += "__";
+                }
+            }
+            newLogLine += newLine + "\n";
+            _consoleLogCache = _consoleLogCache + newLogLine;
+
+            ServerLogChanged?.Invoke(this, ConsoleLogActionChanged.ADDED, _consoleLogCache, newLogLine);
         }
 
         public void ClearConsoleLog()
         {
             _consoleLogCache = "";
-            ServerLogChanged?.Invoke(this, _consoleLogCache);
+            ServerLogChanged?.Invoke(this, ConsoleLogActionChanged.CLEAR, _consoleLogCache, "");
         }
 
         public void D(string log, [CallerMemberName] string caller = "", [CallerFilePath] string filePath = "")

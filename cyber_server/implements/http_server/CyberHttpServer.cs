@@ -253,7 +253,7 @@ namespace cyber_server.implements.http_server
             }
             catch (Exception ex)
             {
-                ServerLogManager.Current.AppendConsoleLogLine(ex.Message);
+                ServerLogManager.Current.AppendConsoleErrorLine(ex.Message,tab: 1);
                 ServerLogManager.Current.E(ex.ToString());
             }
             finally

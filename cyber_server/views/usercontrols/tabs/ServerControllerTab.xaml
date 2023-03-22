@@ -54,7 +54,7 @@
 					Click="HandleButtonClickEvent"
 					Content="Save changed database"
 					Margin="5" />
-			
+
 			<Button Click="testRequest"
 					Content="Test request"
 					Margin="5" />
@@ -67,7 +67,7 @@
 				<ComboBoxItem Content="Get all tool data request" />
 				<ComboBoxItem Content="Download tool request" />
 				<ComboBoxItem Content="Backup database" />
-				<ComboBoxItem Content="Import csv to database"/>
+				<ComboBoxItem Content="Import csv to database" />
 			</ComboBox>
 		</WrapPanel>
 
@@ -75,49 +75,35 @@
 		<TabControl Grid.Row="1"
 					Grid.Column="1">
 			<TabItem Header="Console">
-				<TextBox x:Name="PART_ConsoleTb"
-						 Grid.Row="1"
-						 Text="{Binding ConsoleLogText}"
-						 BorderThickness="0"
-						 IsReadOnly="True"
-						 Foreground="White"
-						 Background="Black"
-						 TextWrapping="Wrap"
-						 AcceptsReturn="True"
-						 FontSize="12"
-						 Cursor="Arrow"
-						 VerticalScrollBarVisibility="Visible"
-						 CaretBrush="Transparent"
-						 SelectionBrush="White"
-						 SelectionOpacity="0.5"
-						 FontFamily="Courier New"
-						 FontWeight="Medium"
-						 TextBlock.LineHeight="17"
-						 TextBlock.LineStackingStrategy="BlockLineHeight">
-					<TextBox.Template>
-						<ControlTemplate TargetType="{x:Type TextBox}">
-							<ControlTemplate.Resources>
-								<sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">6</sys:Double>
-								<sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">6</sys:Double>
-							</ControlTemplate.Resources>
+				<RichTextBox x:Name="PART_ConsoleTb"
+							 Grid.Row="1"
+							 BorderThickness="0"
+							 IsReadOnly="True"
+							 Foreground="White"
+							 Background="#FF1F1F28"
+							 AcceptsReturn="True"
+							 FontSize="12"
+							 Cursor="Arrow"
+							 VerticalScrollBarVisibility="Visible"
+							 CaretBrush="Transparent"
+							 SelectionBrush="White"
+							 SelectionOpacity="0.5"
+							 FontFamily="Courier New"
+							 FontWeight="Medium"
+							 TextBlock.LineHeight="17"
+							 TextBlock.LineStackingStrategy="BlockLineHeight">
 
-							<Grid>
-								<Rectangle x:Name="BackgroundRec"
-										   Fill="{TemplateBinding Background}"
-										   StrokeThickness="0" />
+					<RichTextBox.Resources>
+						<sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">6</sys:Double>
+						<sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">6</sys:Double>
+					</RichTextBox.Resources>
+					<FlowDocument>
+						<Paragraph x:Name="PART_ConsolePara">
+						</Paragraph>
+					</FlowDocument>
+				</RichTextBox>
 
-								<ScrollViewer x:Name="PART_ContentHost"
-											  Margin="5,7,0,0"
-											  SnapsToDevicePixels="True"
-											  VerticalContentAlignment="Center"
-											  VerticalAlignment="Top"
-											  VerticalScrollBarVisibility="Auto"
-											  HorizontalScrollBarVisibility="Disabled" />
-							</Grid>
 
-						</ControlTemplate>
-					</TextBox.Template>
-				</TextBox>
 			</TabItem>
 			<TabItem Header="List"></TabItem>
 		</TabControl>

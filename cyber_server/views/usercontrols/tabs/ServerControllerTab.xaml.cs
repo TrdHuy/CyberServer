@@ -2,6 +2,7 @@
 using cyber_server.implements.db_manager;
 using cyber_server.implements.http_server;
 using cyber_server.implements.http_server.handlers;
+using cyber_server.implements.log_manager;
 using cyber_server.implements.task_handler;
 using cyber_server.views.usercontrols.others;
 using cyber_server.views.windows.others;
@@ -28,6 +29,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static cyber_server.implements.log_manager.ServerLogManager;
 
 namespace cyber_server.views.usercontrols.tabs
 {
@@ -39,6 +41,23 @@ namespace cyber_server.views.usercontrols.tabs
         public ServerControllerTab()
         {
             InitializeComponent();
+            ServerLogManager.Current.ServerLogChanged += HandleServerLogChanged;
+        }
+
+        private void HandleServerLogChanged(object sender
+            , ConsoleLogActionChanged action
+            , string newLog
+            , string newLine)
+        {
+            if (action == ServerLogManager.ConsoleLogActionChanged.CLEAR)
+            {
+                PART_ConsolePara.Inlines.Clear();
+            }
+            else if (action == ServerLogManager.ConsoleLogActionChanged.ADDED)
+            {
+                var run = new Run(newLine) { Foreground = ServerLogManager.Current.ConsoleLogColor };
+                PART_ConsolePara.Inlines.Add(run);
+            }
         }
 
         private async void HandleButtonClickEvent(object sender, RoutedEventArgs e)
@@ -48,6 +67,12 @@ namespace cyber_server.views.usercontrols.tabs
             {
                 switch (btn.Name)
                 {
+
+                    case "PART_CleanButton":
+                        {
+                            ServerLogManager.Current.ClearConsoleLog();
+                            break;
+                        }
                     case "PART_StartServerButton":
                         {
                             await CyberHttpServer.Current.StartAsync();
@@ -153,7 +178,7 @@ namespace cyber_server.views.usercontrols.tabs
                             mainFunc: async () =>
                             {
                                 int changes = await CyberDbManager.Current.SaveChanges();
-                                MessageBox.Show("Đã lưu "+ changes + " thay đổi");
+                                MessageBox.Show("Đã lưu " + changes + " thay đổi");
                             },
                             executeTime: 0,
                             bypassIfSemaphoreNotAvaild: true);

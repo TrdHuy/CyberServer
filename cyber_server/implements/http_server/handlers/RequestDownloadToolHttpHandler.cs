@@ -44,7 +44,6 @@ namespace cyber_server.implements.http_server.handlers
                             Version requestToolVersion;
                             try
                             {
-
                                 if (!string.IsNullOrEmpty(request.Headers[REQUEST_KEY_TO_CHECK_DOWNLOADABLE_HEADER_ID])
                                     && !string.IsNullOrEmpty(request.Headers[REQUEST_VERSION_TO_CHECK_DOWNLOADABLE_HEADER_ID]))
                                 {
@@ -52,6 +51,9 @@ namespace cyber_server.implements.http_server.handlers
                                     requestToolVersion = Version.Parse(request.Headers[REQUEST_VERSION_TO_CHECK_DOWNLOADABLE_HEADER_ID]);
 
                                     ServerLogManager.Current.I("Request to check TOOL downloadable: key=" + requestToolKey + ", version=" + requestToolVersion);
+                                    ServerLogManager.Current.AppendConsoleDebugLine(
+                                        "Request to check TOOL downloadable: key=" + requestToolKey + ", version=" + requestToolVersion
+                                        , tab: 1);
 
                                     ToolVersion query = null;
                                     await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
@@ -94,6 +96,10 @@ namespace cyber_server.implements.http_server.handlers
                                 ServerLogManager.Current.E(ex.ToString());
                                 response.StatusCode = (int)HttpStatusCode.NotFound;
                                 responseString = "NOT FOUND";
+                                ServerLogManager.Current.AppendConsoleErrorLine(
+                                        ex.ToString() + "\n" + ex.StackTrace
+                                        , tab: 1);
+
                             }
 
                             byte[] buffer = Encoding.UTF8.GetBytes(responseString);
@@ -111,6 +117,9 @@ namespace cyber_server.implements.http_server.handlers
                                 requestToolVersion = Version.Parse(request.Headers[REQUEST_DOWNLOAD_TOOL_VERSION_HEADER_ID]);
 
                                 ServerLogManager.Current.I("Request to download TOOL: key=" + requestToolKey + ", version=" + requestToolVersion);
+                                ServerLogManager.Current.AppendConsoleDebugLine(
+                                    "Request to download TOOL: key=" + requestToolKey + ", version=" + requestToolVersion
+                                    , tab: 1);
 
                                 ToolVersion query = null;
                                 await CyberDbManager.Current.RequestDbContextAsync((dbContext) =>
@@ -147,6 +156,9 @@ namespace cyber_server.implements.http_server.handlers
                                             tool.Downloads++;
                                             dbContext.SaveChanges();
                                         });
+                                        ServerLogManager.Current.AppendConsoleDebugLine(
+                                            $"ServerResponse={response.StatusCode}, Version={query.Version.ToString()}, BufferLenght={buffer.Length}"
+                                            , tab: 1);
                                         return buffer;
                                     }
                                     else
@@ -158,6 +170,9 @@ namespace cyber_server.implements.http_server.handlers
                                 {
                                     response.StatusCode = (int)HttpStatusCode.NotFound;
                                 }
+                                ServerLogManager.Current.AppendConsoleDebugLine(
+                                            $"ServerResponse={response.StatusCode}"
+                                            , tab: 1);
                             }
                             break;
                         }

@@ -59,7 +59,7 @@ namespace cyber_server.implements.db_manager
         {
         }
 
-        public async Task<bool> RequestDbContextAsync(Action<CyberDragonDbContext> request)
+        public async Task<bool> RequestDbContextAsync(Action<CyberDragonDbContext> request, bool isThrowException = false)
         {
             var isSucess = false;
             await _semaphoreForAppDbContext.WaitAsync();
@@ -67,9 +67,11 @@ namespace cyber_server.implements.db_manager
             {
                 request.Invoke(_appDbContext);
                 isSucess = true;
+                _semaphoreForAppDbContext.Release();
             }
             catch (DbEntityValidationException e)
             {
+                isSucess = false;
                 var message = e.Message + "\n";
                 foreach (var eve in e.EntityValidationErrors)
                 {
@@ -82,17 +84,24 @@ namespace cyber_server.implements.db_manager
                     }
                 }
                 MessageBox.Show(message, "Lỗi!");
+                _semaphoreForAppDbContext.Release();
+                if (isThrowException)
+                {
+                    throw e;
+                }
             }
             catch (Exception ex)
             {
                 isSucess = false;
                 MessageBox.Show(ex.Message, "Lỗi!");
                 ServerLogManager.Current.E(ex.ToString());
-            }
-            finally
-            {
                 _semaphoreForAppDbContext.Release();
+                if (isThrowException)
+                {
+                    throw ex;
+                }
             }
+           
             return isSucess;
         }
 
