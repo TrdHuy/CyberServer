@@ -30,6 +30,10 @@
 					Click="HandleButtonClickEvent"
 					Content="Stop server"
 					Margin="5" />
+			<Button x:Name="PART_CleanButton"
+					Click="HandleButtonClickEvent"
+					Content="Clear log"
+					Margin="5" />
 			<Button x:Name="PART_ImportCsvToDbButton"
 					Click="HandleButtonClickEvent"
 					Content="Import csv to database"
