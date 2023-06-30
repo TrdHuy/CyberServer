@@ -26,6 +26,7 @@ namespace cyber_server.views.usercontrols.others
         public const string ADD_TOOL_TASK_TYPE_KEY = "ADD_TOOL_TASK_TYPE_KEY";
         public const string RELOAD_TOOL_TASK_TYPE_KEY = "RELOAD_TOOL_TASK_TYPE_KEY";
         public const string OTHER_TOOL_TASK_TYPE_KEY = "OTHER_TOOL_TASK_TYPE_KEY";
+        public const string OTHER_PLUGIN_TASK_TYPE_KEY = "OTHER_PLUGIN_TASK_TYPE_KEY";
         public const string RELOAD_PLUGIN_TASK_TYPE_KEY = "RELOAD_PLUGIN_TASK_TYPE_KEY";
         public const string DELETE_PLUGIN_TASK_TYPE_KEY = "DELETE_PLUGIN_TASK_TYPE_KEY";
         public const string DELETE_TOOL_TASK_TYPE_KEY = "DELETE_TOOL_TASK_TYPE_KEY";

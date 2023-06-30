@@ -406,14 +406,24 @@
 																<ColumnDefinition />
 																<ColumnDefinition Width="auto" />
 																<ColumnDefinition Width="auto" />
+																<ColumnDefinition Width="auto" />
 															</Grid.ColumnDefinitions>
+															<Button x:Name="SUB_ExtractVersionItemToFile"
+																	Tag="{x:Static local:SwManagerViewElementTagId.ExtractVersionItemToFile}"
+																	Content="=>"
+																	FontSize="8"
+																	ToolTip="Extract to file"
+																	Margin="1,0"
+																	VerticalAlignment="Top"
+																	Grid.Column="1"
+																	Click="HandleButtonClickEvent" />
 															<Button x:Name="SUB_ModifyVersionItem"
 																	Content="/"
 																	Tag="{x:Static local:SwManagerViewElementTagId.ModifyVersionItem}"
 																	Margin="1,0"
 																	FontSize="8"
 																	ToolTip="Sửa"
-																	Grid.Column="1"
+																	Grid.Column="2"
 																	VerticalAlignment="Top"
 																	Click="HandleButtonClickEvent" />
 															<Button x:Name="SUB_DeleteVersionItem"
@@ -423,10 +433,10 @@
 																	ToolTip="Xoá"
 																	Margin="1,0"
 																	VerticalAlignment="Top"
-																	Grid.Column="2"
+																	Grid.Column="3"
 																	Click="HandleButtonClickEvent" />
 															<TextBlock IsHitTestVisible="False"
-																	   Grid.ColumnSpan="3">
+																	   Grid.ColumnSpan="4">
 																<Run Text="VERSION: "
 																	 FontWeight="Bold" />
 																<Run Text="{Binding Version}"

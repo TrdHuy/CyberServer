@@ -129,6 +129,8 @@ namespace cyber_server.views.usercontrols.tabs
                     return CurrentTaskManager.ADD_PLUGIN_TASK_TYPE_KEY;
                 case SwManagerViewElementTagId.ExitModifingSwButton:
                     return CurrentTaskManager.RELOAD_PLUGIN_TASK_TYPE_KEY;
+                case SwManagerViewElementTagId.ExtractVersionItemToFile:
+                    return CurrentTaskManager.OTHER_PLUGIN_TASK_TYPE_KEY;
                 default: return "";
             }
         }
@@ -236,6 +238,15 @@ namespace cyber_server.views.usercontrols.tabs
             }
 
             await base.BaseHandleButtonClickEvent(sender, e);
+
+            switch (btn?.Name)
+            {
+                case "PART_OpenPluginFileChooser":
+                    {
+                        PART_PathMainClassNameTextbox.Text = _newBuildConceptSwVersionBuildInfo?.MainClassName;
+                        break;
+                    }
+            }
         }
         protected override void OnSwManagerTabInitialized()
         {

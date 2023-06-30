@@ -19,7 +19,10 @@
 			<TabItem Header="Quản lý plugin">
 				<tabs:PluginManagerTab />
 			</TabItem>
-			<TabItem Header="Quản lý công cụ">
+			<TabItem Header="Quản lý công cụ"
+					 HorizontalAlignment="Right"
+					 Margin="0,-2,-2,0"
+					 Width="102">
 				<tabs:ToolManagerTab />
 			</TabItem>
 			<TabItem x:Name="PART_CertificateManagerTabItem"

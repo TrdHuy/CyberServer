@@ -13,6 +13,9 @@ namespace cyber_server.models
         public string PathToMainExe { get; set; }
         public string Description { get; set; }
         public string CompressedBuildFileName { get; set; }
-        
+        public string UninstallFilePath { get; set; }
+        public string PathToMainDll { get; set; }
+        public string MainClassName { get; set; }
+
     }
 }

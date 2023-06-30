@@ -223,10 +223,28 @@ namespace cyber_server.views.usercontrols.tabs
                                                     {
                                                         var data = await reader.ReadToEndAsync();
                                                         _newBuildConceptSwVersionBuildInfo = JsonConvert.DeserializeObject<SwVersionBuildInfo>(data);
-                                                        SwVersionDescriptionTextBox.Text = _newBuildConceptSwVersionBuildInfo.Description;
-                                                        SwVersionTextBox.Text = _newBuildConceptSwVersionBuildInfo.Version;
-                                                        SwExecutePathTextBox.Text = _newBuildConceptSwVersionBuildInfo.PathToMainExe;
-                                                        SwVersionAssemblyNameTextBox.Text = _newBuildConceptSwVersionBuildInfo.MainAssemblyName;
+                                                        // Tool case
+                                                        if (!string.IsNullOrEmpty(_newBuildConceptSwVersionBuildInfo.PathToMainExe))
+                                                        {
+                                                            SwVersionDescriptionTextBox.Text = _newBuildConceptSwVersionBuildInfo.Description;
+                                                            SwVersionTextBox.Text = _newBuildConceptSwVersionBuildInfo.Version;
+                                                            SwExecutePathTextBox.Text = _newBuildConceptSwVersionBuildInfo.PathToMainExe;
+                                                            SwVersionAssemblyNameTextBox.Text = _newBuildConceptSwVersionBuildInfo.MainAssemblyName;
+                                                        }
+                                                        // Plugin case
+                                                        else if (!string.IsNullOrEmpty(_newBuildConceptSwVersionBuildInfo.PathToMainDll)
+                                                            && !string.IsNullOrEmpty(_newBuildConceptSwVersionBuildInfo.MainAssemblyName))
+                                                        {
+                                                            SwVersionDescriptionTextBox.Text = _newBuildConceptSwVersionBuildInfo.Description;
+                                                            SwVersionTextBox.Text = _newBuildConceptSwVersionBuildInfo.Version;
+                                                            SwExecutePathTextBox.Text =
+                                                            //$"plugins" +
+                                                            //$"\\{(string.IsNullOrEmpty(SwKeyTextbox.Text) ? "'Fill your sw key'" : SwKeyTextbox.Text)}" +
+                                                            //$"\\{_newBuildConceptSwVersionBuildInfo.Version}" +
+                                                            $"{_newBuildConceptSwVersionBuildInfo.PathToMainDll}";
+                                                            SwVersionAssemblyNameTextBox.Text = _newBuildConceptSwVersionBuildInfo.MainAssemblyName;
+                                                        }
+
                                                     }
                                                 }
                                                 _isNewConceptSwVersionBuild = true;

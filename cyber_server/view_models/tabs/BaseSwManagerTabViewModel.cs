@@ -368,12 +368,6 @@ namespace cyber_server.view_models.tabs
                             .FirstOrDefault();
                         if (entry != null)
                         {
-                            using (var stream = entry.Open())
-                            using (FileStream fileStream = System.IO.File.Create("C:\\Users\\huy.td1\\Desktop\\New folder" + "\\" + entry.FullName.Replace("/", "\\")))
-                            {
-                                stream.CopyTo(fileStream);
-                            }
-
                             using (ZipArchive buildArchive = new ZipArchive(entry.Open()))
                             {
                                 isExistExePath = buildArchive.Entries
